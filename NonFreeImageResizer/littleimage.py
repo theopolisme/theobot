@@ -4,6 +4,7 @@ import pyexiv2
 import cStringIO, mwclient, uuid, urllib, cgi, littleimage, sys, urllib2, requests, math, tempfile, os
 
 # CC-BY-SA Theopolisme
+# Task 1 on [[User:Theo's Little Bot]] (subsidiary)
 
 def metadata(source_path, dest_path, image):
 	"""This function moves the metadata
