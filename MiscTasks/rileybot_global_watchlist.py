@@ -12,7 +12,7 @@ l = []
 def generate(wiki):
 	print "Working on " + wiki
 	site = mwclient.Site(wiki)
-	site.login('RileyBot', 'python')
+	site.login('RileyBot', 'password')
 
 	data = site.watchlist(prop="ids|timestamp|title")
 	
