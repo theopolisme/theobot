@@ -61,6 +61,4 @@ site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
 page = site.Pages['User:RileyBot/watchlist']
-text = page.edit()
-text = final
-page.save(text, summary = "Bot: Updating global watchlist per request.")
+page.save(final, summary = "Bot: Updating global watchlist per request.")
