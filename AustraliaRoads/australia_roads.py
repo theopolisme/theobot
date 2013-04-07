@@ -1,4 +1,5 @@
-import mwclient, mwparserfromhell
+import mwclient
+import mwparserfromhell
 from theobot import bot
 from theobot import password
 

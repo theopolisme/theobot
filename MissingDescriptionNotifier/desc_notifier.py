@@ -1,4 +1,8 @@
-import mwclient, re, sys, datetime, pickle
+import mwclient
+import re
+import sys
+import datetime
+import pickle
 from theobot import bot
 from theobot import password
 

@@ -1,4 +1,8 @@
-import mwclient, re, time, urllib, urllib2
+import mwclient
+import re
+import time
+import urllib
+import urllib2
 from xml.dom import minidom
 from theobot import bot
 from theobot import password

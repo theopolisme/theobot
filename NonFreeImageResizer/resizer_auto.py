@@ -1,8 +1,18 @@
 #!/usr/bin/python
 from PIL import Image
 from xml.dom import minidom
-import cStringIO, mwclient, uuid, urllib, os.path, cgi, littleimage, sys, urllib2, re, theobot.bot
-import logging # for, well, logs
+import cStringIO
+import mwclient
+import uuid
+import urllib
+import os.path
+import cgi
+import littleimage
+import sys
+import urllib2
+import re
+import theobot.bot
+import logging
 from theobot import password
 
 # CC-BY-SA Theopolisme

@@ -1,4 +1,5 @@
-import mwclient, urllib
+import mwclient
+import urllib
 from time import mktime
 from datetime import datetime
 from theobot import password

@@ -1,7 +1,18 @@
 #!/usr/bin/python
 from PIL import Image
 import pyexiv2
-import cStringIO, mwclient, uuid, urllib, cgi, littleimage, sys, urllib2, requests, math, tempfile, os
+import cStringIO
+import mwclient
+import uuid
+import urllib
+import cgi
+import littleimage
+import sys
+import urllib2
+import requests
+import math
+import tempfile
+import os
 
 # CC-BY-SA Theopolisme
 # Task 1 on [[User:Theo's Little Bot]] (subsidiary)
