@@ -1,42 +1,58 @@
 import mwclient
 from time import mktime
 from datetime import datetime
-from theobot import password
+import time
+import settings
 
 # CC-BY-SA Theopolisme
 # A simple script for a simple friend.
 # Tracks [[User:RileyBot]]'s global watchlist
 
-l = []
+# This is for logging...global variable.
+log = []
+
+def log(text):
+	"""Adds a given piece of text
+	to log list. Uses global var.
+	"""
+	# timestamp every item to make tracking easier, also use UTC time to avoid local issues
+	tm = time.strftime(u'%Y-%m-%d %H:%M:%S',time.gmtime())
+	# post every item to its own line
+	global log
+	log.append('\n* %s\t%s' % (tm,text))
 
 def generate(wiki):
 	print "Working on " + wiki
-	site = mwclient.Site(wiki)
-	site.login('RileyBot', 'password')
-
-	data = site.watchlist(prop="ids|timestamp|title")
+	log('Working on' + wiki)
+	site1 = mwclient.Site(wiki)
+	site1.login(settings.username, settings.password)
+	data = site1.watchlist(prop="ids|timestamp|title")
+	page3 = site1.Pages['User:RileyBot/Stop']
+	text3 = page3.edit()
+	if text3.lower() != u'enable':
+		log('Check page disabled')
+		prog_end()
+	else:
+		print data
 	
-	print data
+		global l
+		l.append("\n=== " + wiki + " ===")
 	
-	global l
-	l.append("\n=== " + wiki + " ===")
+		l.append("""\n{| class="wikitable sortable"
+		|-
+		! Page title !! Revision timestamp !! Diff""")
+	
+		iz = 0
+		for x in data:
+			if iz <= 25:
+				dt = datetime.fromtimestamp(mktime(x['timestamp']))
+				l.append("\n|-\n| " + """<span class="plainlinks">[//""" + wiki + "/wiki/" + x['title'].replace(" ","_") + " " + x['title'] + "]</span> || " + str(dt) + " || " + "[//" + wiki + "/w/index.php?diff=prev&oldid=" + str(x['revid']) + " diff]")
+				iz = iz + 1
+			else:
+					print "That's all for now!"
+	
+		l.append("\n|}")
 
-	l.append("""\n{| class="wikitable sortable"
-	|-
-	! Page title !! Revision timestamp !! Diff""")
-
-	iz = 0
-	for x in data:
-		if iz <= 25:
-			dt = datetime.fromtimestamp(mktime(x['timestamp']))
-			l.append("\n|-\n| " + """<span class="plainlinks">[//""" + wiki + "/wiki/" + x['title'].replace(" ","_") + " " + x['title'] + "]</span> || " + str(dt) + " || " + "[//" + wiki + "/w/index.php?diff=prev&oldid=" + str(x['revid']) + " diff]")
-			iz = iz + 1
-		else:
-			print "That's all for now!"
-
-	l.append("\n|}")
-
-# @Riley_Huntley - Edit this list of wikis to suit your liking.
 wikis = ['en.wikipedia.org',
 'en.wikiquote.org',
 'en.wikivoyage.org',
@@ -55,10 +71,18 @@ for wiki in wikis:
 	generate(wiki)
 
 final = ''.join(l)
-site = mwclient.Site('en.wikipedia.org')
 
-# @Riley_Huntley - You can change this to log in as your own bot if you'd like.
-site.login(password.username, password.password)
+site2.login(settings.username, settings.password)
 
-page = site.Pages['User:RileyBot/watchlist']
-page.save(final, summary = "Bot: Updating global watchlist per request.")
+page = site2.Pages['User:RileyBot/watchlist']
+page.save(final,"[[User:RileyBot|Bot]]: Updating global watchlist")
+log('Global watchlist updated')
+prog_end()
+
+def prog_end():
+	final = ''.join(log)
+	site2 = mwclient.Site('en.wikipedia.org')
+	log_page = site2.Pages['User:RileyBot/Logs/Watchlist']
+	log_text = log_page.edit() + final
+	log_page.save(log_text,'[[User:RileyBot|Bot]]: Uploading logs for [[User:RileyBot/Watchlist|watchlist]]')
+	sys.exit(0)
