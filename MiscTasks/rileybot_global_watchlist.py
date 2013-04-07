@@ -1,5 +1,4 @@
 import mwclient
-import urllib
 from time import mktime
 from datetime import datetime
 from theobot import password
@@ -30,7 +29,7 @@ def generate(wiki):
 	for x in data:
 		if iz <= 25:
 			dt = datetime.fromtimestamp(mktime(x['timestamp']))
-			l.append("\n|-\n| " + """<span class="plainlinks">[//""" + wiki + "/wiki/" + urllib.quote(x['title']) + " " + x['title'] + "]</span> || " + str(dt) + " || " + "[//" + wiki + "/w/index.php?diff=prev&oldid=" + str(x['revid']) + " diff]")
+			l.append("\n|-\n| " + """<span class="plainlinks">[//""" + wiki + "/wiki/" + x['title'].replace(" ","_") + " " + x['title'] + "]</span> || " + str(dt) + " || " + "[//" + wiki + "/w/index.php?diff=prev&oldid=" + str(x['revid']) + " diff]")
 			iz = iz + 1
 		else:
 			print "That's all for now!"
