@@ -6,13 +6,17 @@ from theobot import password
 # CC-BY-SA Theopolisme
 # Task 3 on [[User:Theo's Little Bot]]
 
-def main():
+def tag_files(cat_input,project):
+	"""The function requires two parameters,
+	"cat_input," a list of categories to get
+	pages from, and "project," the WikiProject
+	name (as it appears in template to be added
+	to the resulting talk pages. For example,
+	"WikiProject Baseball" -> {{WikiProject Baseball}}
+	"""
 	global site
 	site = mwclient.Site('en.wikipedia.org')
 	site.login(password.username, password.password)
-	
-	# Requires cat_input to be a list as defined below.
-	cat_input =  []
 	
 	for category in cat_input:
 		zam = mwclient.listing.Category(site, category)
@@ -35,7 +39,7 @@ def main():
 		for thisisapage in pages_to_search:
 			page = site.Pages[thisisapage]
 			text = page.edit()
-			r=re.compile(r'\[\[(File|Image):(.*?\.)(jpg|png|gif|svg|JPG|PNG|GIF|SVG).*?\]\]')
+			r = re.compile(r'\[\[(File|Image):(.*?\.)(jpg|png|gif|svg|JPG|PNG|GIF|SVG).*?\]\]')
 			try:
 				l = re.findall(r, text)
 			except:
@@ -46,15 +50,23 @@ def main():
 				pg = "File talk:" + filename
 				page = site.Pages[pg]
 				xtext = page.edit()
-				x = re.compile(r'[Bb]aseball')
-				if x.search(xtext) is None:
-					xtext = "{{WikiProject Baseball}}\n" + xtext
-					page.save(xtext, summary = "Tagging page for [[Wikipedia:WikiProject Baseball|WikiProject Baseball]]")
+				x = re.compile(project)
+				if x.search(xtext, re.IGNORECASE) is None:
+					xtext = "{{" + project + "}}\n" + xtext
+					page.save(xtext, summary = "Tagging page for [[Wikipedia:" + project + "|" + project + "]]")
 					print "Page saved!"
 					time.sleep(2)
 					print "Sleeping two seconds." 
 				else:
 					print "Page was already tagged; skipping."	
+
+def main():
+	cat_input = []
+	project = "WikiProject Baseball"
+	
+	tag_files(cat_input,project)
+	
+	print "Run complete!"
 	
 if __name__ == '__main__':
    main()
