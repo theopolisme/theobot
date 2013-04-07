@@ -206,4 +206,5 @@ def main():
 	pickle.dump(users_notified, picklefile_write)
 	print "Pickled!"
 
-main()
+if __name__ == '__main__':
+   main()

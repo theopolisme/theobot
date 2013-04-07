@@ -202,4 +202,5 @@ def main():
 	image_routine(flub)
 	print "We're DONE!"
 	
-main()
+if __name__ == '__main__':
+   main()

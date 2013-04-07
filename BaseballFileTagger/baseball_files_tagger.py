@@ -52,4 +52,5 @@ def main():
 			else:
 				print "Page was already tagged; skipping."	
 	
-main()
+if __name__ == '__main__':
+   main()
