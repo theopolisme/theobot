@@ -173,13 +173,12 @@ def main():
 	global picklefile_write
 	picklefile_write = open("users_notified.txt", 'w')
 
-	files = bot.what_transcludes(['Description missing'])
+	files = bot.what_transcludes('Description missing')
 
 	global total_done_now
 	total_done_now = 0
 	
 	for file in files:
-		#print "Working on " + str(file)
 		x = site.images[file]
 	
 		zam = x.revisions(dir='newer',prop='user')
