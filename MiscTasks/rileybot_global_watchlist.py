@@ -22,6 +22,15 @@ def log(text):
 	global logs
 	logs.append('\n* %s\t%s' % (tm,text))
 
+def prog_end():
+	global logs
+	final = ''.join(logs)
+	site2 = mwclient.Site('en.wikipedia.org')
+	log_page = site2.Pages['User:RileyBot/Logs/Watchlist']
+	log_text = log_page.edit() + final
+	log_page.save(log_text,'[[User:RileyBot|Bot]]: Uploading logs for [[User:RileyBot/Watchlist|watchlist]]')
+	sys.exit(0)
+	
 def generate(wiki):
 	print "Working on " + wiki
 	log('Working on' + wiki)
@@ -79,12 +88,3 @@ page = site2.Pages['User:RileyBot/watchlist']
 page.save(final,"[[User:RileyBot|Bot]]: Updating global watchlist")
 log('Global watchlist updated')
 prog_end()
-
-def prog_end():
-	global logs
-	final = ''.join(logs)
-	site2 = mwclient.Site('en.wikipedia.org')
-	log_page = site2.Pages['User:RileyBot/Logs/Watchlist']
-	log_text = log_page.edit() + final
-	log_page.save(log_text,'[[User:RileyBot|Bot]]: Uploading logs for [[User:RileyBot/Watchlist|watchlist]]')
-	sys.exit(0)
