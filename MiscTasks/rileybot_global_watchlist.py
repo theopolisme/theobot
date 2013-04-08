@@ -26,6 +26,7 @@ def prog_end():
 	global logs
 	final = ''.join(logs)
 	site2 = mwclient.Site('en.wikipedia.org')
+	site2.login(settings.username, settings.password)
 	log_page = site2.Pages['User:RileyBot/Logs/Watchlist']
 	log_text = log_page.edit() + final
 	log_page.save(log_text,'[[User:RileyBot|Bot]]: Uploading logs for [[User:RileyBot/Watchlist|watchlist]]')
@@ -41,7 +42,7 @@ def generate(wiki):
 	text3 = page3.edit()
 	if text3.lower() != u'enable':
 		log('Check page disabled')
-		prog_end()
+		return
 	else:
 		print data
 	
@@ -83,7 +84,6 @@ for wiki in wikis:
 final = ''.join(l)
 
 site2.login(settings.username, settings.password)
-
 page = site2.Pages['User:RileyBot/watchlist']
 page.save(final,"[[User:RileyBot|Bot]]: Updating global watchlist")
 log('Global watchlist updated')
