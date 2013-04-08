@@ -87,6 +87,7 @@ for wiki in wikis:
 
 final = ''.join(l)
 
+site2 = mwclient.Site('en.wikipedia.org')
 site2.login(settings.username, settings.password)
 page = site2.Pages['User:RileyBot/watchlist']
 page.save(final,"[[User:RileyBot|Bot]]: Updating global watchlist")
