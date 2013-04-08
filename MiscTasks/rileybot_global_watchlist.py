@@ -27,46 +27,48 @@ def log(text):
 	logs.append('\n* %s\t%s' % (tm,text))
 
 def prog_end():
+	"""When the program ends, this saves
+	its log into a wikipage.
+	"""
 	global logs
-	final = ''.join(logs)
+	loggery = ''.join(logs)
 	site2 = mwclient.Site('en.wikipedia.org')
 	site2.login(settings.username, settings.password)
 	log_page = site2.Pages['User:RileyBot/Logs/Watchlist']
-	log_text = log_page.edit() + final
-	log_page.save(log_text,'[[User:RileyBot|Bot]]: Uploading logs for [[User:RileyBot/Watchlist|watchlist]]')
-	sys.exit(0)
+	log_text = log_page.edit() + loggery
+	log_page.save(log_text,'[[User:RileyBot|Bot]]: Uploading logs for [[User:RileyBot/watchlist|watchlist]]')
 	
 def generate(wiki):
+	"""This function does most of the work,
+	which includes checking checkpages and
+	generating watchlists/tables.
+	"""
 	print "Working on " + wiki
-	log('Working on' + wiki)
+	log('Working on ' + wiki)
 	site1 = mwclient.Site(wiki)
 	site1.login(settings.username, settings.password)
-	data = site1.watchlist(prop="ids|timestamp|title")
+	data = site1.watchlist(prop="ids|timestamp|title|user")
 	page3 = site1.Pages['User:RileyBot/Stop']
 	text3 = page3.edit()
 	if text3.lower() != u'enable':
-		log('Check page disabled')
-		return
-	else:
-		print data
-	
-		global l
-		l.append("\n=== " + wiki + " ===")
-	
-		l.append("""\n{| class="wikitable sortable"
-		|-
-		! Page title !! Revision timestamp !! Diff""")
-	
-		iz = 0
-		for x in data:
-			if iz <= 25:
-				dt = datetime.fromtimestamp(mktime(x['timestamp']))
-				l.append("\n|-\n| " + """<span class="plainlinks">[//""" + wiki + "/wiki/" + x['title'].replace(" ","_") + " " + x['title'] + "]</span> || " + str(dt) + " || " + "[//" + wiki + "/w/index.php?diff=prev&oldid=" + str(x['revid']) + " diff]")
-				iz = iz + 1
-			else:
-				print "That's all for now!"
-	
-		l.append("\n|}")
+		log('Check page is still enabled on ' + wiki)
+	global l
+	l.append("\n=== " + wiki + " ===")
+
+	l.append("""\n{| class="wikitable sortable"
+	|-
+	! Page title !! User !! Revision timestamp !! Diff""")
+
+	iz = 0
+	for x in data:
+		if iz <= 25:
+			dt = datetime.fromtimestamp(mktime(x['timestamp']))
+			l.append("\n|-\n| " + """<span class="plainlinks">[//""" + wiki + "/wiki/" + x['title'].replace(" ","_") + " " + x['title'] + "]</span>" + """ || <span class="plainlinks">[//""" + wiki + "/wiki/User:" + x['user'].replace(" ","_") + " " + x['user'] + "]</span> || " + str(dt) + " || " + "[//" + wiki + "/w/index.php?diff=prev&oldid=" + str(x['revid']) + " diff]")
+			iz = iz + 1
+		else:
+			continue
+
+	l.append("\n|}")
 
 wikis = ['en.wikipedia.org',
 'en.wikiquote.org',
@@ -85,11 +87,11 @@ wikis = ['en.wikipedia.org',
 for wiki in wikis:
 	generate(wiki)
 
-final = ''.join(l)
+text = unicode(u''.join(l))
 
 site2 = mwclient.Site('en.wikipedia.org')
 site2.login(settings.username, settings.password)
 page = site2.Pages['User:RileyBot/watchlist']
-page.save(final,"[[User:RileyBot|Bot]]: Updating global watchlist")
+page.save(text,"[[User:RileyBot|Bot]]: Updating global watchlist")
 log('Global watchlist updated')
 prog_end()
