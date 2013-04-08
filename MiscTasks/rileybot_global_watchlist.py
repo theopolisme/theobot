@@ -60,7 +60,7 @@ def generate(wiki):
 				l.append("\n|-\n| " + """<span class="plainlinks">[//""" + wiki + "/wiki/" + x['title'].replace(" ","_") + " " + x['title'] + "]</span> || " + str(dt) + " || " + "[//" + wiki + "/w/index.php?diff=prev&oldid=" + str(x['revid']) + " diff]")
 				iz = iz + 1
 			else:
-					print "That's all for now!"
+				print "That's all for now!"
 	
 		l.append("\n|}")
 
