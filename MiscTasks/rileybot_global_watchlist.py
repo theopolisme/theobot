@@ -12,6 +12,10 @@ import settings
 global logs
 logs = []
 
+# This is for the main output.
+global l
+l = []
+
 def log(text):
 	"""Adds a given piece of text
 	to log list. Uses global var.
