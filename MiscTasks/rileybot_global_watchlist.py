@@ -9,7 +9,8 @@ import settings
 # Tracks [[User:RileyBot]]'s global watchlist
 
 # This is for logging...global variable.
-log = []
+global logs
+logs = []
 
 def log(text):
 	"""Adds a given piece of text
@@ -18,8 +19,8 @@ def log(text):
 	# timestamp every item to make tracking easier, also use UTC time to avoid local issues
 	tm = time.strftime(u'%Y-%m-%d %H:%M:%S',time.gmtime())
 	# post every item to its own line
-	global log
-	log.append('\n* %s\t%s' % (tm,text))
+	global logs
+	logs.append('\n* %s\t%s' % (tm,text))
 
 def generate(wiki):
 	print "Working on " + wiki
@@ -80,7 +81,8 @@ log('Global watchlist updated')
 prog_end()
 
 def prog_end():
-	final = ''.join(log)
+	global logs
+	final = ''.join(logs)
 	site2 = mwclient.Site('en.wikipedia.org')
 	log_page = site2.Pages['User:RileyBot/Logs/Watchlist']
 	log_text = log_page.edit() + final
