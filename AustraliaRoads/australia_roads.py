@@ -1,5 +1,6 @@
 import mwclient
 import mwparserfromhell
+import sys
 from theobot import bot
 from theobot import password
 
@@ -8,6 +9,19 @@ from theobot import password
 
 # Defining list.
 pages = []
+
+def sokay(donenow):
+	"""This function calls a subfunction
+	of the theobot module, checkpage().
+	"""
+	# This first 'if' is for the trial only.
+	if donenow % 5 == 0:
+		if bot.checkpage("User:Theo's Little Bot/disable/australia roads") == True:
+			return True
+		else:
+			return False
+	else:
+		return True
 
 def cats_recursive(category):
 	"""Recursively goes through
@@ -27,6 +41,7 @@ def editor(text):
 	"""
 	code_compare = mwparserfromhell.parse(text)
 	code = mwparserfromhell.parse(text)
+	
 	for template in code.filter_templates():
 		if template.name in ('WP Australia', 'WP Australian music', 'WPAUS', 'WPAUSTRALIA', 'WPAustralia', 'WikiProject Australia') and not template.has_param("road"):
 			template.add("road", "yes")
@@ -52,10 +67,7 @@ def editor(text):
 					except:
 						print "No importance to add."
 	
-	if code == code_compare:
-		text = "{{WikiProject Australia|road=yes}}" + text
-	else:
-		text = unicode(code)
+	text = unicode(code)
 	
 	return text	
 
@@ -63,20 +75,27 @@ def main():
 	global site
 	site = mwclient.Site('en.wikipedia.org')
 	site.login(password.username, password.password)
-
-
+	
+	print "Getting category contents...this could take a while."
 	zam = mwclient.listing.Category(site, 'Category:Roads in Australia')
 	cats_recursive(zam)
 
 	print "Working on " + str(len(pages)) + " pages."
+	
+	donenow = 5
 
 	for page in pages:
-		talk = u'Talk:' + page
-		page = site.Pages[talk]
-		text = page.edit()
-		y = editor(text)
-		page.save(y, summary = "Adding road parameter to {{[[Template:WikiProject Australia|WikiProject Australia]]}} - testing script")
-		print talk + " saved."
+		if sokay(donenow) == True:
+			talk = u'Talk:' + page
+			page = site.Pages[talk]
+			text = page.edit()
+			y = editor(text)
+			page.save(y, summary = "Adding road parameter to {{[[Template:WikiProject Australia|WikiProject Australia]]}} ([[WP:BOT|bot]] on trial)")
+			print talk + " saved."
+			donenow = donenow + 1
+		elif sokay(donenow) == False:
+			print "Aw, snap, we were disabled. Quitting in 3...2...1..."
+			sys.exit()
 		
 if __name__ == '__main__':
    main()
