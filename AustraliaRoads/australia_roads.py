@@ -14,7 +14,6 @@ def sokay(donenow):
 	"""This function calls a subfunction
 	of the theobot module, checkpage().
 	"""
-	# This first 'if' is for the trial only.
 	if donenow % 5 == 0:
 		if bot.checkpage("User:Theo's Little Bot/disable/australia roads") == True:
 			return True
@@ -90,7 +89,7 @@ def main():
 			page = site.Pages[talk]
 			text = page.edit()
 			y = editor(text)
-			page.save(y, summary = "Adding road parameter to {{[[Template:WikiProject Australia|WikiProject Australia]]}} ([[WP:BOT|bot]] on trial)")
+			page.save(y, summary = "Adding road parameter to {{[[Template:WikiProject Australia|WikiProject Australia]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/australia_roads|disable]])")
 			print talk + " saved."
 			donenow = donenow + 1
 		elif sokay(donenow) == False:
