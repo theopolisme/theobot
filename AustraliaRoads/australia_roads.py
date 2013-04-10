@@ -68,7 +68,7 @@ def editor(text):
 	
 	text = unicode(code)
 	
-	return text	
+	return text 
 
 def main():
 	global site
@@ -89,8 +89,16 @@ def main():
 			page = site.Pages[talk]
 			text = page.edit()
 			y = editor(text)
-			page.save(y, summary = "Adding road parameter to {{[[Template:WikiProject Australia|WikiProject Australia]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/australia_roads|disable]])")
-			print talk + " saved."
+			try:
+				page.save(y, summary = "Adding road parameter to {{[[Template:WikiProject Australia|WikiProject Australia]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/australia_roads|disable]])")
+				print talk + " saved."
+			except AttributeError:
+				print "Page save error; retrying."
+				try:
+					page.save(y, summary = "Adding road parameter to {{[[Template:WikiProject Australia|WikiProject Australia]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/australia_roads|disable]])")
+					print talk + " saved."
+				except AttributeError:
+					print "Page skipped due to unknown error."
 			donenow = donenow + 1
 		elif sokay(donenow) == False:
 			print "Aw, snap, we were disabled. Quitting in 3...2...1..."
