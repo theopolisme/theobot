@@ -82,10 +82,14 @@ def main():
 	print "Working on " + str(len(pages)) + " pages."
 	
 	donenow = 5
-
+	y = pages.index('Margaret Street, Brisbane')
+	y = y-5
+	del pages[:y]
+	
 	for page in pages:
 		if sokay(donenow) == True:
 			talk = u'Talk:' + page
+			print "Working on " + talk.encode('ascii', 'ignore')
 			page = site.Pages[talk]
 			text = page.edit()
 			y = editor(text)
