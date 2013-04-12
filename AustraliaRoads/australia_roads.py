@@ -82,7 +82,7 @@ def main():
 	print "Working on " + str(len(pages)) + " pages."
 	
 	donenow = 5
-	y = pages.index('Margaret Street, Brisbane')
+	y = pages.index('Thomas Price')
 	y = y-5
 	del pages[:y]
 	
@@ -95,12 +95,12 @@ def main():
 			y = editor(text)
 			try:
 				page.save(y, summary = "Adding road parameter to {{[[Template:WikiProject Australia|WikiProject Australia]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/australia_roads|disable]])")
-				print talk + " saved."
+				print talk.encode('ascii', 'ignore') + " saved."
 			except AttributeError:
 				print "Page save error; retrying."
 				try:
 					page.save(y, summary = "Adding road parameter to {{[[Template:WikiProject Australia|WikiProject Australia]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/australia_roads|disable]])")
-					print talk + " saved."
+					print talk.encode('ascii', 'ignore') + " saved."
 				except AttributeError:
 					print "Page skipped due to unknown error."
 			donenow = donenow + 1
