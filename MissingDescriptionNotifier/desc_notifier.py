@@ -162,7 +162,7 @@ def main():
 	try:
 		global users_notified
 		users_notified = pickle.load(picklefile)
-	except (EOFError):
+	except (EOFError, IOError):
 		print "Pickle file was empty...we'll have to make do!"
 		users_notified = []
 	
