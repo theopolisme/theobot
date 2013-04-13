@@ -45,13 +45,13 @@ def editor(text):
 
 	for template in code.filter_templates():
 		if template.name in ('WikiProject Classical Greece and Rome', 'Classical Greece and Rome', 'Classical greece and rome', 'WP Classics', 'WikiProject Classics'):
-			template.replace("importance", "low")
+			template.add("importance", "low")
 			print "Importance value added."
 		if template.name == 'WikiProjectBannerShell':
 			x = template.get(1).value
 			for template in x.filter_templates():
 				if template.name in ('WikiProject Classical Greece and Rome', 'Classical Greece and Rome', 'Classical greece and rome', 'WP Classics', 'WikiProject Classics'):
-					template.replace("importance", "low")
+					template.add("importance", "low")
 					print "Importance value added."
 	
 	text = unicode(code)
@@ -86,12 +86,12 @@ def main():
 				text = page.edit()
 				y = editor(text)
 				try:
-					page.save(y, summary = "Adding importance parameter to {{[[Template:WikiProject Classical Greece and Rome|WikiProject Classical Greece and Rome]]}} ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/greece|disable]])")
+					page.save(y, summary = "Adding importance parameter to {{[[Template:WikiProject Classical Greece and Rome|WikiProject Classical Greece and Rome]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/greece|disable]])")
 					print talk.encode('ascii', 'ignore') + " saved."
 				except AttributeError:
 					print "Page save error; retrying."
 					try:
-						page.save(y, summary = "Adding importance parameter to {{[[Template:WikiProject Classical Greece and Rome|WikiProject Classical Greece and Rome]]}} ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/greece|disable]])")
+						page.save(y, summary = "Adding importance parameter to {{[[Template:WikiProject Classical Greece and Rome|WikiProject Classical Greece and Rome]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/greece|disable]])")
 						print talk.encode('ascii', 'ignore') + " saved."
 					except AttributeError:
 						print "Page skipped due to unknown error."
