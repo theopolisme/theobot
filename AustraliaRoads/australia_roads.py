@@ -1,6 +1,7 @@
 import mwclient
 import mwparserfromhell
 import sys
+import re
 from theobot import bot
 from theobot import password
 
