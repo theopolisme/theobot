@@ -61,7 +61,7 @@ def editor(text):
 	
 	text = unicode(code)
 	
-	if has_been_tagged = False:
+	if has_been_tagged == False:
 		text = "{{WikiProject Latin music|class=|importance=|reggaeton=yes}}\n" + text
 	return text 
 
