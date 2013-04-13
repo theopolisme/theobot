@@ -58,10 +58,10 @@ def notified_already(user):
 	page = site.Pages[usertalk]
 	text = page.edit()
 	
-	regexp1 = re.compile(r'<!-- Template:Add-desc-I -->')
-	regexp2 = re.compile(r'<!-- Template:Add-desc -->')
+	str_1 = '<!-- Template:Add-desc-l -->'
+	str_2 = '<!-- Template:Add-desc -->'
 
-	if regexp1.search(text) is None and regexp2.search(text) is None:
+	if text.find(str_1) == -1 and text.find(str_2) == -1:
 		return True
 	else:
 		return False
