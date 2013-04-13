@@ -101,14 +101,17 @@ def notify(user):
 				text = page.edit()
 				text = text + generate_subst(user)
 				#text = generate_subst(user)
-				page.save(text,summary="Notifying user about missing file description(s) ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/desc_notifier|disable]])")
-				global total_done_now
-				total_done_now = total_done_now + 1
-				global users_notfied
-				users_notified.append(user)
-				now123 = datetime.datetime.utcnow()
-				users_notified.append(now123)
-				print user.encode('ascii', 'ignore') + " notified"
+				try:
+					page.save(text,summary="Notifying user about missing file description(s) ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/desc_notifier|disable]])")
+					global total_done_now
+					total_done_now = total_done_now + 1
+					global users_notfied
+					users_notified.append(user)
+					now123 = datetime.datetime.utcnow()
+					users_notified.append(now123)
+					print user.encode('ascii', 'ignore') + " notified"
+				except:
+					print "Unknown error // skipping user."
 			else:
 				print "User was notifed already."
 		else:
