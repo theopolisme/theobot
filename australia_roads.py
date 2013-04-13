@@ -28,7 +28,13 @@ def cats_recursive(category):
 	categories. Almost TOO
 	straightforward.
 	"""
+	
+	str = 'Jubilee 150 Walkway'
+	
 	for item in category:
+		if item.find(str) != -1:
+			pass
+		
 		if "Category" in str(item):
 			cats_recursive(item)
 		else:
@@ -39,14 +45,6 @@ def editor(text):
 	"""This function does the bulk of the
 	work. Requires one parameter, text.
 	"""
-	
-	# This checks if an article is to be skipped...uses some rudimentary regex.
-	regexp1 = re.compile(r'Jubilee 150 Walkway')
-
-	if regexp1.search(text) is not None:
-		print "Article is in skip list."
-		return text
-	# End check block
 	
 	code_compare = mwparserfromhell.parse(text)
 	code = mwparserfromhell.parse(text)
