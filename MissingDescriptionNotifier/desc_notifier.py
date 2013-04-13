@@ -99,9 +99,9 @@ def notify(user):
 				print "User hasn't already been notified!"
 				page = site.Pages[usertalk]
 				text = page.edit()
-				#text = text + generate_subst(user)
+				text = text + generate_subst(user)
 				#text = generate_subst(user)
-				page.save(text,summary="Notifying user about missing file description(s) ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/desc_notifier|disable]])",section=new)
+				page.save(text,summary="Notifying user about missing file description(s) ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/desc_notifier|disable]])")
 				global total_done_now
 				total_done_now = total_done_now + 1
 				global users_notfied
@@ -155,21 +155,20 @@ def main():
 	site = mwclient.Site('en.wikipedia.org')
 	site.login(password.username, password.password)
 	
-	global picklefile
-	picklefile = open("users_notified.txt", 'r')
-	print picklefile
-		
 	try:
+		global picklefile
+		picklefile = open("users_notified.txt", 'r')
+		print picklefile
 		global users_notified
 		users_notified = pickle.load(picklefile)
-	except (EOFError, IOError):
+		picklefile.close()
+	except (EOFError, IOError, NameError):
 		print "Pickle file was empty...we'll have to make do!"
 		users_notified = []
-	
+
 	global to_notify
 	to_notify = {}
 	
-	picklefile.close()
 
 	global picklefile_write
 	picklefile_write = open("users_notified.txt", 'w')
