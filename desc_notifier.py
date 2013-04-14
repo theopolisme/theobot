@@ -79,11 +79,11 @@ def were_they_told_in_three(user):
 		return False
 	lop = lop + 1
 	xyz = users_notified[lop]
-	if (now - xyz) > datetime.timedelta(days=3):
-		print "Time greater than 3 days, so we can renotify."
+	if (now - xyz) > datetime.timedelta(days=7):
+		print "Time greater than 7 days, so we can renotify."
 		return False
 	else:
-		print "User already notified in 3 days."
+		print "User already notified in 7 days."
 		return True
 
 def notify(user):
