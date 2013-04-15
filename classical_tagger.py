@@ -44,13 +44,22 @@ def editor(text):
 	code = mwparserfromhell.parse(text)
 
 	for template in code.filter_templates():
-		if template.name in ('WikiProject Classical Greece and Rome', 'Classical Greece and Rome', 'Classical greece and rome', 'WP Classics', 'WikiProject Classics', 'Classical greece and rome'):
+		print template.name
+		if template.name in ('WikiProject Classical Greece and Rome', 'Classical Greece and Rome', 'Classical greece and rome', 'WP Classics', 'WikiProject Classics', 'Classical greece and rome',  'Classical_greece_and_rome'):
+			try:
+				template.remove("importance")
+			except ValueError:
+				pass
 			template.add("importance", "low")
 			print "Importance value added."
-		if template.name == 'WikiProjectBannerShell':
+		if template.name in ('WikiProjectBannerShell', 'WikiProject Banners', 'WPBS'):
 			x = template.get(1).value
 			for template in x.filter_templates():
-				if template.name in ('WikiProject Classical Greece and Rome', 'Classical Greece and Rome', 'Classical greece and rome', 'WP Classics', 'WikiProject Classics',  'Classical greece and rome'):
+				if template.name in ('WikiProject Classical Greece and Rome', 'Classical Greece and Rome', 'Classical greece and rome', 'WP Classics', 'WikiProject Classics',  'Classical greece and rome', 'Classical_greece_and_rome'):
+					try:
+						template.remove("importance")
+					except ValueError:
+						pass
 					template.add("importance", "low")
 					print "Importance value added."
 	
