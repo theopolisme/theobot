@@ -66,7 +66,7 @@ def notified_already(user):
 	else:
 		return False
 
-def were_they_told_in_three(user):
+def already_told(user):
 	"""This checks if the user has been
 	already notified in the past three
 	days.
@@ -92,7 +92,7 @@ def notify(user):
 	in question. Calls generate_subst().
 	"""
 	usertalk = 'User talk:' + user
-	if were_they_told_in_three(user) == False:
+	if already_told(user) == False:
 		if bot.nobots(page=usertalk) == True:
 			print "We're cleared to edit."
 			if notified_already(user) == True:
