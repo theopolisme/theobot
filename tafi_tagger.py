@@ -24,7 +24,6 @@ def sokay(donenow):
 		return True
 
 # Logs in to the site.
-global site
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
