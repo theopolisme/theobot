@@ -1,9 +1,6 @@
 import mwclient
 import datetime
 import re
-
-# CC-BY-SA Theopolisme
-
 from theobot import bot
 from theobot import password
 
