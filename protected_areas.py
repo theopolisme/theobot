@@ -1,8 +1,22 @@
 import mwclient
+import sys
 from theobot import password
 
 # CC-BY-SA Theopolisme
 # Task 8 on [[User:Theo's Little Bot]]
+
+def sokay(donenow):
+	"""Simple function to check checkpage.
+	This function calls a sub-function
+	of the theobot.bot module, checkpage().
+	"""
+	if donenow % 5 == 0:
+		if bot.checkpage("User:Theo's Little Bot/disable/protected areas") == True:
+			return True
+		else:
+			return False
+	else:
+		return True
 
 def pages_in_cat(cat):
 	cat = mwclient.listing.Category(site, cat)
@@ -53,15 +67,22 @@ def main():
 			except ValueError:
 				print "Item " + str(item.page_title.split()[-1]) + " skipped."
 	
+	donenow = 5
+
 	for year in years_to_do:
-		pagename = "List of protected areas established in " + year
-		if site.Pages[pagename].edit() == '':
-			page_save_text = generate_wikicode(year)
-			page = site.Pages[pagename]
-			print "Saving page " + pagename + "."
-			page.save(text,summary="Creating per [[WP:CLT]] for [[:Category:Protected areas by year of establishment]] ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi|disable]])")
+		if sokay(donenow) == True:
+			donenow += 1
+			pagename = "List of protected areas established in " + year
+			if site.Pages[pagename].edit() == '':
+				page_save_text = generate_wikicode(year)
+				page = site.Pages[pagename]
+				print "Saving page " + pagename + "."
+				page.save(text,summary="Creating per [[WP:CLT]] for [[:Category:Protected areas by year of establishment]] ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/protected areas|disable]])")
+			else:
+				print "Page already created, skipping."
 		else:
-			print "Page already created, skipping."
+			print "Bot was disabled. Exiting."
+			sys.exit()
 	
 if __name__ == '__main__':
    main()
