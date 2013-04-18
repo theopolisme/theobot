@@ -52,7 +52,7 @@ def are_you_still_there(theimage):
 	re.compile(r'\{\{[Rr]educe.*?\}\}'),
 	re.compile(r'\{\{[Cc]omic-ovrsize-img.*?\}\}'),
 	re.compile(r'\{\{[Ff]air.?[Uu]se.?[Rr]educe.*?\}\}'),
-	re.compile(r'\{\{[Ii]mage-toobig.*?\}\}')
+	re.compile(r'\{\{[Ii]mage-toobig.*?\}\}'),
 	re.compile(r'\{\{[Nn]fr.*?\}\}'),
 	re.compile(r'\{\{[Ss]maller image.*?\}\}')]
 	
