@@ -48,46 +48,19 @@ def are_you_still_there(theimage):
 	page = site.Pages[img_name]
 	text = page.edit()
 	
-regexp = re.compile(r'\{\{[Nn]on.?free-[Rr]educe.*?\}\}')
-regexp2 = re.compile(r'\{\{[Rr]educe.*?\}\}')
-regexp4 = re.compile(r'\{\{[Cc]omic-ovrsize-img.*?\}\}')
-regexp5 = re.compile(r'\{\{[Ff]air.?[Uu]se.?[Rr]educe.*?\}\}')
-regexp10 = re.compile(r'\{\{[Ii]mage-toobig.*?\}\}')
-regexp11 = re.compile(r'\{\{[Nn]fr.*?\}\}')
-regexp16 = re.compile(r'\{\{[Ss]maller image.*?\}\}')
+	regexes = [re.compile(r'\{\{[Nn]on.?free-[Rr]educe.*?\}\}'),
+	re.compile(r'\{\{[Rr]educe.*?\}\}'),
+	re.compile(r'\{\{[Cc]omic-ovrsize-img.*?\}\}'),
+	re.compile(r'\{\{[Ff]air.?[Uu]se.?[Rr]educe.*?\}\}'),
+	re.compile(r'\{\{[Ii]mage-toobig.*?\}\}')
+	re.compile(r'\{\{[Nn]fr.*?\}\}'),
+	re.compile(r'\{\{[Ss]maller image.*?\}\}')]
 	
-	if img_name == "File:Avvo.com consumer logo, March 2013.png":
-		return False
-	elif regexp.search(text) is not None:
-		return True
-	elif regexp2.search(text) is not None:
-		return True
-	elif regexp3.search(text) is not None:
-		return True
-	elif regexp4.search(text) is not None:
-		return True
-	elif regexp5.search(text) is not None:
-		return True
-	elif regexp6.search(text) is not None:
-		return True
-	elif regexp7.search(text) is not None:
-		return True
-	elif regexp8.search(text) is not None:
-		return True
-	elif regexp9.search(text) is not None:
-		return True
-	elif regexp10.search(text) is not None:
-		return True
-	elif regexp11.search(text) is not None:
-		return True
-	elif regexp12.search(text) is not None:
-		return True
-	elif regexp13.search(text) is not None:
-		return True
-	elif regexp14.search(text) is not None:
-		return True
-	else:
-		return False
+	for regex in regexes:
+		if regex.search(text) is not None:
+			return True
+
+	return False
 
 def image_routine(images):
 	""" This function does most of the work:
@@ -114,22 +87,13 @@ def image_routine(images):
 					img_name = "File:" + theimage
 					page = site.Pages[img_name]
 					text = page.edit()
-					text = re.sub('\{\{[Nn]on-free reduce.*?\}\}', '', text)
-					text = re.sub('\{\{[Nn]on-free reduce.*?\}\}', '', text)
-					text = re.sub('\{\{[Rr]educe.*?\}\}', '', text)			
-					text = re.sub(r'\{\{[Cc]omic-ovrsize-img.*?\}\}', '', text)
-					text = re.sub(r'\{\{[Ff]air Use reduce.*?\}\}', '', text)
-					text = re.sub(r'\{\{[Ff]air use reduce.*?\}\}', '', text)
-					text = re.sub(r'\{\{[Ff]air-use reduce.*?\}\}', '', text)
-					text = re.sub(r'\{\{[Ff]airUse[Rr]educe.*?\}\}', '', text)
-					text = re.sub(r'\{\{[Ff]airuse[Rr]educe.*?\}\}', '', text)
-					text = re.sub(r'\{\{[Ii]mage-toobig.*?\}\}', '', text)
-					text = re.sub(r'\{\{[Nn]fr.*?\}\}', '', text)
-					text = re.sub(r'\{\{[Nn]on-free-[Rr]educe.*?\}\}', '', text)
-					text = re.sub(r'\{\{[Nn]onfree [Rr]educe.*?\}\}', '', text)
+					text = re.sub(r'\{\{[Nn]on.?free-[Rr]educe.*?\}\}', '', text)
 					text = re.sub(r'\{\{[Rr]educe.*?\}\}', '', text)
-					text = re.sub(r'\{\{[Rr]educe size.*?\}\}', '', text)
-					text = re.sub(r'\{\{[Ss]maller image.*?\}\}', '', text)		
+					text = re.sub(r'\{\{[Cc]omic-ovrsize-img.*?\}\}', '', text)			
+					text = re.sub(r'\{\{[Ff]air.?[Uu]se.?[Rr]educe.*?\}\}', '', text)			
+					text = re.sub(r'\{\{[Ii]mage-toobig.*?\}\}', '', text)			
+					text = re.sub(r'\{\{[Nn]fr.*?\}\}', '', text)			
+					text = re.sub(r'\{\{[Ss]maller image.*?\}\}', '', text)			
 					page.save(text, summary = "Removing {{[[Template:Non-free reduce|Non-free reduce]]}} since file is already adequately reduced ([[WP:BOT|BOT]] - [[User:Theo's Little Bot/disable/resizer|disable]])")				
 					
 				elif file not in ("ERROR", "PIXEL"):					
@@ -143,22 +107,13 @@ def image_routine(images):
 						
 						page = site.Pages[img_name]
 						text = page.edit()
-						glob = text
-						text = re.sub('\{\{[Nn]on-free reduce.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
-						text = re.sub('\{\{[Rr]educe.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)			
-						text = re.sub(r'\{\{[Cc]omic-ovrsize-img.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
-						text = re.sub(r'\{\{[Ff]air Use reduce.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
-						text = re.sub(r'\{\{[Ff]air use reduce.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
-						text = re.sub(r'\{\{[Ff]air-use reduce.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
-						text = re.sub(r'\{\{[Ff]airUse[Rr]educe.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
-						text = re.sub(r'\{\{[Ff]airuse[Rr]educe.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
-						text = re.sub(r'\{\{[Ii]mage-toobig.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
-						text = re.sub(r'\{\{[Nn]fr.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
-						text = re.sub(r'\{\{[Nn]on-free-[Rr]educe.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
-						text = re.sub(r'\{\{[Nn]onfree [Rr]educe.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
+						text = re.sub(r'\{\{[Nn]on.?free-[Rr]educe.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
 						text = re.sub(r'\{\{[Rr]educe.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
-						text = re.sub(r'\{\{[Rr]educe size.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
-						text = re.sub(r'\{\{[Ss]maller image.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)							
+						text = re.sub(r'\{\{[Cc]omic-ovrsize-img.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)			
+						text = re.sub(r'\{\{[Ff]air.?[Uu]se.?[Rr]educe.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)			
+						text = re.sub(r'\{\{[Ii]mage-toobig.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)			
+						text = re.sub(r'\{\{[Nn]fr.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)			
+						text = re.sub(r'\{\{[Ss]maller image.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)									
 						page.save(text, summary = "Tagging with {{[[Template:Non-free reduced|Non-free reduced]]}} ([[WP:BOT|BOT]] - [[User:Theo's Little Bot/disable/resizer|disable]])")
 						
 						print "Tagged!"
