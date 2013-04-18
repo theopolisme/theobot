@@ -120,7 +120,7 @@ def generate_subst(user):
 	subst = u'\n{{subst:Bsr-user'
 	for file in files:
 		subst = subst + u'|' + file
-	subst = subst + u'}}'
+	subst = subst + u'}} ~~~~'
 	return subst
 	
 def main():
