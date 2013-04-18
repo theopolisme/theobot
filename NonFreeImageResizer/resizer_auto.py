@@ -48,22 +48,13 @@ def are_you_still_there(theimage):
 	page = site.Pages[img_name]
 	text = page.edit()
 	
-	regexp = re.compile(r'\{\{[Nn]on-free reduce.*?\}\}')
-	regexp2 = re.compile(r'\{\{[Rr]educe.*?\}\}')
-	regexp3 = re.compile(r'\{\{[Nn]onfree reduce.*?\}\}')
-	regexp4 = re.compile(r'\{\{[Cc]omic-ovrsize-img.*?\}\}')
-	regexp5 = re.compile(r'\{\{[Ff]air Use reduce.*?\}\}')
-	regexp6 = re.compile(r'\{\{[Ff]air use reduce.*?\}\}')
-	regexp7 = re.compile(r'\{\{[Ff]air-use reduce.*?\}\}')
-	regexp8 = re.compile(r'\{\{[Ff]airUse[Rr]educe.*?\}\}')
-	regexp9 = re.compile(r'\{\{[Ff]airuse[Rr]educe.*?\}\}')
-	regexp10 = re.compile(r'\{\{[Ii]mage-toobig.*?\}\}')
-	regexp11 = re.compile(r'\{\{[Nn]fr.*?\}\}')
-	regexp12 = re.compile(r'\{\{[Nn]on-free-[Rr]educe.*?\}\}')
-	regexp13 = re.compile(r'\{\{[Nn]onfree [Rr]educe.*?\}\}')
-	regexp14 = re.compile(r'\{\{[Rr]educe.*?\}\}')
-	regexp15 = re.compile(r'\{\{[Rr]educe size.*?\}\}')
-	regexp16 = re.compile(r'\{\{[Ss]maller image.*?\}\}')
+regexp = re.compile(r'\{\{[Nn]on.?free-[Rr]educe.*?\}\}')
+regexp2 = re.compile(r'\{\{[Rr]educe.*?\}\}')
+regexp4 = re.compile(r'\{\{[Cc]omic-ovrsize-img.*?\}\}')
+regexp5 = re.compile(r'\{\{[Ff]air.?[Uu]se.?[Rr]educe.*?\}\}')
+regexp10 = re.compile(r'\{\{[Ii]mage-toobig.*?\}\}')
+regexp11 = re.compile(r'\{\{[Nn]fr.*?\}\}')
+regexp16 = re.compile(r'\{\{[Ss]maller image.*?\}\}')
 	
 	if img_name == "File:Avvo.com consumer logo, March 2013.png":
 		return False
