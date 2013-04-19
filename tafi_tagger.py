@@ -40,7 +40,6 @@ for i in range(1,11):
 		except:
 			text = u"{{TAFI}}\n" + page.edit()
 			print "Saving page " + pagen + " - added TAFI template."
-			print text
 			page.save(text,summary="Adding [[WP:TAFI|Today's articles for improvement]] tag ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi|disable]])")
 
 # This loop removes the tags from the old week's articles.
@@ -59,6 +58,5 @@ for i in range(1,11):
 		talk = site.Pages["Talk:" + pagen]
 		tt = talk.edit()
 		tt = "{{Former TAFI|date=" + start_date.strftime('%B %d, %Y') + "}}\n" + tt
-		print tt
 		talk.save(tt,summary="Tagging page with {{[[Template:Former TAFI|Former TAFI]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi|disable]])")
 		
