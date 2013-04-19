@@ -38,6 +38,8 @@ def notified_already(user):
 	
 	if text.find('<!-- Template:Bsr-user -->') == -1:
 		return True
+	elif text.find('It is best to specify the exact Web page where you found the image') == -1:
+		return True
 	else:
 		return False
 
