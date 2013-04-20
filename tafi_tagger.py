@@ -52,11 +52,15 @@ for i in range(1,11):
 		text = re.sub(r"\{\{TAFI\}\}", "", page.edit())
 		print "Saving page " + pagen + " - removed TAFI template."
 		page.save(text,summary="Removing [[WP:TAFI|Today's articles for improvement]] tag ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi|disable]])")
-
+		
 		# This next set of instructions is for tagging the article's talk page.
 		start_date = now + datetime.timedelta(-7)
 		talk = site.Pages["Talk:" + pagen]
 		tt = talk.edit()
-		tt = "{{Former TAFI|date=" + start_date.strftime('%B %d, %Y') + "}}\n" + tt
-		talk.save(tt,summary="Tagging page with {{[[Template:Former TAFI|Former TAFI]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi|disable]])")
+		try:
+			x = re.findall("\{\{Former TAFI\}\}", tt, flags=re.IGNORECASE)[0]
+			print "Talk page already tagged; skipping."
+		except:
+			tt = "{{Former TAFI|date=" + start_date.strftime('%B %d, %Y') + "}}\n" + tt
+			talk.save(tt,summary="Tagging page with {{[[Template:Former TAFI|Former TAFI]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi|disable]])")
 		
