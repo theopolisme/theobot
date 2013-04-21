@@ -1,7 +1,6 @@
 import mwclient
 import re
-from theobot import bot
-from theobot import password
+import settings
 
 # CC-BY-SA Theopolisme
 
@@ -33,6 +32,7 @@ def tagged_already(page):
 	tagged with {{Good article}} or
 	one of its redirects.
 	"""
+	check_page()
 	page = site.Pages[page]
 	text = page.edit()
 	
@@ -57,7 +57,7 @@ def process_current_gas():
 			pagee = site.Pages[page]
 			text = pagee.edit()
 			text = "{{Good article}}\n" + text
-			pagee.save(text,summary="Adding {{[[Template:Good article|Good article]]}} topicon")
+			pagee.save(text,summary="[[User:RileyBot|Bot]] trial: Adding {{[[Template:Good article|Good article]]}} topicon) ([[User:RileyBot/12|Task 12]] - [[User:RileyBot/Stop/12|disable]]")
 			global counts
 			counts['current-added'] = counts['current-added'] + 1
 			counts['total_edits'] = counts['total_edits'] + 1
@@ -79,27 +79,31 @@ def process_delisted_gas():
 			text_diff = pagee.edit()
 			text = re.sub(r'\{\{([Gg]ood [Aa]rticle|GA [Aa]rticle)\}\}', '', text)
 			if text != text_diff:
-				pagee.save(text,summary="Removing {{[[Template:Good article|Good article]]}} topicon")
+				pagee.save(text,summary="[[User:RileyBot|Bot]] trial: Removing {{[[Template:Good article|Good article]]}} topicon) ([[User:RileyBot/12|Task 12]] - [[User:RileyBot/Stop/12|disable]]")
 				global counts
 				counts['former-removed'] = counts['former-removed'] + 1
 				counts['total_edits'] = counts['total_edits'] + 1
-
+				
+def check_page():
+    stop_page = site.Pages['User:RileyBot/Stop/12']
+    stop_page_text = stop_page.get()
+	if stop_page_text.lower() != u'enable':
+		print "Check page disabled"
+		sys.exit(0)
+        
 def main():
 	"""This defines and fills a global
 	variable for the site, and then runs.
 	"""
-	print "Logging in as " + password.username + "..."
+	print "Logging in as " + settings.username + "..."
 	
 	global site
 	site = mwclient.Site('en.wikipedia.org')
-	site.login(password.username, password.password)
-	
+	site.login(settings.username, settings.password)
 	global counts
 	counts = {'total_edits': 0, 'current-added': 0, 'former-removed': 0}
-	
 	process_current_gas()
 	process_delisted_gas()
-	
 	print "TOTAL EDITS MADE: " + counts['total_edits'] + "\nADDED: " + counts['current-added'] + "\nREMOVED: " + counts['former-removed']
 
 if __name__ == '__main__':
