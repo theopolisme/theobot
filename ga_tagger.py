@@ -1,6 +1,7 @@
 import mwclient
 import re
 import settings
+import sys
 
 # CC-BY-SA Theopolisme
 
@@ -69,7 +70,7 @@ def process_delisted_gas():
 	or former GA nominees.
 	"""
 	pages = cats_recursive('Category:Delisted good articles')
-	pages += cats_recursive('Former good article nominees')
+	pages += cats_recursive('Category:Former good article nominees')
 
 	for page in pages:
 		print "Working on: " + page.encode('UTF-8', 'ignore')
@@ -86,10 +87,10 @@ def process_delisted_gas():
 				
 def check_page():
     stop_page = site.Pages['User:RileyBot/Stop/12']
-    stop_page_text = stop_page.get()
-	if stop_page_text.lower() != u'enable':
-		print "Check page disabled"
-		sys.exit(0)
+    stop_page_text = stop_page.edit()
+    if stop_page_text.lower() != u'enable':
+        print "Check page disabled"
+        sys.exit(0)
         
 def main():
 	"""This defines and fills a global
@@ -100,6 +101,7 @@ def main():
 	global site
 	site = mwclient.Site('en.wikipedia.org')
 	site.login(settings.username, settings.password)
+	check_page()
 	global counts
 	counts = {'total_edits': 0, 'current-added': 0, 'former-removed': 0}
 	process_current_gas()
