@@ -71,8 +71,7 @@ def process_delisted_gas():
 	pages = cats_recursive('Category:Delisted good articles')
 	pages += cats_recursive('Former good article nominees')
 
-	for talkpage in pages:
-		page = talkpage[5::]
+	for page in pages:
 		print "Working on: " + page.encode('UTF-8', 'ignore')
 		if tagged_already(page) == True:
 			pagee = site.Pages[page]
