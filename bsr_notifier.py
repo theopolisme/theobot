@@ -14,7 +14,8 @@ def sokay(donenow):
 	of the theobot module, checkpage().
 	"""
 	
-	if donenow >= 55:
+	if total_done_now > 100:
+		print "Trial complete!"
 		return False
 
 	if donenow % 5 == 0:
@@ -35,10 +36,8 @@ def notified_already(user):
 			
 	page = site.Pages[usertalk]
 	text = page.edit()
-	
-	if text.find('<!-- Template:Bsr-user -->') == -1:
-		return True
-	elif text.find('It is best to specify the exact Web page where you found the image') == -1:
+
+	if text.find('It is best to specify the exact Web page where you found the image') == -1 and text.find('<!-- Template:Bsr-user -->') == -1:
 		return True
 	else:
 		return False
@@ -79,16 +78,16 @@ def notify(user):
 				text = text + generate_subst(user)
 				#text = generate_subst(user)
 				try:
-					page.save(text,summary="Notifying user about file(s) with inadequate source information ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/bsr|disable]])")
+					page.save(text,summary="Notifying user about file(s) with inadequate source information ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/bsr|disable]])")
 					global total_done_now
 					total_done_now = total_done_now + 1
 					global users_notfied
 					users_notified.append(user)
 					now123 = datetime.datetime.utcnow()
 					users_notified.append(now123)
-					print user.encode('ascii', 'ignore') + " notified"
+					print user.encode('ascii', 'ignore') + " notified."
 				except:
-					print "Unknown error // skipping user."
+					print "Unknown error // skipping " + user.encode('ascii', 'ignore') + "."
 			else:
 				print "User was notifed already."
 		else:

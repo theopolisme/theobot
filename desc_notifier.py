@@ -117,7 +117,7 @@ def notify(user):
 		else:
 			print "Bot denied!"
 	else:
-		print "User has already been notified in past 3 days."
+		print "User has already been notified in past 7 days."
 
 
 def add_to_dict(user,file):
