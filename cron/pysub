@@ -1,0 +1,12 @@
+#! /bin/ksh
+# like cronsub, but runs a python script instead of a shell script
+. /sge62/default/common/settings.sh
+[[ $# -ge 1 ]] || {
+echo >&2 "usage: $0 <jobname> <script>"
+exit 1
+}
+JOBNAME=$1
+shift
+SCRIPT=$@
+qstat -j $JOBNAME >/dev/null 2>&1 || qcronsub -l h_rt=10:00:00 -l virtual_free=100M -m bea -l arch=sol -N $JOBNAME "/home/theo/py.sh" 
+$SCRIPT >/dev/null
