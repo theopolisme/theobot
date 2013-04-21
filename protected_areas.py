@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 import mwclient
 import sys
 from theobot import password

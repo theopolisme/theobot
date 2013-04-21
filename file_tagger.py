@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 import mwclient
 import re
 import time
