@@ -101,10 +101,11 @@ def add_to_dict(user,file):
 	with user as the key.
 	"""
 	
+	global to_notify
+
 	if user not in to_notify:
 		f_l = []
-		f_l.append(file)
-		global to_notify
+		f_l.append(file)	
 		to_notify[user] = f_l
 	else:
 		f_l = to_notify[user]
