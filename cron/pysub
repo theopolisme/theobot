@@ -1,6 +1,6 @@
 #! /bin/ksh
 # like cronsub, but runs a python script instead of a shell script
-. /sge62/default/common/settings.sh
+. /sge/settings.sh
 [[ $# -ge 1 ]] || {
 echo >&2 "usage: $0 <jobname> <script>"
 exit 1
