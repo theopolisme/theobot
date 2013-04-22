@@ -48,7 +48,7 @@ def are_you_still_there(theimage):
 	page = site.Pages[img_name]
 	text = page.edit()
 	
-	r1 re.compile(r'\{\{[Nn]on.?free-[Rr]educe.*?\}\}')
+	r1 = re.compile(r'\{\{[Nn]on.?free-[Rr]educe.*?\}\}')
 	r2 = re.compile(r'\{\{[Rr]educe.*?\}\}')
 	r3 = re.compile(r'\{\{[Cc]omic-ovrsize-img.*?\}\}')
 	r4 = re.compile(r'\{\{[Ff]air.?[Uu]se.?[Rr]educe.*?\}\}')
