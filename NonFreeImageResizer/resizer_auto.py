@@ -48,19 +48,30 @@ def are_you_still_there(theimage):
 	page = site.Pages[img_name]
 	text = page.edit()
 	
-	regexes = [re.compile(r'\{\{[Nn]on.?free-[Rr]educe.*?\}\}'),
-	re.compile(r'\{\{[Rr]educe.*?\}\}'),
-	re.compile(r'\{\{[Cc]omic-ovrsize-img.*?\}\}'),
-	re.compile(r'\{\{[Ff]air.?[Uu]se.?[Rr]educe.*?\}\}'),
-	re.compile(r'\{\{[Ii]mage-toobig.*?\}\}'),
-	re.compile(r'\{\{[Nn]fr.*?\}\}'),
-	re.compile(r'\{\{[Ss]maller image.*?\}\}')]
+	r1 re.compile(r'\{\{[Nn]on.?free-[Rr]educe.*?\}\}')
+	r2 = re.compile(r'\{\{[Rr]educe.*?\}\}')
+	r3 = re.compile(r'\{\{[Cc]omic-ovrsize-img.*?\}\}')
+	r4 = re.compile(r'\{\{[Ff]air.?[Uu]se.?[Rr]educe.*?\}\}')
+	r5 = re.compile(r'\{\{[Ii]mage-toobig.*?\}\}')
+	r6 = re.compile(r'\{\{[Nn]fr.*?\}\}')
+	r7 = re.compile(r'\{\{[Ss]maller image.*?\}\}')
 	
-	for regex in regexes:
-		if regex.search(text) is not None:
-			return True
-
-	return False
+	if r1.search(text) is not None:
+		return True
+	elif r2.search(text) is not None:
+		return True
+	elif r3.search(text) is not None:
+		return True
+	elif r4.search(text) is not None:
+		return True
+	elif r5.search(text) is not None:
+		return True
+	elif r6.search(text) is not None:
+		return True
+	elif r7.search(text) is not None:
+		return True
+	else:
+		return False
 
 def image_routine(images):
 	""" This function does most of the work:
