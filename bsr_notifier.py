@@ -15,10 +15,6 @@ def sokay(donenow):
 	of the theobot module, checkpage().
 	"""
 	
-	if total_done_now > 100:
-		print "Trial complete!"
-		return False
-
 	if donenow % 5 == 0:
 		if bot.checkpage("User:Theo's Little Bot/disable/bsr") == True:
 			return True
@@ -79,7 +75,7 @@ def notify(user):
 				text = text + generate_subst(user)
 				#text = generate_subst(user)
 				try:
-					page.save(text,summary="Notifying user about file(s) with inadequate source information ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/bsr|disable]])")
+					page.save(text,summary="Notifying user about file(s) with inadequate source information ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/bsr|disable]])")
 					global total_done_now
 					total_done_now = total_done_now + 1
 					global users_notfied
