@@ -50,7 +50,7 @@ for i in range(1,11):
 		editme = site.Pages[stringy].edit()
 		pagen = re.findall("\[\[(.*?)\]\]", editme)[0]
 		page = site.Pages[pagen]
-		text = re.sub(r"\{\{TAFI\}\}", "", page.edit())
+		text = re.sub(r"\{\{TAFI\}\}\n", "", page.edit())
 		print "Saving page " + pagen + " - removed TAFI template."
 		page.save(text,summary="Removing [[WP:TAFI|Today's articles for improvement]] tag ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi|disable]])")
 		
