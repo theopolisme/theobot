@@ -48,7 +48,7 @@ def are_you_still_there(theimage):
 	page = site.Pages[img_name]
 	text = page.edit()
 	
-	r1 = re.compile(r'\{\{[Nn]on.?free-[Rr]educe.*?\}\}')
+	r1 = re.compile(r'\{\{[Nn]on.?free-?\s*[Rr]educe.*?\}\}')
 	r2 = re.compile(r'\{\{[Rr]educe.*?\}\}')
 	r3 = re.compile(r'\{\{[Cc]omic-ovrsize-img.*?\}\}')
 	r4 = re.compile(r'\{\{[Ff]air.?[Uu]se.?[Rr]educe.*?\}\}')
@@ -98,7 +98,7 @@ def image_routine(images):
 					img_name = "File:" + theimage
 					page = site.Pages[img_name]
 					text = page.edit()
-					text = re.sub(r'\{\{[Nn]on.?free-[Rr]educe.*?\}\}', '', text)
+					text = re.sub(r'\{\{[Nn]on.?free-?\s*[Rr]educe.*?\}\}', '', text)
 					text = re.sub(r'\{\{[Rr]educe.*?\}\}', '', text)
 					text = re.sub(r'\{\{[Cc]omic-ovrsize-img.*?\}\}', '', text)			
 					text = re.sub(r'\{\{[Ff]air.?[Uu]se.?[Rr]educe.*?\}\}', '', text)			
@@ -118,7 +118,7 @@ def image_routine(images):
 						
 						page = site.Pages[img_name]
 						text = page.edit()
-						text = re.sub(r'\{\{[Nn]on.?free-[Rr]educe.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
+						text = re.sub(r'\{\{[Nn]on.?free-?\s*[Rr]educe.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
 						text = re.sub(r'\{\{[Rr]educe.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)
 						text = re.sub(r'\{\{[Cc]omic-ovrsize-img.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)			
 						text = re.sub(r'\{\{[Ff]air.?[Uu]se.?[Rr]educe.*?\}\}', '{{non-free reduced|date=~~~~~}}', text)			
