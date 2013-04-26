@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+from __future__ import unicode_literals
 import mwclient
 import mwparserfromhell
 import re
@@ -6,12 +7,14 @@ import datetime
 from theobot import bot
 from theobot import password
 from theobot import timey
+import difflib
+
 
 # CC-BY-SA Theopolisme
 
 def net_support(section):
-	supports = re.findall(r'support',section,re.IGNORECASE | re.DOTALL | re.UNICODE)
-	opposes = re.findall(r'oppose',section,re.IGNORECASE | re.DOTALL | re.UNICODE)
+	supports = re.findall(r"""'''support'''""",section,re.IGNORECASE | re.DOTALL | re.UNICODE)
+	opposes = re.findall(r"""'''oppose'''""",section,re.IGNORECASE | re.DOTALL | re.UNICODE)
 	gross_s = len(supports)
 	gross_o = len(opposes)
 	
@@ -54,8 +57,9 @@ def process_section(section):
 def move_to_archive():
 	for nom in to_archive:
 		print "Moving 1 item to archive..."
-		global nominatons_page_new
-		nominatons_page_new.replace(nom, '')
+		global nominations_page_new
+		nominations_page_new = re.sub(nom,'',nominations_page_new,flags=re.M)
+		nominations_page_new.replace(nom, '')
 		global unsuccessful_page_new
 		unsuccessful_page_new += "\n" + nom
 		global count_archive
@@ -63,36 +67,48 @@ def move_to_archive():
 
 def move_to_holding():
 	for nom in to_holding:
+		header = nom[1]
+		print header.encode('ascii', 'ignore')
+		msg = nom[0]
+		print msg.encode('ascii', 'ignore')
 		print "Moving 1 item to holding area..."
-		global nominatons_page_new
-		nominatons_page_new.replace(nom[0], '')
+		global nominations_page_new
+		nominations_page_new = re.sub(nom[0],'',nominations_page_new,flags=re.M)
 		global count_toholding
 		count_toholding += 1
-		# !TODO
-		# Add some code to move given nom to the holding area under correct section
-
+		regex = re.compile(r"""==\s*?{0}\s*?==(.*?)\n==""".format(header), flags=re.DOTALL | re.UNICODE)
+		global holding_new
+		holding_new = re.sub(regex, """== {0} ==\g<1>\n{1}\n==""".format(header, msg), holding_new)
+	
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
 now = datetime.datetime.now()
 day = int(now.day)
-month = str(now.month)
+month = now.strftime('%B')
 year = str(now.year)
 
 unsuccessful_page = site.Pages["Wikipedia:Today's articles for improvement/Archives/Unsuccessful Nominations/" + month + " " + year]
 
+global to_archive
+to_archive = []
+
+global to_holding
+to_holding = []
+
 global unsuccessful_page_new
 unsuccessful_page_new = unsuccessful_page.edit()
-unsuccessful_page_new += "\n== Archvied " + now.month + " " + timey.ordinal(now.day) + " =="
+unsuccessful_page_new += "\n== Archvied " + now.strftime('%B') + " " + timey.ordinal(now.day) + " =="
 
 holding_page = site.Pages["Wikipedia:Today's articles for improvement/Holding area"]
 global holding_new
 holding_new = holding_page.edit()
 
-nominatons_page = site.Pages["Wikipedia:Today's articles for improvement/Nominated articles"]
-nominations_page_text = nominatons_page.edit()
-global nominatons_page_new
-nominatons_page_new = nominatons_page.edit()
+nominations_page = site.Pages["Wikipedia:Today's articles for improvement/Nominated articles"]
+nominations_page_text = nominations_page.edit()
+
+global nominations_page_new
+nominations_page_new = nominations_page.edit()
 
 sections = mwparserfromhell.parse(nominations_page_text).get_sections(levels=[2], include_headings=True)
 del sections[0] # removes lede section, which we don't want
@@ -108,7 +124,11 @@ count_archive = 0
 move_to_holding()
 move_to_archive()
 
-unsuccessful_page.save(unsuccessful_page_new,summary="[[WP:BOT|Bot]]: Moving " + count_archive + " nominations to archive.")
-holding_page.save(holding_new,summary="[[WP:BOT|Bot]]: Moving " + count_toholding + " nominations to holding area.")
-nominatons_page.save(nominatons_page_new,summary="[[WP:BOT|Bot]]: Moving " + count_archive + " nominations to archive and " + count_toholding + " nominations to holding area.")
+d = difflib.Differ()
+diff = difflib.unified_diff(holding_new.splitlines(), holding_page.edit().splitlines())
+print '\n'.join(diff).encode('ascii', 'ignore')
+
+#unsuccessful_page.save(unsuccessful_page_new,summary="[[WP:BOT|Testing script]]: Moving " + str(count_archive) + " nominations to archive.")
+#holding_page.save(holding_new,summary="[[WP:BOT|Testing script]]: Moving " + str(count_toholding) + " nominations to holding area.")
+#nominations_page.save(nominations_page_new,summary="[[WP:BOT|Testing script]]: Moving " + str(count_archive) + " nominations to archive and " + str(count_toholding) + " nominations to holding area.")
 			
