@@ -65,6 +65,22 @@ def process_current_gas():
 		else:
 			print "Page already tagged."
 
+def ga_on_talk(page):
+	"""Returns TRUE if talk page
+	matches GA regex.
+	"""
+
+	page = "Talk:" + page
+	page = site.Pages[page]
+	text = page.edit()
+	
+	regexp2 = re.compile(r'|(\s*)class(\s*)=(\s*)GA')
+
+	if regexp2.search(text) is not None:
+		return True
+	else:
+		return False
+
 def process_delisted_gas():
 	"""Removes topicon from delisted
 	or former GA nominees.
@@ -74,7 +90,7 @@ def process_delisted_gas():
 
 	for page in pages:
 		print "Working on: " + page.encode('UTF-8', 'ignore')
-		if tagged_already(page) == True:
+		if tagged_already(page) == True and ga_on_talk(page) == False:
 			pagee = site.Pages[page]
 			text = pagee.edit()
 			text_diff = pagee.edit()
