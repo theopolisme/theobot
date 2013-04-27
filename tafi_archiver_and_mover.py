@@ -10,14 +10,13 @@ from theobot import password
 from theobot import timey
 import difflib
 
-
 # CC-BY-SA Theopolisme
 
 def checkpage():
 	"""This function calls a subfunction
 	of the theobot module, checkpage().
 	"""
-	if theobot.bot.checkpage("User:Theo's Little Bot/disable/tafi arch") == True:
+	if bot.checkpage("User:Theo's Little Bot/disable/tafi arch") == True:
 		return True
 	else:
 		print "Bot was disabled...quitting."
@@ -69,8 +68,7 @@ def move_to_archive():
 	for nom in to_archive:
 		print "Moving 1 item to archive..."
 		global nominations_page_new
-		nominations_page_new = re.sub(nom,'',nominations_page_new,flags=re.M)
-		nominations_page_new.replace(nom, '')
+		nominations_page_new = nominations_page_new.replace(nom,'',1)
 		global unsuccessful_page_new
 		unsuccessful_page_new += "\n" + nom
 		global count_archive
@@ -84,7 +82,7 @@ def move_to_holding():
 		print msg.encode('ascii', 'ignore')
 		print "Moving 1 item to holding area..."
 		global nominations_page_new
-		nominations_page_new = re.sub(nom[0],'',nominations_page_new,flags=re.M)
+		nominations_page_new = nominations_page_new.replace(nom[0],'',1)
 		global count_toholding
 		count_toholding += 1
 		regex = re.compile(r"""==\s*?{0}\s*?==(.*?)\n==""".format(header), flags=re.DOTALL | re.UNICODE)
@@ -135,10 +133,10 @@ move_to_holding()
 move_to_archive()
 
 checkpage()
-unsuccessful_page.save(unsuccessful_page_new,summary="Moving " + str(count_archive) + " nominations to archive. ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
+unsuccessful_page.save(unsuccessful_page_new,summary="Moving " + str(count_archive) + " nomination(s) to archive. ([[WP:BOT|testing bot]] - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
 checkpage()
-holding_page.save(holding_new,summary="[[WP:BOT|Testing script]]: Moving " + str(count_toholding) + " nominations to holding area. ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
+holding_page.save(holding_new,summary="Moving " + str(count_toholding) + " nomination(s) to holding area. ([[WP:BOT|testing bot]] - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
 checkpage()
-nominations_page.save(nominations_page_new,summary="[[WP:BOT|Testing script]]: Moving " + str(count_archive) + " nominations to archive and " + str(count_toholding) + " nominations to holding area. ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
+nominations_page.save(nominations_page_new,summary="Moving " + str(count_archive) + " nomination(s) to archive and " + str(count_toholding) + " nomination(s) to holding area. ([[WP:BOT|testing bot]] - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
 	
 print "Run complete!"		
