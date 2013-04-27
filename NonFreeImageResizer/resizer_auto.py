@@ -136,6 +136,8 @@ def image_routine(images):
 				else:
 					print "Image skipped."
 					messager123 = "Skipped " + theimage
+					filelist = [ f for f in os.listdir(".") if f.startswith(filename) ]
+					for fa in filelist: os.remove(fa)
 					logger.error(messager123)
 			else:
 				print "Gah, looks like someone removed the tag."
