@@ -4,6 +4,7 @@ import mwclient
 import mwparserfromhell
 import re
 import datetime
+import sys
 from theobot import bot
 from theobot import password
 from theobot import timey
@@ -11,6 +12,16 @@ import difflib
 
 
 # CC-BY-SA Theopolisme
+
+def checkpage():
+	"""This function calls a subfunction
+	of the theobot module, checkpage().
+	"""
+	if theobot.bot.checkpage("User:Theo's Little Bot/disable/tafi arch") == True:
+		return True
+	else:
+		print "Bot was disabled...quitting."
+		sys.exit()
 
 def net_support(section):
 	supports = re.findall(r"""'''support'''""",section,re.IGNORECASE | re.DOTALL | re.UNICODE)
@@ -114,7 +125,6 @@ sections = mwparserfromhell.parse(nominations_page_text).get_sections(levels=[2]
 del sections[0] # removes lede section, which we don't want
 
 for section in sections:
-	#print unicode(section).encode('UTF-8', 'ignore')
 	process_section(unicode(section))
 
 # Two counters used in edit summaries
@@ -124,11 +134,11 @@ count_archive = 0
 move_to_holding()
 move_to_archive()
 
-d = difflib.Differ()
-diff = difflib.unified_diff(holding_new.splitlines(), holding_page.edit().splitlines())
-print '\n'.join(diff).encode('ascii', 'ignore')
-
-#unsuccessful_page.save(unsuccessful_page_new,summary="[[WP:BOT|Testing script]]: Moving " + str(count_archive) + " nominations to archive.")
-#holding_page.save(holding_new,summary="[[WP:BOT|Testing script]]: Moving " + str(count_toholding) + " nominations to holding area.")
-#nominations_page.save(nominations_page_new,summary="[[WP:BOT|Testing script]]: Moving " + str(count_archive) + " nominations to archive and " + str(count_toholding) + " nominations to holding area.")
-			
+checkpage()
+unsuccessful_page.save(unsuccessful_page_new,summary="Moving " + str(count_archive) + " nominations to archive. ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
+checkpage()
+holding_page.save(holding_new,summary="[[WP:BOT|Testing script]]: Moving " + str(count_toholding) + " nominations to holding area. ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
+checkpage()
+nominations_page.save(nominations_page_new,summary="[[WP:BOT|Testing script]]: Moving " + str(count_archive) + " nominations to archive and " + str(count_toholding) + " nominations to holding area. ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
+	
+print "Run complete!"		
