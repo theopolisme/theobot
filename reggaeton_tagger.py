@@ -4,6 +4,7 @@ import mwparserfromhell
 import sys
 from theobot import bot
 from theobot import password
+from theobot import lists
 
 # CC-BY-SA Theopolisme
 # Task 5 on [[User:Theo's Little Bot]]
@@ -51,7 +52,7 @@ def editor(text):
 		if template.name in ('WikiProject Latin music', 'Latin music') and not template.has_param("reggaeton"):
 			template.add("reggaeton", "yes")
 			print "Reggaeton value added."
-		if template.name == 'WikiProjectBannerShell':
+		if template.name in lists.bannershell_redirects:
 			x = template.get(1).value
 			for template in x.filter_templates():
 				if template.name in ('WikiProject Latin music', 'Latin music'):

@@ -5,6 +5,7 @@ import sys
 import re
 from theobot import bot
 from theobot import password
+from theobot import lists
 
 # CC-BY-SA Theopolisme
 # Task 6 on [[User:Theo's Little Bot]]
@@ -53,7 +54,7 @@ def editor(text):
 				pass
 			template.add("importance", "low")
 			print "Importance value added."
-		if template.name in ('WikiProjectBannerShell', 'WikiProject Banners', 'WPBS'):
+		if template.name in lists.bannershell_redirects:
 			x = template.get(1).value
 			for template in x.filter_templates():
 				if template.name in ('WikiProject Classical Greece and Rome', 'Classical Greece and Rome', 'Classical greece and rome', 'WP Classics', 'WikiProject Classics',  'Classical greece and rome', 'Classical_greece_and_rome'):

@@ -5,6 +5,7 @@ import sys
 import re
 from theobot import bot
 from theobot import password
+from theobot import lists
 
 # CC-BY-SA Theopolisme
 # Task 4 on [[User:Theo's Little Bot]]
@@ -61,7 +62,7 @@ def editor(text):
 				print "Road-importance value added."
 			except:
 				print "No importance to add."
-		if template.name == 'WikiProjectBannerShell':
+		if template.name in lists.bannershell_redirects:
 			x = template.get(1).value
 			for template in x.filter_templates():
 				if template.name in ('WP Australia', 'WP Australian music', 'WPAUS', 'WPAUSTRALIA', 'WPAustralia', 'WikiProject Australia') and not template.has_param("road"):
