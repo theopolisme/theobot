@@ -16,6 +16,9 @@ def sokay(donenow):
 	"""This function calls a subfunction
 	of the theobot module, checkpage().
 	"""
+	if donenow > 55:
+		return False
+	
 	if donenow % 5 == 0:
 		if bot.checkpage("User:Theo's Little Bot/disable/latin music") == True:
 			return True
@@ -30,11 +33,11 @@ def cats_recursive(category):
 	straightforward.
 	"""
 	for item in category:
-		if "Category" in str(item):
-			cats_recursive(item)
+		item = unicode(item)
+		if "Category:" in item:
+			cats_recursive(mwclient.listing.Category(site, item))
 		else:
-			x = item.page_title
-			pages.append(x)
+			pages.append(item)
 
 def editor(text):
 	"""This function does the bulk of the
@@ -43,20 +46,21 @@ def editor(text):
 	
 	code = mwparserfromhell.parse(text)
 	
+	already_tagged = False
+	
 	for template in code.filter_templates():
+		if template.name == "WikiProject Latin music":
+			already_tagged = True
+		
 		if template.name in ('WikiProject Latin America', 'WPLAMERICA', 'WP Latin America') and template.has_param("music"):
 			try:
 				music_imp = template.get('music-importance').value
 				template.remove("music-importance")
-			except ValueError:
-				try:
-					music_imp = template.get('importance').value
-				except ValueError:
-					music_imp = False
-			template.name("WikiProject Latin music")
-			template.remove("music")
-			if music_imp != False:
 				template.add("importance",music_imp)
+			except ValueError:
+				pass
+			template.name = "WikiProject Latin music"
+			template.remove("music")
 
 		if template.name in lists.bannershell_redirects:
 			x = template.get(1).value
@@ -65,17 +69,16 @@ def editor(text):
 					try:
 						music_imp = template.get('music-importance').value
 						template.remove("music-importance")
-					except ValueError:
-						try:
-							music_imp = template.get('importance').value
-						except ValueError:
-							music_imp = False
-					template.name("WikiProject Latin music")
-					template.remove("music")
-					if music_imp != False:
 						template.add("importance",music_imp)
+					except ValueError:
+						pass
+					template.name = "WikiProject Latin music"
+					template.remove("music")
 	
-	text = unicode(code)
+	if already_tagged != True:
+		text = unicode(code)
+	else:
+		print "Skipping page since already tagged with WikiProject Latin music."
 	
 	return text 
 
@@ -94,18 +97,20 @@ def main():
 	
 	for page in pages:
 		if sokay(donenow) == True:
-			talk = u'Talk:' + page
+			talk = page
 			print "Working on " + talk.encode('UTF-8')
 			page = site.Pages[talk]
 			text = page.edit()
 			y = editor(text)
 			try:
-				page.save(y, summary = "Converting to {{[[Template:WikiProject Latin music|WikiProject Latin music]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/latin music|disable]])")
+				#print y.encode('UTF-8')
+				page.save(y, summary = "Converting to {{[[Template:WikiProject Latin music|WikiProject Latin music]]}} ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/latin music|disable]])")
 				print talk.encode('UTF-8') + " saved."
 			except AttributeError:
 				print "Page save error; retrying."
 				try:
-					page.save(y, summary = "Converting to {{[[Template:WikiProject Latin music|WikiProject Latin music]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/latin music|disable]])")
+					#print y.encode('UTF-8')
+					page.save(y, summary = "Converting to {{[[Template:WikiProject Latin music|WikiProject Latin music]]}} ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/latin music|disable]])")
 					print talk.encode('UTF-8') + " saved."
 				except AttributeError:
 					print "Page skipped due to unknown error."
