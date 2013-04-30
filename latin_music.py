@@ -16,9 +16,6 @@ def sokay(donenow):
 	"""This function calls a subfunction
 	of the theobot module, checkpage().
 	"""
-	if donenow > 55:
-		return False
-	
 	if donenow % 5 == 0:
 		if bot.checkpage("User:Theo's Little Bot/disable/latin music") == True:
 			return True
@@ -104,13 +101,13 @@ def main():
 			y = editor(text)
 			try:
 				#print y.encode('UTF-8')
-				page.save(y, summary = "Converting to {{[[Template:WikiProject Latin music|WikiProject Latin music]]}} ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/latin music|disable]])")
+				page.save(y, summary = "Converting to {{[[Template:WikiProject Latin music|WikiProject Latin music]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/latin music|disable]])")
 				print talk.encode('UTF-8') + " saved."
 			except AttributeError:
 				print "Page save error; retrying."
 				try:
 					#print y.encode('UTF-8')
-					page.save(y, summary = "Converting to {{[[Template:WikiProject Latin music|WikiProject Latin music]]}} ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/latin music|disable]])")
+					page.save(y, summary = "Converting to {{[[Template:WikiProject Latin music|WikiProject Latin music]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/latin music|disable]])")
 					print talk.encode('UTF-8') + " saved."
 				except AttributeError:
 					print "Page skipped due to unknown error."
