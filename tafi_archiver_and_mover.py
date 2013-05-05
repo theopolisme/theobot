@@ -23,8 +23,8 @@ def checkpage():
 		sys.exit()
 
 def net_support(section):
-	supports = re.findall(r"""'''support'''""",section,re.IGNORECASE | re.DOTALL | re.UNICODE)
-	opposes = re.findall(r"""'''oppose'''""",section,re.IGNORECASE | re.DOTALL | re.UNICODE)
+	supports = re.findall(r"""''support''""",section,re.IGNORECASE | re.DOTALL | re.UNICODE)
+	opposes = re.findall(r"""''oppose''""",section,re.IGNORECASE | re.DOTALL | re.UNICODE)
 	gross_s = len(supports)
 	gross_o = len(opposes)
 	
