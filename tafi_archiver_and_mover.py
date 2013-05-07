@@ -58,7 +58,7 @@ def process_nomination(nom,section_header):
 			print "10 days hasn't elapsed yet; skipping thread."
 
 def process_section(section):
-	nominations = re.findall(r'(\{\{TAFI nom[.\|].*?)(?=[^=]{{TAFI)',section,re.IGNORECASE | re.DOTALL | re.UNICODE)
+	nominations = re.findall(r'(\n?\{\{TAFI nom[.\|].*?)\n?(?=[^=]{{TAFI)',section,re.IGNORECASE | re.DOTALL | re.UNICODE)
 	section_header = re.findall(r'==(.*?)==',section,re.IGNORECASE | re.DOTALL | re.UNICODE)[0]
 	print "Processing " + section_header
 	for nom in nominations:
@@ -70,7 +70,7 @@ def move_to_archive():
 		global nominations_page_new
 		nominations_page_new = nominations_page_new.replace(nom,'',1)
 		global unsuccessful_page_new
-		unsuccessful_page_new += "\n" + nom
+		unsuccessful_page_new += "\n" + nom.strip('\n')
 		global count_archive
 		count_archive += 1
 
@@ -87,7 +87,7 @@ def move_to_holding():
 		count_toholding += 1
 		regex = re.compile(r"""==\s*?{0}\s*?==(.*?)\n==""".format(header), flags=re.DOTALL | re.UNICODE)
 		global holding_new
-		holding_new = re.sub(regex, """== {0} ==\g<1>\n{1}\n==""".format(header, msg), holding_new)
+		holding_new = re.sub(regex, """== {0} ==\g<1>\n{1}\n==""".format(header, msg.strip('\n')), holding_new)
 	
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
