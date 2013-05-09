@@ -138,10 +138,17 @@ rm_spaces = re.compile(r"""\(UTC\)\n\n*(?!#)""", flags=re.DOTALL | re.UNICODE)
 re.sub(rm_spaces, """(UTC)\n\n""", nominations_page_new)
 
 checkpage()
-unsuccessful_page.save(unsuccessful_page_new,summary="Moving " + str(count_archive) + " nomination(s) to archive. ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
+
+if count_archive > 0:
+	unsuccessful_page.save(unsuccessful_page_new,summary="Moving " + str(count_archive) + " nomination(s) to archive. ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
+
 checkpage()
-holding_page.save(holding_new,summary="Moving " + str(count_toholding) + " nomination(s) to holding area. ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
+
+if count_toholding > 0:
+	holding_page.save(holding_new,summary="Moving " + str(count_toholding) + " nomination(s) to holding area. ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
+
 checkpage()
+
 nominations_page.save(nominations_page_new,summary="Moving " + str(count_archive) + " nomination(s) to archive and " + str(count_toholding) + " nomination(s) to holding area. ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
 	
 print "Run complete!"		
