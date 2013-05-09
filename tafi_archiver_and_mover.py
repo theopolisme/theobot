@@ -58,7 +58,7 @@ def process_nomination(nom,section_header):
 			print "10 days hasn't elapsed yet; skipping thread."
 
 def process_section(section):
-	nominations = re.findall(r'(\n?\{\{TAFI nom[.\|].*?)\n?(?=[^=]{{TAFI)',section,re.IGNORECASE | re.DOTALL | re.UNICODE)
+	nominations = re.findall(r'(\n?\{\{TAFI nom[.\|].*?)[\n\r]*?(?=[^=]{{TAFI)',section,re.IGNORECASE | re.DOTALL | re.UNICODE)
 	section_header = re.findall(r'==(.*?)==',section,re.IGNORECASE | re.DOTALL | re.UNICODE)[0]
 	print "Processing " + section_header
 	for nom in nominations:
@@ -131,6 +131,11 @@ count_archive = 0
 
 move_to_holding()
 move_to_archive()
+
+# This is used to remove extras spaces in the noms page. Warning: HACKY AS HELL.
+# !Todo just fix the original regex above. 
+rm_spaces = re.compile(r"""\(UTC\)\n\n*(?!#)""", flags=re.DOTALL | re.UNICODE)
+re.sub(rm_spaces, """(UTC)\n\n""", nominations_page_new)
 
 checkpage()
 unsuccessful_page.save(unsuccessful_page_new,summary="Moving " + str(count_archive) + " nomination(s) to archive. ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
