@@ -27,7 +27,7 @@ to_process = []
 
 print "Generating list of pages linking to {0}...be patient!".format(naughty_links)
 for link in naughty_links:
-	results = mwclient.listing.List(site=site,list_name='exturlusage',prefix='eu',euquery=link,euprop='title')
+	results = mwclient.listing.List(site=site,list_name='exturlusage',prefix='eu',euquery="*."+link,euprop='title')
 	for item in results:
 		full_results.append(item)
 
