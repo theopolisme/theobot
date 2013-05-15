@@ -42,7 +42,7 @@ print "Processing mainspace pages linking to {0}...".format(naughty_links)
 
 donenow = 0
 for page in to_process:
-	if bot.donenow("User:Theo's Little Bot/disable/external links",donenow=donenow,donenow_div=5,shutdown=40) == True:
+	if bot.donenow("User:Theo's Little Bot/disable/external links",donenow=donenow,donenow_div=5) == True:
 		print "~~~\n~~~\n"
 		contents = page.edit()
 		for link in naughty_links:
