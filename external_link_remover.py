@@ -46,7 +46,13 @@ for page in to_process:
 		print "~~~\n~~~\n"
 		contents = page.edit()
 		for link in naughty_links:
-			contents = re.sub(r"<ref[^<]*?" + link.replace('.',r'\.') + r".*?</ref>", '', contents, flags=re.UNICODE | re.DOTALL)
+			try:
+				refname = re.search(r"<ref(?:\s*name\s*=\s*(.*?))>[^<]*?" + link.replace('.',r'\.') + r".*?</ref>",contents,flags=re.UNICODE).groups()[0]
+				print refname
+				contents = re.sub(r"<ref(?:\s*name\s*=\s*(.*?))>[^<]*?" + link.replace('.',r'\.') + r".*?</ref>", '', contents, flags=re.UNICODE | re.DOTALL)
+				contents = re.sub(r"<ref.*?" + refname.replace('"',r'') + r".*?>", "", contents, flags=re.UNICODE)
+			except AttributeError:
+				pass	
 			contents = re.sub(r"\*(?!.*?<ref).*?" + link.replace('\.',r'\.') + r".*", '', contents, flags=re.UNICODE)
 			contents = re.sub(r"\[.*" + link.replace('.',r'\.') + r".*]", '', contents, flags=re.UNICODE)
 		page.save(contents,summary=summary)
