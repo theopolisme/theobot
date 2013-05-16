@@ -8,19 +8,19 @@ import sys
 
 # CC-BY-SA Theopolisme
 
-#~~~~ MODIFY THIS SETTING ~~~~#
+#~~~~ MODIFY THESE SETTINGS ~~~~#
 naughty_links = ['playerhistory.com','soccerdatabase.eu']
-#~~~~ MODIFY ABOVE SETTING ~~~~#
+addtl_summary_info = "(per [[Wikipedia:Administrators%27_noticeboard/IncidentArchive796#Mass_removal_of_references_to_soccerdatabase.eu_website|AN/I thread]])"
+#~~~~ MODIFY ABOVE SETTINGS ~~~~#
 
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
-
 try:
 	temp_var = naughty_links[1]
-	summary = "Removing links to defunct sites: {0}. ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/external links|disable]])".format(", ".join(naughty_links))
+	summary = "Removing links to defunct sites: {0} {1}. ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/external links|disable]])".format(", ".join(naughty_links),addtl_summary_info)
 except IndexError:
-	summary = "Removing links to defunct site, {0}. ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/external links|disable]])".format(naughty_links[0])
+	summary = "Removing links to defunct site, {0} {1}. ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/external links|disable]])".format(naughty_links[0],addtl_summary_info)
 
 full_results = []
 to_process = []
