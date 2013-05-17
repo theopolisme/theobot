@@ -32,9 +32,9 @@ def net_support(section):
 	
 	return net_support
 
-def older_than_ten_days(section):
+def older_than_fifteen_days(section):
 	lines = section.split('\n')
-	thread = timey.DiscussionThread(howold='old(10d)')
+	thread = timey.DiscussionThread(howold='old(15d)')
 	for line in lines:
 		thread.feedLine(line)
 	if thread.shouldBeArchived() == True:
@@ -50,7 +50,7 @@ def process_nomination(nom,section_header):
 		to_holding.append(nom_details)
 	else:
 		print "net support not greater than 3."
-		if older_than_ten_days(nom) == True:
+		if older_than_fifteen_days(nom) == True:
 			print "archiving as unsuccessful."
 			global to_archive
 			to_archive.append(nom)
