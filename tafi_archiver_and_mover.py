@@ -87,7 +87,7 @@ def move_to_holding():
 		count_toholding += 1
 		regex = re.compile(r"""==\s*?{0}\s*?==(.*?)\n==""".format(header), flags=re.DOTALL | re.UNICODE)
 		global holding_new
-		holding_new = re.sub(regex, """== {0} ==\g<1>\n{1}\n==""".format(header, msg.strip('\n')), holding_new)
+		holding_new = re.sub(regex, """== {0} ==\g<1>\n\n{1}\n==""".format(header, msg.strip('\n')), holding_new)
 	
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
