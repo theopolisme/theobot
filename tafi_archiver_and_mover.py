@@ -134,8 +134,8 @@ move_to_archive()
 
 # This is used to remove extras spaces in the noms page. Warning: HACKY.
 # !Todo just fix the original regex above. 
-rm_spaces = re.compile(r"""\(UTC\)\s*\{\{TAFI""", flags=re.DOTALL | re.UNICODE | re.M)
-re.sub(rm_spaces, """(UTC)\n\n\{\{TAFI""", nominations_page_new)
+rm_spaces = re.compile(r"""\n\n*{{TAFI""", flags=re.DOTALL | re.UNICODE | re.M)
+re.sub(rm_spaces, """\n\n{{TAFI""", nominations_page_new)
 
 checkpage()
 
