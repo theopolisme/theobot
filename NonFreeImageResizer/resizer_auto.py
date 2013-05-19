@@ -93,6 +93,11 @@ def image_routine(images):
 				filename = str(uuid.uuid4())
 				file = littleimage.gimme_image(filename,compound_site,pxl,theimage)
 				
+				if file == "SKIP":
+					print "Skipping GIF."
+					messager12345 = "Skipped gif: " + theimage
+					logger.error(messager12345)
+				
 				if file == "PIXEL":
 					print "Removing tag...already reduced..."
 					img_name = "File:" + theimage
@@ -107,7 +112,7 @@ def image_routine(images):
 					text = re.sub(r'\{\{[Ss]maller image.*?\}\}', '', text)			
 					page.save(text, summary = "Removing {{[[Template:Non-free reduce|Non-free reduce]]}} since file is already adequately reduced ([[WP:BOT|BOT]] - [[User:Theo's Little Bot/disable/resizer|disable]])")				
 					
-				elif file not in ("ERROR", "PIXEL"):					
+				elif file not in ("ERROR", "PIXEL", "SKIP"):					
 					try:
 						site.upload(open(file), theimage, "Reduce size of non-free image ([[WP:BOT|BOT]] - [[User:Theo's Little Bot/disable/resizer|disable]])")
 						

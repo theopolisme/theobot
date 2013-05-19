@@ -43,6 +43,10 @@ def gimme_image(filename,compound_site,pxl,theimage):
 		
 	if extension_caps == "JPG":
 		extension_caps = "JPEG"
+	
+	if extension_caps == "GIF":
+		results = "SKIP"
+		return results
 
 	image_1 = site.Images[theimage] 
 	image_2 = str(image_1.imageinfo['url'])
@@ -60,7 +64,6 @@ def gimme_image(filename,compound_site,pxl,theimage):
 		print "Unable to open image " + theimage + " (aborting)"
 		results = "ERROR"
 		return results
-	
 	
 	basewidth = int(math.sqrt((pxl * float(img.size[0]))/(img.size[1])))
 	wpercent = (basewidth/float(img.size[0]))
