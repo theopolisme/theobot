@@ -58,7 +58,7 @@ def process_nomination(nom,section_header):
 			print "10 days hasn't elapsed yet; skipping thread."
 
 def process_section(section):
-	nominations = re.findall(r'(\n?\{\{TAFI nom[.\|].*?)[\n\r]*?(?=[^=]{{TAFI)',section,re.IGNORECASE | re.DOTALL | re.UNICODE)
+	nominations = re.findall(r'(\s*\{\{TAFI nom[.\|].*?)[\r\n]*?(?=[^=]{{TAFI)',section,re.IGNORECASE | re.DOTALL | re.UNICODE | re.M)
 	section_header = re.findall(r'==(.*?)==',section,re.IGNORECASE | re.DOTALL | re.UNICODE)[0]
 	print "Processing " + section_header
 	for nom in nominations:
@@ -70,7 +70,7 @@ def move_to_archive():
 		global nominations_page_new
 		nominations_page_new = nominations_page_new.replace(nom,'',1)
 		global unsuccessful_page_new
-		unsuccessful_page_new += "\n" + nom.strip('\n')
+		unsuccessful_page_new += "\n" + nom.strip()
 		global count_archive
 		count_archive += 1
 
@@ -85,9 +85,9 @@ def move_to_holding():
 		nominations_page_new = nominations_page_new.replace(nom[0],'',1)
 		global count_toholding
 		count_toholding += 1
-		regex = re.compile(r"""==\s*?{0}\s*?==(.*?)\n==""".format(header), flags=re.DOTALL | re.UNICODE)
+		regex = re.compile(r"""==\s*?{0}\s*?==(.*?)\n==""".format(header), flags=re.DOTALL | re.UNICODE | re.M)
 		global holding_new
-		holding_new = re.sub(regex, """== {0} ==\g<1>\n\n{1}\n==""".format(header, msg.strip('\n')), holding_new)
+		holding_new = re.sub(regex, """== {0} ==\g<1>\n\n{1}\n==""".format(header, msg.strip()), holding_new)
 	
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
@@ -132,10 +132,10 @@ count_archive = 0
 move_to_holding()
 move_to_archive()
 
-# This is used to remove extras spaces in the noms page. Warning: HACKY AS HELL.
+# This is used to remove extras spaces in the noms page. Warning: HACKY.
 # !Todo just fix the original regex above. 
-rm_spaces = re.compile(r"""\(UTC\)\n\n*(?!#)""", flags=re.DOTALL | re.UNICODE)
-re.sub(rm_spaces, """(UTC)\n\n""", nominations_page_new)
+rm_spaces = re.compile(r"""\(UTC\)\s*\{\{TAFI""", flags=re.DOTALL | re.UNICODE | re.M)
+re.sub(rm_spaces, """(UTC)\n\n\{\{TAFI""", nominations_page_new)
 
 checkpage()
 
