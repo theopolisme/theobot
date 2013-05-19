@@ -58,7 +58,7 @@ def process_nomination(nom,section_header):
 			print "10 days hasn't elapsed yet; skipping thread."
 
 def process_section(section):
-	nominations = re.findall(r'(\s*\{\{TAFI nom[.\|].*?)[\r\n]*?(?=[^=]{{TAFI)',section,re.IGNORECASE | re.DOTALL | re.UNICODE | re.M)
+	nominations = re.findall(r'(\s*?\{\{TAFI nom[.\|].*?)\s*?(?=[^=]\{\{TAFI)',section,re.IGNORECASE | re.DOTALL | re.UNICODE | re.M)
 	section_header = re.findall(r'==(.*?)==',section,re.IGNORECASE | re.DOTALL | re.UNICODE)[0]
 	print "Processing " + section_header
 	for nom in nominations:
