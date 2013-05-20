@@ -18,14 +18,13 @@ class ArchiveURLProcessor():
 		print "ArchiveURLProcessor() initialized."
 		return
 
-	def start(self):
-		pages = bot.cats_recursive('Category:Pages with archiveurl citation errors')
+	def start(self,pages):
 		for page in pages:
 			self.process_page(page)
 
 	def process_page(self,page):
 		if bot.donenow("User:Theo's Little Bot/disable/archiveurl",donenow=self.donenow,donenow_div=5,shutdown=50) == True:
-			print "Processing " + page
+			print "Processing " + page.encode("ascii", "replace")
 			page = site.Pages[page]
 			text = page.edit()
 			wikicode = mwparserfromhell.parse(text)
@@ -40,14 +39,22 @@ class ArchiveURLProcessor():
 							archiveurl = items[0]
 					if archiveurl is not None: 
 						if re.search(r"web\.archive\.org",unicode(template),flags=re.U) != None:
-							new_url = re.search(r"\|[\s]*archiveurl[\s]*=[\s]*(?:http://|https://)web.archive.org/web/\d*/(.*?)(?:\||}})", unicode(template), flags=re.UNICODE | re.M).groups(0)[0]
+							try:
+								new_url = re.search(r"\|[\s]*archiveurl[\s]*=[\s]*(?:http://|https://)web.archive.org/web/\d*/(.*?)(?:\||}})", unicode(template), flags=re.UNICODE | re.M).groups(0)[0]
+							except AttributeError:
+								print "I don't recognize the archive structure, sadly. Skipping."
+								continue
 							template.add("url", new_url.strip())
 							print "Added url parameter to {{cite web}} template."
 					else:
 						continue
 			text = unicode(wikicode)
-			page.save(text,summary="Fixing reference: adding url parameter ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/archiveurl|disable]])")
-			self.donenow += 1			
+			try:
+				page.save(text,summary="Fixing references: adding url parameter ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/archiveurl|disable]])")
+				self.donenow += 1 # we only count it as "done" when we make a change
+			except:
+				print "Unable to save page; skipping."
 
-bot = ArchiveURLProcessor()		
-bot.start()
+pages = bot.cats_recursive('Category:Pages with archiveurl citation errors')
+archivebot = ArchiveURLProcessor()		
+archivebot.start(pages)
