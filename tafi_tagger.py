@@ -39,8 +39,13 @@ for i in range(1,11):
 			x = re.findall("\{\{TAFI\}\}", page.edit(), flags=re.IGNORECASE)[0]
 			print "Page already tagged; skipping."
 		except:
-			text = u"{{TAFI}}\n" + page.edit()
-			print "Saving page " + pagen + " - added TAFI template."
+			text = page.edit()
+			if text[0] == "{" and text[2] != "I":
+				text = re.sub(r"}}", "}}\n{{TAFI}}", text, 1, flags = re.U)
+			else:
+				text = "{{TAFI}}\n" + text
+			print text[0:100] # debugging - shows the changes
+			print "Saving page " + pagen.encode("ascii", "replace") + " - added TAFI template."
 			page.save(text,summary="Adding [[WP:TAFI|Today's articles for improvement]] tag ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi|disable]])")
 
 # This loop removes the tags from the old week's articles.
