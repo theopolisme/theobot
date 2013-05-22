@@ -158,15 +158,11 @@ class TAFIScheduler():
 	
 		i = 0 # this is for page numbers
 
-		raw_input("Press Enter to save /1/1 (date) page, \"" + "Wikipedia:Today's articles for improvement/" + str(self.now.year) + "/" + str(self.week) + "/???" + "\"...")		
 		for page in self.pagesforthisweek:
 			i += 1
 			stringy = "Wikipedia:Today's articles for improvement/" + str(self.now.year) + "/" + str(self.week) + "/" + str(i) # note the plus one, this is so we do the week AFTER
-			#if site.Pages[stringy].edit() == "":
 			text = "[[" + page + "]]"	
 			site.Pages[stringy].save(text,"[[WP:BOT|Bot]]: Updating TAFI schedule.")
-			#else:
-			#	print "This week was already updated manually, methinks."
 
 	def update_weekly_subpage(self):
 		"""Updates this week's subpage."""
