@@ -59,7 +59,7 @@ def process_nomination(nom,section_header):
 
 def process_section(section):
 	nominations = re.findall(r'(\s*?\{\{TAFI nom[.\|].*?)\s*?(?=[^=]\{\{TAFI)',section,re.IGNORECASE | re.DOTALL | re.UNICODE | re.M)
-	section_header = re.findall(r'==(.*?)==',section,re.IGNORECASE | re.DOTALL | re.UNICODE)[0]
+	section_header = re.findall(r'==(.*?)==',section,re.IGNORECASE | re.DOTALL | re.UNICODE)[0].strip()
 	print "Processing " + section_header
 	for nom in nominations:
 		process_nomination(nom,section_header)
