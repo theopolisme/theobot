@@ -23,7 +23,7 @@ class ArchiveURLProcessor():
 			self.process_page(page)
 
 	def process_page(self,page):
-		if bot.donenow("User:Theo's Little Bot/disable/archiveurl",donenow=self.donenow,donenow_div=5,shutdown=50) == True:
+		if bot.donenow("User:Theo's Little Bot/disable/archiveurl",donenow=self.donenow,donenow_div=5) == True:
 			print "Processing " + page.encode("ascii", "replace")
 			page = site.Pages[page]
 			text = page.edit()
@@ -50,7 +50,7 @@ class ArchiveURLProcessor():
 						continue
 			text = unicode(wikicode)
 			try:
-				page.save(text,summary="Fixing references: adding url parameter ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/archiveurl|disable]])")
+				page.save(text,summary="Fixing references: adding url parameter ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/archiveurl|disable]])")
 				self.donenow += 1 # we only count it as "done" when we make a change
 			except:
 				print "Unable to save page; skipping."
