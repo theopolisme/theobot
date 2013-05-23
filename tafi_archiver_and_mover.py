@@ -140,15 +140,15 @@ re.sub(rm_spaces, """\n\n{{TAFI""", nominations_page_new)
 checkpage()
 
 if count_archive > 0:
-	unsuccessful_page.save(unsuccessful_page_new,summary="Moving " + str(count_archive) + " nomination(s) to archive. ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
+	unsuccessful_page.save(unsuccessful_page_new,summary="Moving " + str(count_archive) + " nomination(s) to archive. ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
 
 checkpage()
 
 if count_toholding > 0:
-	holding_page.save(holding_new,summary="Moving " + str(count_toholding) + " nomination(s) to holding area. ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
+	holding_page.save(holding_new,summary="Moving " + str(count_toholding) + " nomination(s) to holding area. ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
 
 checkpage()
 
-nominations_page.save(nominations_page_new,summary="Moving " + str(count_archive) + " nomination(s) to archive and " + str(count_toholding) + " nomination(s) to holding area. ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
+nominations_page.save(nominations_page_new,summary="Moving " + str(count_archive) + " nomination(s) to archive and " + str(count_toholding) + " nomination(s) to holding area. ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi arch|disable]])")
 	
 print "Run complete!"		
