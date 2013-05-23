@@ -19,7 +19,7 @@ from datetime import date, timedelta
 
 class TAFIScheduler():
 
-	def __init__(self,week=datetime.datetime.now()isocalendar()[1]+1):
+	def __init__(self,week=datetime.datetime.now().isocalendar()[1]+1):
 		"""By default, week will be equal to next week, although
 		it can be redefined (in ISO week format).
 		"""
