@@ -19,10 +19,12 @@ from datetime import date, timedelta
 
 class TAFIScheduler():
 
-	def __init__(self):
+	def __init__(self,week=datetime.datetime.now()isocalendar()[1]+1):
+		"""By default, week will be equal to next week, although
+		it can be redefined (in ISO week format).
+		"""
 		self.now = datetime.datetime.now()
-		#self.week = self.now.isocalendar()[1]+1 
-		self.week = 27
+		self.week = week
 		self.holding_area_page = site.Pages["Wikipedia:Today's articles for improvement/Holding area"]
 		self.parse_holding(self.holding_area_page.edit())
 		self.holding_numbers(self.holding_contents_dict)
@@ -235,5 +237,7 @@ def static_list():
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
-scheduler = TAFIScheduler()
+for week_num in range(28,30):
+	scheduler = TAFIScheduler(week=week_num)
+
 static_list()
