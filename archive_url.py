@@ -42,8 +42,11 @@ class ArchiveURLProcessor():
 							try:
 								new_url = re.search(r"\|[\s]*archiveurl[\s]*=[\s]*(?:http://|https://)web.archive.org/web/\d*/(.*?)(?:\||}})", unicode(template), flags=re.UNICODE | re.M).groups(0)[0]
 							except AttributeError:
-								print "I don't recognize the archive structure, sadly. Skipping."
-								continue
+								try:
+									new_url = re.search(r"\|[\s]*archiveurl[\s]*=[\s]*(?:http://|https://)pandora.nla.gov.au/nph-wb/\d*/(.*?)(?:\||}})", unicode(template), flags=re.UNICODE | re.M).groups(0)[0]
+								except AttributeError:
+									print "I don't recognize the archive structure, sadly. Skipping."
+									continue
 							template.add("url", new_url.strip())
 							print "Added url parameter to {{cite web}} template."
 					else:
