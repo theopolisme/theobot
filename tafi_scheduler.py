@@ -140,7 +140,7 @@ class TAFIScheduler():
 		rm_spaces = re.compile(r"""\n\n*{{TAFI""", flags=re.DOTALL | re.UNICODE | re.M)
 		new_page = re.sub(rm_spaces, """\n\n{{TAFI""", new_page)
 		
-		self.holding_area_page.save(new_page,summary="Removing newly scheduled nominations.")
+		self.holding_area_page.save(new_page,summary="Removing newly scheduled nominations for [[Wikipedia:Today's articles for improvement/" + str(self.now.year) + "/" + str(self.week) + "|week " + str(self.week) + "]].")
 
 	def generate_page_list(self):
 		"""Updates self.pagesforthisweek with a list of
@@ -206,7 +206,7 @@ class TAFIScheduler():
 		"""Adds this week to the schedule."""
 		schedule = site.Pages["Wikipedia:Today's articles for improvement/Schedule/real"]
 		text = schedule.edit()
-		text += """\n\n;<big>[[Wikipedia:Today's articles for improvement/2013/{0}|Week {0}]]:</big> (beginning {1})""".format(self.week,self.week_start_date(self.now.year,self.week))
+		text += """\n\n;<big>[[Wikipedia:Today's articles for improvement/{0}/{1}|Week {1}]]:</big> (beginning {2})""".format(self.now.year,self.week,self.week_start_date(self.now.year,self.week))
 		
 		nommies = []
 
