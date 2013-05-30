@@ -21,12 +21,30 @@ def sokay(donenow):
 	else:
 		return True
 
+def static_list():
+	"""A little function per request to generate a static
+	page of this week's TAFI nominations.
+	"""
+	final_contents = "=== Week {{subst:CURRENTWEEK}}'s TAFIs ===\n<sup>Last updated ~~~~~</sup>\n"
+	#http://en.wikipedia.org//w/api.php?action=query&prop=extracts&format=json&explaintext=&titles=Template%3ATAFI%2FBlurb%2Fthisweek
+	x = site.api(action='query',prop='extracts',explaintext='y',titles='Template:TAFI/Blurb/thisweek')
+	for key,contents in x['query']['pages'].items():
+		contents = contents['extract']
+	for line in contents.splitlines():
+		page = line.strip()
+		final_contents += "\n* [[" + page + "]]"
+	pg = site.Pages['Template:TAFI/Blurb/static']
+	pg.save(final_contents,summary='[[WP:BOT|Bot]]: Updating static TAFI listings')
+
 # Logs in to the site.
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
 # Sets the timestamp from which we derive week numbers.
 now = datetime.datetime.now()
+
+# Runs the static_list() function per request
+static_list()
 
 # This loop adds the tags to the new week's articles.
 for i in range(1,11):

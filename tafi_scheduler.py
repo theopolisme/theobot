@@ -218,26 +218,9 @@ class TAFIScheduler():
 			text += """\n* """ + nom
 			
 		schedule.save(text,summary="[[WP:BOT|Bot]]: Updating TAFI schedule - adding week {0}.".format(self.week))
-
-def static_list():
-	"""A little function per request to generate a static
-	page of this week's TAFI nominations.
-	"""
-	final_contents = "=== This week's TAFIs ===\n<sup>Last updated ~~~~~</sup>\n"
-	#http://en.wikipedia.org//w/api.php?action=query&prop=extracts&format=json&explaintext=&titles=Template%3ATAFI%2FBlurb%2Fthisweek
-	x = site.api(action='query',prop='extracts',explaintext='y',titles='Template:TAFI/Blurb/thisweek')
-	for key,contents in x['query']['pages'].items():
-		contents = contents['extract']
-	for line in contents.splitlines():
-		page = line.strip()
-		final_contents += "\n* [[" + page + "]]"
-	pg = site.Pages['Template:TAFI/Blurb/static']
-	pg.save(final_contents,summary='[[WP:BOT|Bot]]: Updating static TAFI listings')
 	
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
 for week_num in range(28,30):
 	scheduler = TAFIScheduler(week=week_num)
-
-static_list()
