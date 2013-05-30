@@ -25,7 +25,7 @@ class EmptyCitationBot(object):
 		for page in self.pages:
 			if bot.donenow("User:Theo's Little Bot/disable/empty citations",donenow=donenow,donenow_div=5,shutdown=50) == True:
 				contents = page.edit()
-				new_contents = re.sub(r"""{{(citation|cite)}}""", """{{citation needed|date={{subst:DATE}}}}""", flags=re.UNICODE)
+				new_contents = re.sub(r"""{{(citation|cite)}}(\.*)""", r"""\2{{citation needed|date={{subst:DATE}}}}""", contents, flags=re.UNICODE)
 				page.save(new_contents,summary="Converting empty {{[[Template:Citation|citation]]}} to {{[[Template:citation needed|citation needed]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/empty citations|disable]])")
 			else:
 				sys.exit()
