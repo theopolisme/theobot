@@ -107,7 +107,7 @@ to_holding = []
 
 global unsuccessful_page_new
 unsuccessful_page_new = unsuccessful_page.edit()
-unsuccessful_page_new += "\n== Archvied " + now.strftime('%B') + " " + timey.ordinal(now.day) + " =="
+unsuccessful_page_new += "\n== Archived " + now.strftime('%B') + " " + timey.ordinal(now.day) + " =="
 
 holding_page = site.Pages["Wikipedia:Today's articles for improvement/Holding area"]
 global holding_new
