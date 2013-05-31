@@ -37,11 +37,19 @@ def static_list():
 	pg.save(final_contents,summary='[[WP:BOT|Bot]]: Updating static TAFI listings')
 
 def remove_old_week_from_schedule():
-		"""Removes the previous, now completed week from the schedule."""
+		"""Removes the previous, now completed week from the schedule
+		and moves it to archive."""
 		schedule = site.Pages["Wikipedia:Today's articles for improvement/Schedule/real"]
 		text = schedule.edit()
+		
+		old_schedule_contents = re.finall(r"""(;<big>\[\[Wikipedia:Today's articles for improvement/""" + str(now.year) + r"/" + str((now.isocalendar()[1])-1) + r"""\|.*?)\s*;<big>\[\[""", text)[0]
+		
 		new_text = re.sub(r""";<big>\[\[Wikipedia:Today's articles for improvement/""" + str(now.year) + r"/" + str((now.isocalendar()[1])-1) + r"""\|.*?;<big>\[\[""", r""";<big>\[\[""", text, re.IGNORECASE | re.DOTALL | re.UNICODE)
 		schedule.save(new_text,summary="[[WP:BOT|Bot]]: Removing completed week from schedule - week {0}.".format(str((now.isocalendar()[1])-1)))
+
+		schedule_archive = site.Pages["Wikipedia:Today's articles for improvement/Archives/{0} schedule".format(str(now.year))]
+		arch_text = schedule_archive.edit() + "\n\n" + old_schedule_contents
+		schedule_archive.save(arch_text,summary="[[WP:BOT|Bot]]: Moving completed week to archive - week {0}.".format(str((now.isocalendar()[1])-1)))
 
 # Logs in to the site.
 site = mwclient.Site('en.wikipedia.org')
@@ -54,7 +62,7 @@ now = datetime.datetime.now()
 # Runs the static_list() function per request
 static_list()
 
-# Removes the completed week from the schedule
+# Removes the completed week from the schedule and moves it to archive
 remove_old_week_from_schedule()
 
 # This loop adds the tags to the new week's articles.
