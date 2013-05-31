@@ -36,15 +36,26 @@ def static_list():
 	pg = site.Pages['Template:TAFI/Blurb/static']
 	pg.save(final_contents,summary='[[WP:BOT|Bot]]: Updating static TAFI listings')
 
+def remove_old_week_from_schedule():
+		"""Removes the previous, now completed week from the schedule."""
+		schedule = site.Pages["Wikipedia:Today's articles for improvement/Schedule/real"]
+		text = schedule.edit()
+		new_text = re.sub(r""";<big>\[\[Wikipedia:Today's articles for improvement/""" + str(now.year) + r"/" + str((now.isocalendar()[1])-1) + r"""\|.*?;<big>\[\[""", r""";<big>\[\[""", text, re.IGNORECASE | re.DOTALL | re.UNICODE)
+		schedule.save(new_text,summary="[[WP:BOT|Bot]]: Removing completed week from schedule - week {0}.".format(str((now.isocalendar()[1])-1)))
+
 # Logs in to the site.
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
 # Sets the timestamp from which we derive week numbers.
+global now
 now = datetime.datetime.now()
 
 # Runs the static_list() function per request
 static_list()
+
+# Removes the completed week from the schedule
+remove_old_week_from_schedule()
 
 # This loop adds the tags to the new week's articles.
 for i in range(1,11):
