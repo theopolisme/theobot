@@ -9,8 +9,6 @@ import datetime
 import sys
 from theobot import bot
 from theobot import password
-from theobot import timey
-import difflib
 from random import shuffle
 import operator
 from datetime import date, timedelta
@@ -26,15 +24,25 @@ class TAFIScheduler():
 		self.now = datetime.datetime.now()
 		self.week = week
 		self.holding_area_page = site.Pages["Wikipedia:Today's articles for improvement/Holding area"]
-		self.parse_holding(self.holding_area_page.edit())
-		self.holding_numbers(self.holding_contents_dict)
-		self.holding_sections_slots(self.holding_contents_dict)
-		self.holding_sections_selection(self.holding_contents_dict)
-		self.generate_page_list()
-		self.update_date_pages()
-		self.update_weekly_subpage()
-		self.rm_from_holding()
-		self.update_schedule()
+		if self.has_this_week_been_done() == False:
+			self.parse_holding(self.holding_area_page.edit())
+			self.holding_numbers(self.holding_contents_dict)
+			self.holding_sections_slots(self.holding_contents_dict)
+			self.holding_sections_selection(self.holding_contents_dict)
+			self.generate_page_list()
+			self.update_date_pages()
+			self.update_weekly_subpage()
+			self.rm_from_holding()
+			self.update_schedule()
+		else:
+			print "Week {0} has already been scheduled. Aborting in 3...2...1....".format(self.week)
+
+	def has_this_week_been_done(self):
+		"""Returns whether or not this week's schedule
+		page has been created.
+		"""
+		page =  site.Pages["Wikipedia:Today's articles for improvement/" + str(self.now.year) + "/" + str(self.week) + "/1"]
+		return page.exists
 
 	def parse_holding(self,holding_contents):
 		"""Returns a dict of subsections in the holding area,
@@ -222,5 +230,4 @@ class TAFIScheduler():
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
-for week_num in range(28,30):
-	scheduler = TAFIScheduler(week=week_num)
+scheduler = TAFIScheduler()
