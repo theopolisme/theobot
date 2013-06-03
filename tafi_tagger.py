@@ -36,6 +36,25 @@ def static_list():
 	pg = site.Pages['Template:TAFI/Blurb/static']
 	pg.save(final_contents,summary='[[WP:BOT|Bot]]: Updating static TAFI listings')
 
+def complete_static_list():
+	"""A function per request to generate a static
+	page of *all* TAFI nominations on the schedule page.
+	"""
+	final_contents = "== List of TAFIs ==\n<sup>Last updated ~~~~~</sup>__TOC__"
+	
+	contents  = site.Pages["Wikipedia:Today's articles for improvement/Schedule/real"].edit()
+	sections = re.findall(r"""(\[\[.*?);<big>""",contents,flags=re.U | re.DOTALL)
+
+	for section in sections:
+		week = re.findall(r"""\|Week (.*?)\]\]""",section,flags=re.U)[0]
+		final_contents += "\n\n=== Week {0} ===".format(week)
+		articles = re.findall(r"""\{\{TAFI nom.*?\|.*?article=(.*?)\|""",section,flags=re.U | re.DOTALL)
+		for article in articles:
+			final_contents += "\n*[[" + article + "]]"
+
+	pg = site.Pages["Wikipedia:Today's articles for improvement/Schedule/static"]
+	pg.save(final_contents,summary='[[WP:BOT|Bot]]: Updating static TAFI listings')
+
 def remove_old_week_from_schedule():
 		"""Removes the previous, now completed week from the schedule
 		and moves it to archive."""
@@ -61,6 +80,9 @@ now = datetime.datetime.now()
 
 # Runs the static_list() function per request
 static_list()
+
+# Runs the complete_static_list() function per request
+complete_static_list()
 
 # Removes the completed week from the schedule and moves it to archive
 remove_old_week_from_schedule()
