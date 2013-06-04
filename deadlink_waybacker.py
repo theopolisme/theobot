@@ -21,7 +21,6 @@ class DeadLinkBot(object):
 		self.DRYRUN = dryrun
 		self.VERBOSE = verbose
 		self.donenow = 0
-		self.deadlink_templates = ('{{dl','{{deadlink','{{404','{{broken link','{{brokenlink','{{linkbroken','{{link broken','{{dead links','{{deadlinks','{{badlink','{{dead','{{dl','{{dead page','{{dead-link','{{dead link','{{dead url','{{dead cite','{{deadcite')
 		self.deadlink_names = ('dl','deadlink','404','broken link','brokenlink','linkbroken','link broken','dead links','deadlinks','badlink','dead','dl','dead page','dead-link','dead link','dead url','dead cite','deadcite')
 
 	def run(self):
@@ -35,7 +34,7 @@ class DeadLinkBot(object):
 			all_refs = re.findall(r"""<ref[^>]*>.*?</ref>""",contents,flags=re.UNICODE | re.IGNORECASE)
 			for ref in all_refs:
 				ref_lower = ref.lower()
-				if  any(name in ref_lower for name in self.deadlink_templates):
+				if  any(name in ref_lower for name in ['{{'+name for name in self.deadlink_names]):
 					dead_refs.append(ref)
 			for ref in dead_refs:
 				ref_code = mwparserfromhell.parse(ref)
