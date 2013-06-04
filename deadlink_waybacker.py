@@ -8,7 +8,8 @@ import sys
 import difflib
 from datetime import datetime
 from dateutil import parser
-#from theobot import password
+from theobot import password
+from theobot import bot
 
 # CC-BY-SA Theopolisme
 
@@ -19,6 +20,7 @@ class DeadLinkBot(object):
 		print "We're running!"
 		self.DRYRUN = dryrun
 		self.VERBOSE = verbose
+		self.donenow = 0
 		self.deadlink_templates = ('{{dl','{{deadlink','{{404','{{broken link','{{brokenlink','{{linkbroken','{{link broken','{{dead links','{{deadlinks','{{badlink','{{dead','{{dl','{{dead page','{{dead-link','{{dead link','{{dead url','{{dead cite','{{deadcite')
 		self.deadlink_names = ('dl','deadlink','404','broken link','brokenlink','linkbroken','link broken','dead links','deadlinks','badlink','dead','dl','dead page','dead-link','dead link','dead url','dead cite','deadcite')
 
@@ -73,8 +75,16 @@ class DeadLinkBot(object):
 				else:
 					pass
 			if self.DRYRUN == False and number_done > 0:
-				page.save(contents,summary="Adding archiveurl for {0} dead link{1}".format(number_done,'s' if number_done > 1 else ''))
-				print "{0} saved!".format(page.page_title)
+				if bot.donenow("User:Theo's Little Bot/disable/deadlinks",donenow=self.donenow,donenow_div=5,shutdown=50) == True:
+					if bot.nobots(page=page.page_title) == True:
+						page.save(contents,summary="Adding archiveurl for {0} dead link{1}".format(number_done,'s' if number_done > 1 else ''))
+						print "{0} saved!".format(page.page_title)
+						self.donenow += 1
+					else:
+						print "Could not save page...bot not authorized."
+				else:
+					print "Bot was disabled."
+					sys.exit()
 			elif self.DRYRUN == True and self.VERBOSE == True:
 				diff = difflib.unified_diff(orig_contents.splitlines(), contents.splitlines())
 				print '\n'.join(diff)
