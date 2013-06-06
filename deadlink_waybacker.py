@@ -56,9 +56,12 @@ class DeadLinkBot(object):
 							okay_to_edit = True
 						if okay_to_edit == True:
 							if template.has_param('accessdate'):
-								accessdate = parser.parse(str(template.get('accessdate').value))
-								wayback_date = accessdate.strftime("%Y%m%d%H%M%S")
-								r = requests.get("http://web.archive.org/web/{date}/{url}".format(date=wayback_date,url=url)) 
+								try:
+									accessdate = parser.parse(str(template.get('accessdate').value))
+									wayback_date = accessdate.strftime("%Y%m%d%H%M%S")
+									r = requests.get("http://web.archive.org/web/{date}/{url}".format(date=wayback_date,url=url)) 
+								except ValueError: # in case we can't parse the accessdate
+									r = requests.get("http://web.archive.org/web/form-submit.jsp", params={'url':url, 'type':'replay'})
 							else:
 								r = requests.get("http://web.archive.org/web/form-submit.jsp", params={'url':url, 'type':'replay'})
 							print r.url
@@ -91,9 +94,12 @@ class DeadLinkBot(object):
 			if self.DRYRUN == False and number_done > 0:
 				if bot.donenow("User:Theo's Little Bot/disable/deadlinks",donenow=self.donenow,donenow_div=5,shutdown=20) == True:
 					if bot.nobots(page=page.page_title) == True:
-						page.save(contents,summary="Adding archiveurl for {0} dead link{1} ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/deadlinks|disable]])".format(number_done,'s' if number_done > 1 else ''))
-						print "{0} saved!".format(page.page_title)
-						self.donenow += 1
+						try:
+							page.save(contents,summary="Adding archiveurl for {0} dead link{1} ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/deadlinks|disable]])".format(number_done,'s' if number_done > 1 else ''))
+							print "{0} saved!".format(page.page_title)
+							self.donenow += 1
+						except mwclient.errors.EditError as e:
+							print "ERROR - unable to save page: ", e
 					else:
 						print "Could not save page...bot not authorized."
 				else:
