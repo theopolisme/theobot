@@ -100,13 +100,6 @@ class DiscussionThread(object):
         if not self.content and not line:
             return
         self.content += line + '\n'
-        #Update timestamp
-# nnwiki:
-# 19:42, 25 mars 2008 (CET)
-# enwiki
-# 16:36, 30 March 2008 (UTC)
-# huwiki
-# 2007. december 8., 13:42 (CET)
         TM = re.search(r'(\d\d):(\d\d), (\d\d?) (\S+) (\d\d\d\d) \(.*?\)', line)
         if not TM:
             TM = re.search(r'(\d\d):(\d\d), (\S+) (\d\d?), (\d\d\d\d) \(.*?\)', line)
@@ -168,19 +161,19 @@ class DiscussionThread(object):
         return "== " + self.title + ' ==\n\n' + self.content
 
     def shouldBeArchived(self):
-        algo = self.howold
-        reT = re.search(r'^old\((.*)\)$',algo)
-        if reT:
-            if not self.timestamp:
-                return ''
-            #TODO: handle this:
-                #return 'unsigned'
+        if self.timestamp:
+            algo = self.howold
+            reT = re.search(r'^old\((.*)\)$',algo)
             maxage = str2time(reT.group(1))
-            if self.timestamp + maxage < time.time():
+            old_enough_to_archive = self.timestamp + maxage
+            currenttime = time.time()
+            if old_enough_to_archive < currenttime:
                 # should be archived
+                print "SHOULD BE ARCHIVED!"
                 return True
             elif self.timestamp + maxage >= time.time():
                 # shouldn't be archived
                 return False
-            else:
-                return False
+        else:
+            # there was no timestamp with the nomination
+            return False
