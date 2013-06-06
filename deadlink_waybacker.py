@@ -25,6 +25,7 @@ class DeadLinkBot(object):
 
 	def run(self):
 		category = mwclient.listing.Category(site, 'Category:All articles with dead external links')
+		# category = [site.Pages['10 Hronia Mazi']] - debugging only
 		for page in category:
 			dead_refs = []
 			print page.page_title
@@ -43,35 +44,41 @@ class DeadLinkBot(object):
 					if "cite web" in template.name and template.has_param('archiveurl') == False:
 						url = unicode(template.get('url').value.strip())
 						try: 
-							if requests.get(url).status_code != requests.codes.ok:
+							if url.find('web.archive.org') != -1:
+								okay_to_edit = False
+								print "The url is already an archive link!"
+							elif requests.get(url, timeout=15).status_code != requests.codes.ok:
 								okay_to_edit = True
-							else:
+							elif requests.get(url, timeout=15).status_code == requests.codes.ok:
 								okay_to_edit = False
 								print "No need to add an archive, since the citations's URL currently works!"
 						except:
 							okay_to_edit = True
-						if template.has_param('accessdate'):
-							accessdate = parser.parse(str(template.get('accessdate').value))
-							wayback_date = accessdate.strftime("%Y%m%d%H%M%S")
-							r = requests.get("http://web.archive.org/web/{date}/{url}".format(date=wayback_date,url=url)) 
+						if okay_to_edit == True:
+							if template.has_param('accessdate'):
+								accessdate = parser.parse(str(template.get('accessdate').value))
+								wayback_date = accessdate.strftime("%Y%m%d%H%M%S")
+								r = requests.get("http://web.archive.org/web/{date}/{url}".format(date=wayback_date,url=url)) 
+							else:
+								r = requests.get("http://web.archive.org/web/form-submit.jsp", params={'url':url, 'type':'replay'})
+							print r.url
+							print r.status_code
+							if r.status_code == requests.codes.ok:
+								number_done += 1
+								updated = True
+								wayback_url = r.url
+								try:
+									wayback_date_object = datetime.strptime(wayback_url.split('/')[4],"%Y%m%d%H%M%S")
+									wayback_date = wayback_date_object.strftime('%d %B %Y')
+									template.add('archivedate',wayback_date)
+								except ValueError:
+									print "Unable to fetch date...no worries, we have exception handing!"
+								template.add('archiveurl',wayback_url)
+							else:
+								print "{url} not archived in wayback machine.".format(url=url)
+								continue # this url was not archived by the wayback machine; nothing we can do here.
 						else:
-							r = requests.get("http://web.archive.org/web/form-submit.jsp", params={'url':url, 'type':'replay'})
-						print r.url
-						print r.status_code
-						if r.status_code == requests.codes.ok:
-							number_done += 1
-							updated = True
-							wayback_url = r.url
-							try:
-								wayback_date_object = datetime.strptime(wayback_url.split('/')[4],"%Y%m%d%H%M%S")
-								wayback_date = wayback_date_object.strftime('%d %B %Y')
-								template.add('archivedate',wayback_date)
-							except ValueError:
-								print "Unable to fetch date...no worries, we have exception handing!"
-							template.add('archiveurl',wayback_url)
-						else:
-							print "{url} not archived in wayback machine.".format(url=url)
-							continue # this url was not archived by the wayback machine; nothing we can do here.
+							print "Not adding archive link, per above."
 				for template in ref_code.filter_templates():
 					nameoftemp = template.name.lower()
 					if any(name in nameoftemp for name in self.deadlink_names) and updated == True:
