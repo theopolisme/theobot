@@ -11,10 +11,10 @@ import littleimage
 import sys
 import urllib2
 import re
-import theobot.bot
 import logging
-sys.path.append("..")
-from theobot import password
+sys.path.append("/data/project/theoslittlebot/cgi-bin/theobot")
+import theobot.password
+import theobot.bot
 
 # CC-BY-SA Theopolisme
 # Task 1 on [[User:Theo's Little Bot]]
@@ -114,7 +114,7 @@ def image_routine(images):
 					
 				elif file not in ("ERROR", "PIXEL", "SKIP"):					
 					try:
-						site.upload(open(file), theimage, "Reduce size of non-free image ([[WP:BOT|BOT]] - [[User:Theo's Little Bot/disable/resizer|disable]])")
+						site.upload(open(file), theimage, "Reduce size of non-free image ([[WP:BOT|BOT]] - [[User:Theo's Little Bot/disable/resizer|disable]])", ignore=True)
 						
 						print "Uploaded!"
 						filelist = [ f for f in os.listdir(".") if f.startswith(filename) ]
@@ -165,7 +165,7 @@ def main():
 	"""
 	global site
 	site = mwclient.Site('en.wikipedia.org')
-	site.login(password.username, password.password)
+	site.login(theobot.password.username, theobot.password.password)
 
 	#work_with = get_images()	
 	zam = mwclient.listing.Category(site, "Category:Wikipedia non-free file size reduction requests")
