@@ -47,6 +47,8 @@ class ArchiveURLProcessor():
 								except AttributeError:
 									print "I don't recognize the archive structure, sadly. Skipping."
 									continue
+							if re.search(r"(http|https)://",new_url.strip()) == None:
+								new_url += u"http://"
 							template.add("url", new_url.strip())
 							print "Added url parameter to {{cite web}} template."
 					else:
