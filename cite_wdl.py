@@ -133,7 +133,4 @@ global site
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
-while 1:
-	get_pages()
-	time.sleep(60)
-	print "Running again!"
+get_pages()
