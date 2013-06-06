@@ -1,5 +1,4 @@
 #!/usr/bin/python
-sys.path.append("..")
 from PIL import Image
 from xml.dom import minidom
 import cStringIO
@@ -14,6 +13,7 @@ import urllib2
 import re
 import theobot.bot
 import logging
+sys.path.append("..")
 from theobot import password
 
 # CC-BY-SA Theopolisme
@@ -137,6 +137,8 @@ def image_routine(images):
 						print "Unknown error. Image skipped."
 						messager12345 = "Unknown error; skipped " + theimage
 						logger.error(messager12345)
+						filelist = [ f for f in os.listdir(".") if f.startswith(filename) ]
+						for fa in filelist: os.remove(fa)
 						
 				else:
 					print "Image skipped."

@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-sys.path.append("..")
 from PIL import Image
 import pyexiv2
 import cStringIO
