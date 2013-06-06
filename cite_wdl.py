@@ -20,12 +20,7 @@ class WDL(object):
 		self._get_web_details()
 	
 	def generate_cite_web_wrapper(self):
-		citation = unicode("""{{{{cite web
-|title={name}
-|url={url}
-|website=[[World Digital Library]]
-|date={date}
-|accessdate={accessdate}""".format(name=self.details['name'],url=self.url,date=self.details['date'],accessdate=self.date))
+		citation = unicode("""{{{{cite web\n|title={name}\n|url={url}\n|website=[[World Digital Library]]\n|date={date}\n|accessdate={accessdate}""").format(name=self.details['name'].decode('utf-8'),url=self.url.decode('utf-8'),date=self.details['date'].decode('utf-8'),accessdate=self.date.decode('utf-8'))
 		
 		if self.details['language'] != "English":
 			citation += """\n|language={0}""".format(self.details['language'])
