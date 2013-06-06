@@ -29,7 +29,7 @@ class ArchiveURLProcessor():
 			text = page.edit()
 			wikicode = mwparserfromhell.parse(text)
 			for template in wikicode.filter_templates():
-				if "cite web" in template.name:
+				if "cite web" in template.name and template.has_param('url') == False:
 					archiveurl = None
 					for param in template.params:
 						items = param.strip().split('=')
