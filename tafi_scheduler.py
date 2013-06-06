@@ -17,14 +17,14 @@ from datetime import date, timedelta
 
 class TAFIScheduler():
 
-	def __init__(self,week=datetime.datetime.now().isocalendar()[1]+1):
+	def __init__(self,week=datetime.datetime.now().isocalendar()[1]+1,override=False):
 		"""By default, week will be equal to next week, although
 		it can be redefined (in ISO week format).
 		"""
 		self.now = datetime.datetime.now()
 		self.week = week
 		self.holding_area_page = site.Pages["Wikipedia:Today's articles for improvement/Holding area"]
-		if self.has_this_week_been_done() == False:
+		if self.has_this_week_been_done() == False or override == True:
 			self.parse_holding(self.holding_area_page.edit())
 			self.holding_numbers(self.holding_contents_dict)
 			self.holding_sections_slots(self.holding_contents_dict)
@@ -55,7 +55,7 @@ class TAFIScheduler():
 		
 		useful_dict = {}
 		for section in sections:
-			nominations = re.findall(r'(\s*?\{\{TAFI nom[.\|].*?)\s*?(?=([^=]\{\{TAFI|\z))',unicode(section),re.IGNORECASE | re.DOTALL | re.UNICODE | re.M)
+			nominations = re.findall(r'(\s*?\{\{TAFI nom.*?\}\}.*?)\s*?(?=([^=]\{\{TAFI|\z|\=\=))',unicode(section),re.IGNORECASE | re.DOTALL | re.UNICODE | re.M)
 			real_noms = []
 			for nom in nominations:
 				if nom[0] != u'':
@@ -113,7 +113,7 @@ class TAFIScheduler():
 			percentage = int(100 * (float(value)/self.total_number_of_noms))
 			number_of_slots = int((.01 * percentage) * 10)
 			total_slots += number_of_slots
-			if total_slots < 10 and number_of_slots < 1:
+			if total_slots < 10 and number_of_slots < 1 and value > 0:
 				number_of_slots = 1
 				total_slots += number_of_slots
 			print "{0} has {1} slots.".format(key,number_of_slots)
@@ -157,7 +157,10 @@ class TAFIScheduler():
 		pagesforthisweek = []
 		
 		for nom in self.weekly_noms:
-			nom_title = re.findall(r"{{TAFI nom.*?|article=(.*?)\|",nom,re.IGNORECASE | re.DOTALL | re.UNICODE)[1].strip()
+			try:
+				nom_title = re.findall(r"{{TAFI nom.*?|article=(.*?)\|",nom,re.IGNORECASE | re.DOTALL | re.UNICODE)[1].strip()
+			except IndexError:
+				nom_title = re.findall(r"{{TAFI nom.*?|article=(.*?)(?:\||\}\})",nom,re.IGNORECASE | re.DOTALL | re.UNICODE)[0].strip()	
 			pagesforthisweek.append(nom_title)
 			
 		self.pagesforthisweek = pagesforthisweek
@@ -230,4 +233,4 @@ class TAFIScheduler():
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
-scheduler = TAFIScheduler()
+scheduler = TAFIScheduler(week=30,override=True)
