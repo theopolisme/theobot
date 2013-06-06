@@ -1,4 +1,5 @@
 #!/usr/bin/python
+sys.path.append("..")
 from PIL import Image
 from xml.dom import minidom
 import cStringIO
@@ -17,8 +18,6 @@ from theobot import password
 
 # CC-BY-SA Theopolisme
 # Task 1 on [[User:Theo's Little Bot]]
-
-sys.path.append("..")
 
 logger = logging.getLogger('resizer_auto')
 hdlr = logging.FileHandler('resizer_auto.log')

@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+sys.path.append("..")
 from PIL import Image
 import pyexiv2
 import cStringIO
@@ -16,8 +17,6 @@ import os
 
 # CC-BY-SA Theopolisme
 # Task 1 on [[User:Theo's Little Bot]] (subsidiary)
-
-sys.path.append("..")
 
 def metadata(source_path, dest_path, image):
 	"""This function moves the metadata
