@@ -17,6 +17,8 @@ import os
 # CC-BY-SA Theopolisme
 # Task 1 on [[User:Theo's Little Bot]] (subsidiary)
 
+sys.path.append("..")
+
 def metadata(source_path, dest_path, image):
 	"""This function moves the metadata
 	from the old image to the new, reduced
