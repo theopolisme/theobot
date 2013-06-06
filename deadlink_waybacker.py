@@ -42,28 +42,36 @@ class DeadLinkBot(object):
 				for template in ref_code.filter_templates():
 					if "cite web" in template.name and template.has_param('archiveurl') == False:
 						url = unicode(template.get('url').value.strip())
-						if requests.get(url).status_code != requests.codes.ok:
-							if template.has_param('accessdate'):
-								accessdate = parser.parse(str(template.get('accessdate').value))
-								wayback_date = accessdate.strftime("%Y%m%d%H%M%S")
-								r = requests.get("http://web.archive.org/web/{date}/{url}".format(date=wayback_date,url=url)) 
+						try: 
+							if requests.get(url).status_code != requests.codes.ok:
+								okay_to_edit = True
 							else:
-								r = requests.get("http://web.archive.org/web/form-submit.jsp", params={'url':url, 'type':'replay'})
-							print r.url
-							print r.status_code
-							if r.status_code == requests.codes.ok:
-								number_done += 1
-								updated = True
-								wayback_url = r.url
+								okay_to_edit = False
+								print "No need to add an archive, since the citations's URL currently works!"
+						except:
+							okay_to_edit = True
+						if template.has_param('accessdate'):
+							accessdate = parser.parse(str(template.get('accessdate').value))
+							wayback_date = accessdate.strftime("%Y%m%d%H%M%S")
+							r = requests.get("http://web.archive.org/web/{date}/{url}".format(date=wayback_date,url=url)) 
+						else:
+							r = requests.get("http://web.archive.org/web/form-submit.jsp", params={'url':url, 'type':'replay'})
+						print r.url
+						print r.status_code
+						if r.status_code == requests.codes.ok:
+							number_done += 1
+							updated = True
+							wayback_url = r.url
+							try:
 								wayback_date_object = datetime.strptime(wayback_url.split('/')[4],"%Y%m%d%H%M%S")
 								wayback_date = wayback_date_object.strftime('%d %B %Y')
-								template.add('archiveurl',wayback_url)
 								template.add('archivedate',wayback_date)
-							else:
-								print "{url} not archived in wayback machine.".format(url=url)
-								continue # this url was not archived by the wayback machine; nothing we can do here.
+							except ValueError:
+								print "Unable to fetch date...no worries, we have exception handing!"
+							template.add('archiveurl',wayback_url)
 						else:
-							print "No need to add an archive, since the citations's URL currently works!"
+							print "{url} not archived in wayback machine.".format(url=url)
+							continue # this url was not archived by the wayback machine; nothing we can do here.
 				for template in ref_code.filter_templates():
 					nameoftemp = template.name.lower()
 					if any(name in nameoftemp for name in self.deadlink_names) and updated == True:
@@ -74,9 +82,9 @@ class DeadLinkBot(object):
 				else:
 					pass
 			if self.DRYRUN == False and number_done > 0:
-				if bot.donenow("User:Theo's Little Bot/disable/deadlinks",donenow=self.donenow,donenow_div=5,shutdown=50) == True:
+				if bot.donenow("User:Theo's Little Bot/disable/deadlinks",donenow=self.donenow,donenow_div=5,shutdown=20) == True:
 					if bot.nobots(page=page.page_title) == True:
-						page.save(contents,summary="Adding archiveurl for {0} dead link{1}".format(number_done,'s' if number_done > 1 else ''))
+						page.save(contents,summary="Adding archiveurl for {0} dead link{1} ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/deadlinks|disable]])".format(number_done,'s' if number_done > 1 else ''))
 						print "{0} saved!".format(page.page_title)
 						self.donenow += 1
 					else:
