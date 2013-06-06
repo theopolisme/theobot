@@ -17,7 +17,7 @@ class EmptyCitationBot(object):
 
 	def __init__(self):
 		self.pages = []
-		for page in mwclient.listing.Category(site, 'Category:Pages with empty citations')
+		for page in mwclient.listing.Category(site, 'Category:Pages with empty citations'):
 			if page.namespace == 0:
 				self.pages.append(page)
 
