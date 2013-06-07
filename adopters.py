@@ -9,9 +9,6 @@ from time import mktime
 
 # CC-BY-SA Theopolisme
 
-page = site.Pages["Wikipedia:Adopt-a-user/Adoptee's Area/Adopters"]
-now = datetime.datetime.now()
-
 def active(user):
 	"""Returns True if a user is active (i.e., last edit withinin
 	XX months ago), False if inactive.
@@ -28,6 +25,13 @@ def active(user):
 			return True
 
 def main():
+	global site,now
+	site = mwclient.Site('en.wikipedia.org')
+	site.login(password.username, password.password)
+	now = datetime.datetime.now()
+
+	page = site.Pages["Wikipedia:Adopt-a-user/Adoptee's Area/Adopters"]
+
 	wikicode = mwparserfromhell.parse(page.edit())
 	for template in wikicode.filter_templates():
 		if "Wikipedia:Adopt-a-user/Adopter Profile" in template.name:
@@ -42,6 +46,4 @@ def main():
 
 if __name__ == '__main__':
 	print "Powered on."
-	site = mwclient.Site('en.wikipedia.org')
-	site.login(password.username, password.password)
 	main()
