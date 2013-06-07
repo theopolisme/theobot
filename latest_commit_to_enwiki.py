@@ -5,7 +5,7 @@ from datetime import datetime
 
 r = requests.get('https://api.github.com/repos/theopolisme/theobot/commits', auth=(password.githubuser, password.githubpassword))
 contents = r.json()
-message = contents[0][u'commit'][u'message']
+message = contents[0][u'commit'][u'message'].replace('\n\n','; ')
 committer = contents[0][u'commit'][u'committer'][u'name']
 date_str = contents[0][u'commit'][u'committer'][u'date']
 date = datetime.strptime(date_str,'%Y-%m-%dT%H:%M:%SZ')
