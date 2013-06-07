@@ -27,22 +27,23 @@ For all files in Category:Non-free images for NFUR review:
 global NONFREE_TAGS,RATIONALE_TEMPLATES,ALL_RATIONALE
 
 RATIONALE_TEMPLATES = [
-						"Non-free use rationale album cover",
-						"Non-free use rationale book cover",
-						"Non-free use rationale video cover",
-						"Non-free use rationale logo"
-						]
+				"Non-free use rationale album cover",
+				"Non-free use rationale book cover",
+				"Non-free use rationale video cover",
+				"Non-free use rationale logo"
+				]
+
 NONFREE_TAGS = [
 				"Non-free album cover",
 				"Non-free book cover",
 				"Non-free video cover",
 				"Non-free logo"
 				]
-ALL_RATIONALE = [
-				#!TODO
-				# needs to be a list of redirects to rationale templates
-				# probably an API call for this...could add it to theobot.bot
-				]
+
+ALL_RATIONALE = []
+ALL_RATIONALE.extend(RATIONALE_TEMPLATES)
+for name in RATIONALE_TEMPLATES:
+	ALL_RATIONALE += bot.redirects(name,namespace=10,pg_prefix="Template:",output='page_title')
 
 class NFURPage():
 	"""This class is used to represent a page

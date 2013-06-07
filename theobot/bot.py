@@ -123,3 +123,14 @@ def rollback(page,user,site):
 		rbtoken = token[u'query'][u'pages'][var][u'revisions'][0][u'rollbacktoken'] 
 		site.api(action='rollback',title=page,user=user,token=rbtoken)
 		print "Rollback success!"
+
+def redirects(name,namespace=None,pg_prefix='',output=None):
+        page = site.Pages[pg_prefix+name]
+        backlinks = page.backlinks(filterredir="redirects",namespace=namespace)
+        if output:
+            results = []
+            for page in backlinks:
+                results.append(eval("page."+output))
+            return results
+        else:
+            return backlinks
