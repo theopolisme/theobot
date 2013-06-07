@@ -42,17 +42,20 @@ class WDL(object):
 		(or if it was never updated), updates it."""
 		page = site.Pages["Template:Cite wdl/{0}".format(self.id)]
 		
-		if page.exists == True:
-			z = site.api(action='query',prop='revisions',rvprod='user',revids=page.revision)
-			for pageid in z['query']['pages'].items():
-				user = z['query']['pages'][unicode(pageid[0])]['revisions'][0]['user']
-		else:
-			user = u"Theo's Little Bot"
-
-		if user == u"Theo's Little Bot" or u"Theopolisme":
+		# ** Enable this block if you've pushed updates to the template syntax **
+		#if page.exists == True:
+		#	z = site.api(action='query',prop='revisions',rvprod='user',revids=page.revision)
+		#	for pageid in z['query']['pages'].items():
+		#		user = z['query']['pages'][unicode(pageid[0])]['revisions'][0]['user']
+		#else:
+		#	user = u"Theo's Little Bot"
+		#
+		#if user == u"Theo's Little Bot" or u"Theopolisme":
+		
+		if page.exists == False:
 			page.save(self.generate_cite_web_wrapper(),summary="[[WP:BOT|Bot]]: Expanding World Digital Library citation")
 		else:
-			print "Citation page for {0} was edited by someone other than me; must have been created manually.".format(self.id)
+			print "Citation page for {0} already exists; must have been created manually.".format(self.id)
 
 	def _get_web_details(self):
 		"""Given self.id, scrapes data from
