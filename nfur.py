@@ -1,28 +1,13 @@
 #! /usr/bin/env python
 
 from __future__ import unicode_literals
-import mwclient
-import mwparserfromhell
-from theobot import password
-from theobot import bot
 import sys
 
-"""
-__FUNCTION DETAILS__
+import mwclient
+import mwparserfromhell
 
-For all files in Category:Non-free images for NFUR review:
-	If image meets the following constraints:
-		- tagged with {{Non-free album cover}}{{Non-free book cover}}{{Non-free video cover}}{{Non-free logo}}
-		- only used in one article
-		- file must be used in an infobox
-		- file must be the only non-free file in the article
-	Then:
-		- on the image page:
-			- replace {{Non-free use rationale}} or {{Non-free use rationale 2}} with the correct one of the following (subst):
-				- {{Non-free use rationale album cover}} {{Non-free use rationale book cover}} {{Non-free use rationale video cover}} {{Non-free use rationale logo}}
-			- add "|image has rationale=yes" to {{Non-free album cover}}{{Non-free book cover}}{{Non-free video cover}}{{Non-free logo}}
-			- add {{Non-free autogen|bot=Theo's Little Bot}} to the image page
-"""
+from theobot import password
+from theobot import bot
 
 global NONFREE_TAGS,RATIONALE_TEMPLATES,ALL_RATIONALE
 
@@ -51,7 +36,7 @@ class NFURPage():
 	"""
 
 	def __init__(self,page):
-		self.page = page # this should be an image object
+		self.page = page # this is an image object
 		self.title = page.page_title
 		self.wikicode = mwparserfromhell.parse(page.edit())
 		if self.assert_okay() == True:
@@ -129,8 +114,12 @@ class NFURPage():
 		a fair-use rationale, using self.article.
 		"""
 		contents = unicode(self.wikicode)
+
+		for rationale in ALL_RATIONALE:
+			if contents.lower().find(rationale.lower()) != -1:
+				raise ValueError('{0} already has a fair-use rationale template.'.format(self.title))
 		if contents.lower().find(self.article.page_title.lower()) != -1  or contents.find("qualifies as fair use") != -1:
-			raise ValueError('{0} already has a fair-use rationale.'.format(self.title))
+			raise ValueError('{0} already has some that resemebles a fair-use rationale.'.format(self.title))
 		return True
 
 def main():
