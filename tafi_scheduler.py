@@ -233,4 +233,4 @@ class TAFIScheduler():
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
-scheduler = TAFIScheduler(week=30,override=True)
+scheduler = TAFIScheduler()

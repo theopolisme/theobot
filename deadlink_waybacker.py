@@ -92,10 +92,10 @@ class DeadLinkBot(object):
 				else:
 					pass
 			if self.DRYRUN == False and number_done > 0:
-				if bot.donenow("User:Theo's Little Bot/disable/deadlinks",donenow=self.donenow,donenow_div=5,shutdown=20) == True:
+				if bot.donenow("User:Theo's Little Bot/disable/deadlinks",donenow=self.donenow,donenow_div=5) == True:
 					if bot.nobots(page=page.page_title) == True:
 						try:
-							page.save(contents,summary="Adding archiveurl for {0} dead link{1} ([[WP:BOT|bot]] on trial - [[User:Theo's Little Bot/disable/deadlinks|disable]])".format(number_done,'s' if number_done > 1 else ''))
+							page.save(contents,summary="Adding archiveurl for {0} dead link{1} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/deadlinks|disable]])".format(number_done,'s' if number_done > 1 else ''))
 							print "{0} saved!".format(page.page_title)
 							self.donenow += 1
 						except mwclient.errors.EditError as e:
