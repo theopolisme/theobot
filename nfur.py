@@ -9,6 +9,8 @@ import mwparserfromhell
 from theobot import password
 from theobot import bot
 
+# CC-BY-SA Theopolisme
+
 global NONFREE_TAGS,RATIONALE_TEMPLATES,ALL_RATIONALE
 
 RATIONALE_TEMPLATES = [
@@ -51,7 +53,7 @@ class NFURPage():
 		"""
 		index = NONFREE_TAGS.index(self.imagetype)
 		template = RATIONALE_TEMPLATES[index]
-		self.wikicode = mwparserfromhell.parse("{{subst:"+template+"|Article="+self.article.page_title+"}}\n"+unicode(self.wikicode))
+		self.wikicode = mwparserfromhell.parse("{{"+template+"|Article="+self.article.page_title+"|Use=Infobox}}\n"+unicode(self.wikicode))
 
 	def add_image_has_rationale(self):
 		"""Add image_has_rationale parameter."""
