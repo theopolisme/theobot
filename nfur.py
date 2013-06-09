@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 import sys
+import re
 
 import mwclient
 import mwparserfromhell
@@ -41,6 +42,7 @@ class NFURPage():
 		self.page = page # this is an image object
 		self.title = page.page_title
 		self.wikicode = mwparserfromhell.parse(page.edit())
+		self.additionaldetails = {}
 		if self.assert_okay() == True:
 			print "{0} is ready for auto-review!".format(self.title)
 			self.add_rationale()
@@ -53,7 +55,12 @@ class NFURPage():
 		"""
 		index = NONFREE_TAGS.index(self.imagetype)
 		template = RATIONALE_TEMPLATES[index]
-		self.wikicode = mwparserfromhell.parse("{{"+template+"|Article="+self.article.page_title+"|Use=Infobox}}\n"+unicode(self.wikicode))
+		new_wikicode = "{{"+template+"|Article="+self.article.page_title+"|Use=Infobox"
+		for key,value in self.additionaldetails.items():
+			if value != None:
+				new_wikicode += "|{0}={1}".format(key,value)
+		new_wikicode += "}}\n"+unicode(self.wikicode)
+		self.wikicode = mwparserfromhell.parse(new_wikicode)
 
 	def add_image_has_rationale(self):
 		"""Add image_has_rationale parameter."""
@@ -85,6 +92,42 @@ class NFURPage():
 			if "infobox" in template.name.strip().lower():
 				contents = unicode(template)
 				if contents.find(self.title) != -1:
+					try:
+						self.additionaldetails['Artist'] = re.search("Artist\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
+					except AttributeError:
+						pass
+					try:
+						self.additionaldetails['Author'] = re.search("Author\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
+					except AttributeError:
+						pass
+					try:
+						self.additionaldetails['Cover_artist'] = re.search("Cover_artist\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
+					except AttributeError:
+						pass
+					try:
+						self.additionaldetails['Name'] = re.search("Name\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
+					except AttributeError:
+						pass
+					try:
+						self.additionaldetails['Publisher'] = re.search("Publisher\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
+					except AttributeError:
+						pass
+					try:
+						self.additionaldetails['Author'] = re.search("Author\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
+					except AttributeError:
+						pass
+					try:
+						self.additionaldetails['Label'] = re.search("Label\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
+					except AttributeError:
+						pass
+					try:
+						self.additionaldetails['Label'] = unicode(mwparserfromhell.parse(re.sub(r"<\s*br[\s*>|/]", " / ", self.additionaldetails['Label'], flags=re.U | re.IGNORECASE)).strip_code())
+					except AttributeError:
+						pass
+					try:
+						self.additionaldetails['Distributor'] = re.search("Distributor\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
+					except AttributeError:
+						pass
 					return True
 		raise ValueError('{0} is not used in an infobox in {1}.'.format(self.title,self.article))
 
