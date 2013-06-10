@@ -83,7 +83,7 @@ class NFURPage():
 			self._no_fur_already()
 			return True
 		except ValueError as e:
-			print "Error: ", e.encode('ascii', 'replace')
+			print "Error: ", unicode(e).encode('ascii', 'replace')
 			return False
 
 	def _infobox(self):
