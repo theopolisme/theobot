@@ -58,18 +58,20 @@ def complete_static_list():
 def remove_old_week_from_schedule():
 		"""Removes the previous, now completed week from the schedule
 		and moves it to archive."""
-		schedule = site.Pages["Wikipedia:Today's articles for improvement/Schedule/real"]
-		text = schedule.edit()
-		
-		old_schedule_contents = re.finall(r"""(;<big>\[\[Wikipedia:Today's articles for improvement/""" + str(now.year) + r"/" + str((now.isocalendar()[1])-1) + r"""\|.*?)\s*;<big>\[\[""", text)[0]
-		
-		new_text = re.sub(r""";<big>\[\[Wikipedia:Today's articles for improvement/""" + str(now.year) + r"/" + str((now.isocalendar()[1])-1) + r"""\|.*?;<big>\[\[""", r""";<big>\[\[""", text, re.IGNORECASE | re.DOTALL | re.UNICODE)
-		schedule.save(new_text,summary="[[WP:BOT|Bot]]: Removing completed week from schedule - week {0}.".format(str((now.isocalendar()[1])-1)))
+		try:
+			schedule = site.Pages["Wikipedia:Today's articles for improvement/Schedule/real"]
+			text = schedule.edit()
+			
+			old_schedule_contents = re.findall(r"""(;<big>\[\[Wikipedia:Today's articles for improvement/""" + str(now.year) + r"/" + str((now.isocalendar()[1])-1) + r"""\|.*?)\s*;<big>\[\[""", text)[0]
+			
+			new_text = re.sub(r""";<big>\[\[Wikipedia:Today's articles for improvement/""" + str(now.year) + r"/" + str((now.isocalendar()[1])-1) + r"""\|.*?;<big>\[\[""", r""";<big>\[\[""", text, re.IGNORECASE | re.DOTALL | re.UNICODE)
+			schedule.save(new_text,summary="[[WP:BOT|Bot]]: Removing completed week from schedule - week {0}.".format(str((now.isocalendar()[1])-1)))
 
-		schedule_archive = site.Pages["Wikipedia:Today's articles for improvement/Archives/{0} schedule".format(str(now.year))]
-		arch_text = schedule_archive.edit() + "\n\n" + old_schedule_contents
-		schedule_archive.save(arch_text,summary="[[WP:BOT|Bot]]: Moving completed week to archive - week {0}.".format(str((now.isocalendar()[1])-1)))
-
+			schedule_archive = site.Pages["Wikipedia:Today's articles for improvement/Archives/{0} schedule".format(str(now.year))]
+			arch_text = schedule_archive.edit() + "\n\n" + old_schedule_contents
+			schedule_archive.save(arch_text,summary="[[WP:BOT|Bot]]: Moving completed week to archive - week {0}.".format(str((now.isocalendar()[1])-1)))
+		except IndexError:
+			print "Oh, drat, someone already archived the old week. No harm done!"
 # Logs in to the site.
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
