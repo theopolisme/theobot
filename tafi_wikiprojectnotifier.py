@@ -77,13 +77,13 @@ class WikiProjectNotifier():
 		the WikiProject via its talk page.
 		"""
 		page = site.Pages['Wikipedia talk:WikiProject '+project]
-		if page.exists == True:
-			notification = u"""\n\n== One of your project's articles has been featured ==\n{{{{subst:TAFI project notice/bot|Article={article}|user=[[User:Theopolisme|Theopolisme]]}}}}""".format(article=article)
+		if page.exists == True and page.edit().find(article) == -1:
+			notification = u"""\n\n== One of your project's articles has been featured ==\n{{{{subst:TAFI project notice/bot|Article={article}|user=[[User:Theo's Little Bot|Theo's Little Bot]]}}}}""".format(article=article)
 			current_contents = page.edit()
 			page.save(current_contents+notification,summary="[[WP:BOT|Bot]]: Notifying WikiProject about [[{article}]] being selected as one of [[WP:TAFI|Today's articles for improvement]]".format(article=article))
 			print "Project notified!"
 		else:
-			print "I think we got a bad egg; [[{0}]] doesn't exist!".format(page.page_title)
+			print "I think we got a bad egg; [[{0}]] doesn't exist or they've already been notififed about this article!".format(page.page_title)
 
 # Logs in to the site.
 global site
