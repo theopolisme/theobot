@@ -80,7 +80,7 @@ class WikiProjectNotifier():
 		if page.exists == True:
 			notification = u"""\n\n== One of your project's articles has been featured ==\n{{{{subst:TAFI project notice/bot|Article={article}|user=[[User:Theopolisme|Theopolisme]]}}}}""".format(article=article)
 			current_contents = page.edit()
-			page.save(current_contents+notification,summary="Notifying WikiProject about [[{article}]] being selected as one of [[WP:TAFI|Today's articles for improvement]]".format(article=article))
+			page.save(current_contents+notification,summary="[[WP:BOT|Bot]]: Notifying WikiProject about [[{article}]] being selected as one of [[WP:TAFI|Today's articles for improvement]]".format(article=article))
 			print "Project notified!"
 		else:
 			print "I think we got a bad egg; [[{0}]] doesn't exist!".format(page.page_title)
