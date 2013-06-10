@@ -17,16 +17,18 @@ class EmptyCitationBot(object):
 
 	def __init__(self):
 		self.pages = []
+		self.donenow = 0
 		for page in mwclient.listing.Category(site, 'Category:Pages with empty citations'):
 			if page.namespace == 0:
 				self.pages.append(page)
 
 	def process_pages(self):
 		for page in self.pages:
-			if bot.donenow("User:Theo's Little Bot/disable/empty citations",donenow=donenow,donenow_div=5,shutdown=50) == True:
+			if bot.donenow("User:Theo's Little Bot/disable/empty citations",donenow=self.donenow,donenow_div=5) == True:
 				contents = page.edit()
 				new_contents = re.sub(r"""{{(citation|cite)}}(\.*)""", r"""\2{{citation needed|date={{subst:DATE}}}}""", contents, flags=re.UNICODE)
 				page.save(new_contents,summary="Converting empty {{[[Template:Citation|citation]]}} to {{[[Template:citation needed|citation needed]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/empty citations|disable]])")
+				self.donenow += 1
 			else:
 				sys.exit()
 
