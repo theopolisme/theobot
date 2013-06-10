@@ -96,37 +96,37 @@ class NFURPage():
 				contents = unicode(template)
 				if contents.find(self.title) != -1:
 					try:
-						self.additionaldetails['Artist'] = re.search("Artist\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
-					except AttributeError:
+						self.additionaldetails['Artist'] = template.get('Artist').value.strip_code()
+					except ValueError:
 						pass
 					try:
-						self.additionaldetails['Author'] = re.search("Author\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
-					except AttributeError:
+						self.additionaldetails['Author'] = template.get('Author').value.strip_code()
+					except ValueError:
 						pass
 					try:
-						self.additionaldetails['Cover_artist'] = re.search("Cover_artist\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
-					except AttributeError:
+						self.additionaldetails['Cover_artist'] = template.get('Cover_artist').value.strip_code()
+					except ValueError:
 						pass
 					try:
-						self.additionaldetails['Name'] = re.search("Name\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
-					except AttributeError:
+						self.additionaldetails['Name'] = template.get('Name').value.strip_code()
+					except ValueError:
 						pass
 					try:
-						self.additionaldetails['Publisher'] = re.search("Publisher\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
-					except AttributeError:
+						self.additionaldetails['Publisher'] = template.get('Publisher').value.strip_code()
+					except ValueError:
 						pass
 					try:
-						self.additionaldetails['Author'] = re.search("Author\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
-					except AttributeError:
+						self.additionaldetails['Author'] = template.get('Author').value.strip_code()
+					except ValueError:
 						pass
 					try:
-						self.additionaldetails['Label'] = re.search("Label\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
+						self.additionaldetails['Label'] = template.get('Label').value.strip_code()
 						self.additionaldetails['Label'] = unicode(mwparserfromhell.parse(re.sub(r"<\s*br[\s*>|/]", " / ", self.additionaldetails['Label'], flags=re.U | re.IGNORECASE)).strip_code())
-					except AttributeError:
+					except ValueError:
 						pass
 					try:
-						self.additionaldetails['Distributor'] = re.search("Distributor\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
-					except AttributeError:
+						self.additionaldetails['Distributor'] = template.get('Distributor').value.strip_code()
+					except ValueError:
 						pass
 					return True
 		raise ValueError('{0} is not used in an infobox in {1}.'.format(self.title,self.article))
