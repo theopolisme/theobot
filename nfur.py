@@ -118,9 +118,6 @@ class NFURPage():
 						pass
 					try:
 						self.additionaldetails['Label'] = re.search("Label\s*=\s*(.*)\s*",contents,flags=re.U | re.IGNORECASE).group(1)
-					except AttributeError:
-						pass
-					try:
 						self.additionaldetails['Label'] = unicode(mwparserfromhell.parse(re.sub(r"<\s*br[\s*>|/]", " / ", self.additionaldetails['Label'], flags=re.U | re.IGNORECASE)).strip_code())
 					except AttributeError:
 						pass
