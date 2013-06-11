@@ -164,7 +164,7 @@ class NFURPage():
 		for rationale in ALL_RATIONALE:
 			if contents.lower().find(rationale.lower()) != -1:
 				raise ValueError('{0} already has a fair-use rationale template.'.format(self.title))
-		if contents.lower().find(self.article.page_title.lower()) != -1  or contents.find("qualifies as fair use") != -1 or contents.find("Fair use in") != -1:
+		if contents.lower().find(self.article.page_title.lower()) != -1:
 			raise ValueError('{0} already has something that resemebles a fair-use rationale.'.format(self.title))
 		return True
 
