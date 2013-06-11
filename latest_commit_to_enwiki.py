@@ -12,7 +12,7 @@ date = datetime.strptime(date_str,'%Y-%m-%dT%H:%M:%SZ')
 date = date.strftime('%d %B %Y')
 url = contents[0][u'html_url']
 
-output = """\'\'\'Most recent update\'\'\': [{url} {message}] ({committer} - {date})""".format(url=url,message=message,committer=committer,date=date)
+output = u"""\'\'\'Most recent update\'\'\': [{url} {message}] ({committer} - {date})""".format(url=url,message=message,committer=committer,date=date)
 
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
