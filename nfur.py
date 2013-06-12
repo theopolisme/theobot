@@ -50,6 +50,7 @@ class NFURPage():
 			print "{0} is ready for auto-review!".format(self.title)
 			self.add_rationale()
 			self.add_image_has_rationale()
+			self.add_autogen()
 			self.final_contents = unicode(self.wikicode)
 
 	def add_rationale(self):
