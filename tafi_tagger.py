@@ -43,7 +43,7 @@ def complete_static_list():
 	final_contents = "== List of TAFIs ==\n<sup>Last updated ~~~~~</sup>__TOC__"
 	
 	contents  = site.Pages["Wikipedia:Today's articles for improvement/Schedule/real"].edit()
-	sections = re.findall(r"""(\[\[.*?);<big>""",contents,flags=re.U | re.DOTALL)
+	sections = re.findall(r"""(\[\[.*?)(?:;<big>|$)""",contents,flags=re.U | re.DOTALL)
 
 	for section in sections:
 		week = re.findall(r"""\|Week (.*?)\]\]""",section,flags=re.U)[0]
