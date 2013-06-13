@@ -10,9 +10,6 @@ from theobot import lists
 # CC-BY-SA Theopolisme
 # Task 6 on [[User:Theo's Little Bot]]
 
-# Defining list.
-pages = []
-
 def sokay(donenow):
 	"""This function calls a subfunction
 	of the theobot module, checkpage().
@@ -25,29 +22,15 @@ def sokay(donenow):
 	else:
 		return True
 
-def cats_recursive(category):
-	"""Recursively goes through
-	categories. Almost TOO
-	straightforward.
-	"""
-	for item in category:
-		if "Category" in str(item):
-			cats_recursive(item)
-		else:
-			x = item.page_title
-			pages.append(x)
-
 def editor(text):
 	"""This function does the bulk of the
 	work. Requires one parameter, text.
 	"""
 	
-	code_compare = mwparserfromhell.parse(text)
 	code = mwparserfromhell.parse(text)
 
 	for template in code.filter_templates():
-		print template.name
-		if template.name in ('WikiProject Classical Greece and Rome', 'Classical Greece and Rome', 'Classical greece and rome', 'WP Classics', 'WikiProject Classics', 'Classical greece and rome',  'Classical_greece_and_rome'):
+		if template.name.lower() in ('wikiproject classical greece and rome', 'classical greece and rome', 'classical greece and rome', 'wp classics', 'wikiproject classics', 'classical greece and rome',  'classical_greece_and_rome'):
 			try:
 				template.remove("importance")
 			except ValueError:
@@ -57,7 +40,7 @@ def editor(text):
 		if template.name in lists.bannershell_redirects:
 			x = template.get(1).value
 			for template in x.filter_templates():
-				if template.name in ('WikiProject Classical Greece and Rome', 'Classical Greece and Rome', 'Classical greece and rome', 'WP Classics', 'WikiProject Classics',  'Classical greece and rome', 'Classical_greece_and_rome'):
+				if template.name.lower() in ('wikiproject classical greece and rome', 'classical greece and rome', 'classical greece and rome', 'wp classics', 'wikiproject classics', 'classical greece and rome',  'classical_greece_and_rome'):
 					try:
 						template.remove("importance")
 					except ValueError:
@@ -66,7 +49,6 @@ def editor(text):
 					print "Importance value added."
 	
 	text = unicode(code)
-	
 	return text 
 
 def main():
@@ -74,42 +56,30 @@ def main():
 	site = mwclient.Site('en.wikipedia.org')
 	site.login(password.username, password.password)
 	
-	print "Getting category contents...this could take a while."
-	zam = mwclient.listing.Category(site, 'Category:Unknown-importance Classical Greece and Rome articles')
-	cats_recursive(zam)
+	print "Getting category contents..."
+	category = mwclient.listing.Category(site, 'Category:Unknown-importance Classical Greece and Rome articles')
 
-	print "Working on " + str(len(pages)) + " pages."
-	
 	donenow = 5
 	
-	search_strings = ['Papyrus Oxyrhynchus', 'Milecastle', 'Legio ', 'Classis ', 'Cohors ', 'Battle of ', 'Lex ', 'Arch of', 'Pons ', 'Pont ', 'Ponte ', 'Siege of ', 'Aqua ', 'bridge', 'Bridge', 'fort', 'Fort', 'villa', 'Villa', '(mythology)']
-
-	for page in pages:
-		okay = False
+	for page in category:
 		if sokay(donenow) == True:
-			for x in search_strings:
-				if page.find(x) != -1:
-					okay = True
-			if okay == True:
-				talk = u'Talk:' + page
-				print "Working on " + talk.encode('ascii', 'ignore')
-				page = site.Pages[talk]
+			if  page.namespace == 1:
+				print "Working on {0}".format(page.page_title.encode('ascii','replace'))
 				text = page.edit()
 				y = editor(text)
 				try:
 					page.save(y, summary = "Adding importance parameter to {{[[Template:WikiProject Classical Greece and Rome|WikiProject Classical Greece and Rome]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/greece|disable]])")
-					print talk.encode('ascii', 'ignore') + " saved."
+					print talk.encode('ascii', 'replace') + " saved."
 				except AttributeError:
 					print "Page save error; retrying."
 					try:
 						page.save(y, summary = "Adding importance parameter to {{[[Template:WikiProject Classical Greece and Rome|WikiProject Classical Greece and Rome]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/greece|disable]])")
-						print talk.encode('ascii', 'ignore') + " saved."
+						print talk.encode('ascii', 'replace') + " saved."
 					except AttributeError:
 						print "Page skipped due to unknown error."
 				donenow = donenow + 1
 			else:
-				# Page was not applicable.
-				pass
+				print "Skipping page...not in article space :/"
 		elif sokay(donenow) == False:
 			print "Aw, snap, we were disabled. Quitting in 3...2...1..."
 			donenow = donenow + 1
