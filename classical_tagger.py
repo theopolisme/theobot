@@ -69,12 +69,12 @@ def main():
 				y = editor(text)
 				try:
 					page.save(y, summary = "Adding importance parameter to {{[[Template:WikiProject Classical Greece and Rome|WikiProject Classical Greece and Rome]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/greece|disable]])")
-					print talk.encode('ascii', 'replace') + " saved."
+					print page.page_title.encode('ascii','replace') + " saved."
 				except AttributeError:
 					print "Page save error; retrying."
 					try:
 						page.save(y, summary = "Adding importance parameter to {{[[Template:WikiProject Classical Greece and Rome|WikiProject Classical Greece and Rome]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/greece|disable]])")
-						print talk.encode('ascii', 'replace') + " saved."
+						print page.page_title.encode('ascii','replace') + " saved."
 					except AttributeError:
 						print "Page skipped due to unknown error."
 				donenow = donenow + 1
