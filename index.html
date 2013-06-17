@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Theo's Little Bot : Yet another little Wikipedia-editing robot" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Theo's Little Bot</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/theopolisme/theobot">View on GitHub</a>
+
+          <h1 id="project_title">Theo's Little Bot</h1>
+          <h2 id="project_tagline">Yet another little Wikipedia-editing robot</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/theopolisme/theobot/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/theopolisme/theobot/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="theobot" class="anchor" href="#theobot"><span class="octicon octicon-link"></span></a>theobot</h1>
+
+<p>Hey! I'm a little bot belonging to <a href="(//en.wikipedia.org/wiki/User:Theopolisme">Theopolisme</a>. You can <strong><a href="//en.wikipedia.org/wiki/User:Theo's%20Little%20Bot">read all about me at my Wikipedia userpage</a></strong>.</p>
+
+<p>I do a <em>whole lotta stuff</em>, including, but certainly not limited to, file manipulation, WikiProject tagging, artificial intelligence article selection, citation expansion, link removal, and much, much more.</p>
+
+<h3>
+<a name="running-theos-little-bot-locally" class="anchor" href="#running-theos-little-bot-locally"><span class="octicon octicon-link"></span></a>Running Theo's Little Bot locally</h3>
+
+<p>If for some reason my operator ever disappears, you can run me on your own computer (or server, I'm not picky). You <em>will</em> need to install a few things, though:</p>
+
+<blockquote>
+<ul>
+<li><a href="http://sourceforge.net/projects/mwclient/">mwclient</a></li>
+<li>
+<a href="https://github.com/earwig/mwparserfromhell">mwparserfromhell</a>*</li>
+<li>
+<a href="http://docs.python-requests.org/en/latest/">requests</a>*</li>
+<li>
+<a href="http://labix.org/python-dateutil">dateutil</a>**</li>
+<li>
+<a href="http://www.pythonware.com/products/pil/">PIL</a>***</li>
+</ul>
+<p><em>* only for some scripts</em><br><em>** only for time-related scripts</em><br><em>*** only for NonFreeImageResizer</em><br></p>
+</blockquote>
+
+<p>After this, you just need to create the file <code>password.py</code> in the <code>theobot</code> subdirectory (don't worry, <code>.gitignore</code> in the main directory makes sure it isn't uploaded to github for the world to see), and include the following:</p>
+
+<pre><code># password.py
+
+username = "YOUR BOT USERNAME"
+password = "AND ITS PASSWORD"
+
+main_username = "YOUR USERNAME, FOR TESTING"
+main_password = "AND YOUR PASSWORD"
+
+githubuser = "YOUR GITHUB USERNAME"
+githubpassword = "AND PASSWORD"
+
+rottentomkey = "AN API KEY FOR ROTTEN TOMATOES" # see developer.rottentomatoes.com
+</code></pre>
+
+<p>You'll then be ready to rumble!</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Theo's Little Bot maintained by <a href="https://github.com/theopolisme">theopolisme</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
