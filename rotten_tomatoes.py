@@ -16,35 +16,35 @@ from theobot import bot
 global TODAY
 TODAY = datetime.datetime.now().strftime("%d %B %Y")
 
+global NONDECIMAL
+NONDECIMAL = re.compile(r'[^\d.]+',flags=re.U)
+
 class RotTomMovie():
-	def __init__(self,movie):
-		self.movie = movie
+	def __init__(self,imdbid):
+		self.imdbid = imdbid
 		self.results = {}
-		self.page = site.Pages[u'Template:Rotten Tomatoes score/'+movie]
+		self.page = site.Pages[u'Template:Rotten Tomatoes score/'+imdbid]
 		self.collect_data_api()
 
 	def collect_data_api(self):
 		"""Uses the Rotten Tomatoes API to fetch data.
 		This also starts up a bunch of other functions.
 		"""
-		payload = {'apikey':password.rottentomkey,'q':self.movie.replace('_',' '),'page_limit':1}
-		r = requests.get('http://api.rottentomatoes.com/api/public/v1.0/movies.json', params=payload)
+		ok_id = NONDECIMAL.sub('',self.imdbid)
+		payload = {'apikey':password.rottentomkey,'id':ok_id,'type':'imdb'}
+		r = requests.get('http://api.rottentomatoes.com/api/public/v1.0/movie_alias.json', params=payload)
 		jsonresults = r.json()
 		try:
-			self.url = jsonresults['movies'][0]['links']['alternate']
-			if self.url.find(self.movie) != -1:
-				ratings = jsonresults['movies'][0]["ratings"]
-				self.results['tomatometer'] = ratings["critics_score"]
-				self.collect_data_scraper(url=self.url)
-				self.citation_generation(title=jsonresults['movies'][0]['title'],year=jsonresults['movies'][0]['year'],url=self.url)
-				self.all_in_one()
-				self.wikipage_output()
-			else:
-				print "Drat, wrong movie. ABORT!"
-				self.page.save("{{error|The bot could not process this Rotten Tomatoes listing. Please [[User talk:Theopolisme|contact its operator]].",summary="[[WP:BOT|Bot]]: Updating Rotten Tomatoes data")
+			self.url = jsonresults['links']['alternate']
+			ratings = jsonresults["ratings"]
+			self.results['tomatometer'] = ratings["critics_score"]
+			self.collect_data_scraper(url=self.url)
+			self.citation_generation(title=jsonresults['title'],year=jsonresults['year'],url=self.url)
+			self.all_in_one()
+			self.wikipage_output()
 		except:
 			print "There were no movies matching this title...ABORT!"
-			self.page.save("{{error|There are no listings on Rotten Tomatoes for this title. Questions? [[User talk:Theopolisme|Contact Theopolisme]].",summary="[[WP:BOT|Bot]]: Updating Rotten Tomatoes data")
+			self.page.save("{{error|There are no listings on Rotten Tomatoes for this title. Questions? [[User talk:Theopolisme|Contact Theopolisme]].}}",summary="[[WP:BOT|Bot]]: Updating Rotten Tomatoes data")
 
 	def collect_data_scraper(self,url):
 		"""This uses some good old-fashioned web scraping to get the date we're after."""
@@ -80,8 +80,8 @@ def process_page(page):
 	wikicode = mwparserfromhell.parse(contents)
 	for template in wikicode.filter_templates():
 		if "rotten tomatoes score" in template.name.lower().strip():
-			movie = unicode(template.get(1).value)
-			RotTomMovie(movie=movie)
+			imdbid = unicode(template.get(1).value)
+			RotTomMovie(imdbid=imdbid)
 
 def get_pages():
 	"""Uses a maintenance category on wikipedia to 
