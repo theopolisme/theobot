@@ -35,7 +35,6 @@ class RotTomMovie():
 			if self.url.find(self.movie) != -1:
 				ratings = jsonresults['movies'][0]["ratings"]
 				self.results['tomatometer'] = ratings["critics_score"]
-				self.results['audience'] = ratings["audience_score"]
 				self.collect_data_scraper(url=self.url)
 				self.citation_generation(title=jsonresults['movies'][0]['title'],year=jsonresults['movies'][0]['year'],url=self.url)
 				self.all_in_one()
@@ -70,7 +69,6 @@ class RotTomMovie():
 	def wikipage_output(self):
 		"""Updates the on-wiki template for this particular film."""
 		contents = """{{#ifeq: {{{1|}}} |tomatometer|""" + unicode(self.results['tomatometer']) + """|}}<!--
--->{{#ifeq: {{{1|}}} |audience|""" + unicode(self.results['audience']) + """|}}<!--
 -->{{#ifeq: {{{1|}}} |citation|""" + self.results['citation'] + """|}}<!--
 -->{{#ifeq: {{{1|}}} |average_rating|""" + unicode(self.results['average_rating']) + """|}}<!--
 -->{{#ifeq: {{{1|}}} |number_of_reviews|""" + unicode(self.results['number_of_reviews']) + """|}}<!--
