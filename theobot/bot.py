@@ -125,12 +125,25 @@ def rollback(page,user,site):
 		print "Rollback success!"
 
 def redirects(name,namespace=None,pg_prefix='',output=None):
-        page = site.Pages[pg_prefix+name]
-        backlinks = page.backlinks(filterredir="redirects",namespace=namespace)
-        if output:
-            results = []
-            for page in backlinks:
-                results.append(eval("page."+output))
-            return results
-        else:
-            return backlinks
+    """This little function returns redirects to a particular page.
+    `output` can be defined as a particular detail about the pages you'd like
+    to return, rather than simply a list of mwclient.page.Page objects -- for example:
+
+    # DEFAULT BEHAVIOR; returns page objects
+    >>> redirects('Foo')
+    [<Page object 'Tra' for <Site object 'en.wikipedia.org/w/'>>, <Page object 'La' for <Site object 'en.wikipedia.org/w/'>>, <Page object 'Lalala' for <Site object 'en.wikipedia.org/w/'>>]
+
+    # OPTIONAL OUTPUT PARAMETER can return just the page_title, for example
+    >>> redirects('Foo',output='page_title')
+    ['Tra', 'La', 'Lalala']
+
+    """
+    page = site.Pages[pg_prefix+name]
+    backlinks = page.backlinks(filterredir="redirects",namespace=namespace)
+    if output:
+        results = []
+        for page in backlinks:
+            results.append(eval("page."+output))
+        return results
+    else:
+        return backlinks
