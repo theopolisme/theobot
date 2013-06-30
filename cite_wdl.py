@@ -18,9 +18,9 @@ class WDL(object):
 		self.id = id
 		self.date = datetime.datetime.now().strftime("%d %B %Y")
 		self._get_web_details()
-	
+
 	def generate_cite_web_wrapper(self):
-		citation = unicode("""{{{{cite web\n|title={name}\n|url={url}\n|website=[[World Digital Library]]\n|date={date}\n|accessdate={accessdate}""").format(name=self.details['name'].decode('utf-8'),url=self.url.decode('utf-8'),date=self.details['date'].decode('utf-8'),accessdate=self.date.decode('utf-8'))
+		citation = u"""{{{{cite web\n|title={name}\n|url={url}\n|website=[[World Digital Library]]\n|date={date}\n|accessdate={accessdate}""".format(name=self.details['name'].decode('UTF-8'),url=self.url.decode('UTF-8'),date=self.details['date'].decode('UTF-8'),accessdate=self.date)
 		
 		if self.details['language'] != "English":
 			citation += """\n|language={0}""".format(self.details['language'])
@@ -30,10 +30,9 @@ class WDL(object):
 		
 		current_author_num = 0
 		for creator in self.details['creators']:
-			creator = creator.decode('ascii', 'replace')
-			creator = re.sub(r"""(,\s*\d*-\d*|\(\d*-\d*\)|\s*\(.*?\d*.*?\)|,\s(born|died|circa)[\s\d\D]*)""", "", creator)
+			creator = re.sub(r"""(,\s*\d*-\d*|\(\d*-\d*\)|\s*\(.*?\d*.*?\)|,\s(born|died|circa)[\s\d\D]*)""", u"", creator.decode('UTF-8'),flags=re.U)
 			current_author_num += 1
-			citation += """\n|author{current_author_num}={creator}""".format(current_author_num=current_author_num,creator=creator)
+			citation += u"""\n|author"""+unicode(current_author_num)+u"""="""+creator
 		citation += """\n}}"""
 		return citation
 
@@ -43,15 +42,15 @@ class WDL(object):
 		page = site.Pages["Template:Cite wdl/{0}".format(self.id)]
 		
 		# ** Enable this block if you've pushed updates to the template syntax **
-		#if page.exists == True:
-		#	z = site.api(action='query',prop='revisions',rvprod='user',revids=page.revision)
-		#	for pageid in z['query']['pages'].items():
-		#		user = z['query']['pages'][unicode(pageid[0])]['revisions'][0]['user']
-		#else:
-		#	user = u"Theo's Little Bot"
+		# if page.exists == True:
+		# 	z = site.api(action='query',prop='revisions',rvprod='user',revids=page.revision)
+		# 	for pageid in z['query']['pages'].items():
+		# 		user = z['query']['pages'][unicode(pageid[0])]['revisions'][0]['user']
+		# else:
+		# 	user = u"Theo's Little Bot"
 		#
-		#if user == u"Theo's Little Bot" or u"Theopolisme":
-		
+		# if user == u"Theo's Little Bot" or u"Theopolisme":
+
 		if page.exists == False:
 			page.save(self.generate_cite_web_wrapper(),summary="[[WP:BOT|Bot]]: Expanding World Digital Library citation")
 		else:
@@ -76,34 +75,34 @@ class WDL(object):
 		except AttributeError:
 			details['creators'] = [] # in case we return nothing			
 		try:
-			country = re.search(r"""&gt; <a href=".*?"><span itemprop="addressCountry">(.*?)</span></a>\s*&gt;""", text, flags=re.DOTALL | re.UNICODE | re.M).groups(0)[0]
+			country = re.search(r"""&gt; <a href=".*?"><span itemprop="addressCountry">(.*?)</span></a>\s*&gt;""", text, flags=re.DOTALL | re.UNICODE | re.M).groups(0)[0].decode('UTF-8')
 		except AttributeError:
 			country = None
 		try:	
-			region = re.search(r"""&gt; <a href=".*?"><span itemprop="addressRegion">(.*?)</span></a>\s*""", text, flags=re.DOTALL | re.UNICODE | re.M).groups(0)[0]
+			region = re.search(r"""&gt; <a href=".*?"><span itemprop="addressRegion">(.*?)</span></a>\s*""", text, flags=re.DOTALL | re.UNICODE | re.M).groups(0)[0].decode('UTF-8')
 		except AttributeError:
 			region = None
 		try:
-			locality = re.search(r"""<a href=".*?"><span itemprop="addressLocality">(.*?)</span></a>""", text, flags=re.DOTALL | re.UNICODE | re.M).groups(0)[0]
+			locality = re.search(r"""<a href=".*?"><span itemprop="addressLocality">(.*?)</span></a>""", text, flags=re.DOTALL | re.UNICODE | re.M).groups(0)[0].decode('UTF-8')
 		except AttributeError:
 			locality = None
 		
 		if country:
-			country_data_all = ", [[{0}]]".format(country) if country != "United States of America" else ""
-			country_data_else= "[[{0}]]".format(country) if country != "United States of America" else ""
+			country_data_all = u", [[{0}]]".format(country) if country != "United States of America" else ""
+			country_data_else = u"[[{0}]]".format(country) if country != "United States of America" else ""
 		
 		if locality and region and country != None:
-			details['location'] = "[[{city}, {state}|{city}]], [[{state}]]{country}".format(city=locality,state = region,country=country_data_all)
+			details['location'] = u"[[{city}, {state}|{city}]], [[{state}]]{country}".format(city=locality,state=region,country=country_data_all)
 		elif locality and region != None and country == None:
-			details['location'] = "[[{city}, {state}|{city}]], [[{state}]]".format(city=locality,state = region)			
+			details['location'] = u"[[{city}, {state}|{city}]], [[{state}]]".format(city=locality,state = region)			
 		elif region and country != None and locality == None:
-			details['location'] = "[[{state}]], {country}".format(state=region,country=country_data_else)			
+			details['location'] = u"[[{state}]], {country}".format(state=region,country=country_data_else)			
 		elif locality != None and region and country  == None:
-			details['location'] = "[[{city}]]".format(city=locality)
+			details['location'] = u"[[{city}]]".format(city=locality)
 		elif region != None and locality and country  == None:
-			details['location'] = "[[{state}]]".format(city=region)
+			details['location'] = u"[[{state}]]".format(city=region)
 		elif country != None and locality and region  == None:
-			details['location'] = "{country}".format(country=country_data_else)
+			details['location'] = u"{country}".format(country=country_data_else)
 		else:
 			details['location'] = ""
 		
