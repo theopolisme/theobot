@@ -149,6 +149,8 @@ class NFURPage():
 		for i, page in enumerate(usage):
 			if i == 0:
 				self.article = page
+				self.article_redirects = bot.redirects(page.page_title,output='page_title')
+				self.article_redirects.append(page.page_title)
 				self.article_contents = mwparserfromhell.parse(page.edit())
 			else:
 				raise ValueError('{0} is used in more than one article!'.format(self.title))
@@ -165,8 +167,12 @@ class NFURPage():
 		for rationale in ALL_RATIONALE:
 			if contents.lower().find(rationale.lower()) != -1:
 				raise ValueError('{0} already has a fair-use rationale template.'.format(self.title))
-		if contents.lower().find(self.article.page_title.lower()) != -1:
-			raise ValueError('{0} already has something that resemebles a fair-use rationale.'.format(self.title))
+		
+		for wikilink in mwparserfromhell.parse(contents).filter_wikilinks():
+			if wikilink.title == self.article.title:
+				raise ValueError('{0} already includes a link to the page it is embedded in.'.format(self.title))
+			elif wikilink in self.article_redirects:
+				raise ValueError('{0} already includes a link to a page that redirects to the page it is embedded in.'.format(self.title))
 		return True
 
 def main():
