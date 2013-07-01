@@ -37,8 +37,14 @@ def process_page(page):
 	date = time.strftime("%d %B %Y",revision['timestamp'])
 
 	contents = page.edit()
+
+	if contents != "":
+		description = contents.split('==')[0].replace('\n',' ')
+	else:
+		description = ""
+
 	contents = u"""{{Information
-| description = 
+| description = """+description+"""
 | source      = {{own}}
 | date        = """ + date + """
 | author      = {{subst:usernameexpand|""" + user + """}}
