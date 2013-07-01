@@ -233,4 +233,5 @@ class TAFIScheduler():
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
-scheduler = TAFIScheduler()
+for i in range(1,7): #The scheduler will run for 6 weeks in advance
+	scheduler = TAFIScheduler(week=datetime.datetime.now().isocalendar()[1]+i)
