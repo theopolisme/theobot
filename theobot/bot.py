@@ -70,7 +70,7 @@ def what_transcludes(template):
 
     return result
 
-def nobots(page,user="Theo's Litle Bot"):
+def nobots(page,user="Theo's Litle Bot",task=None):
     """Checks a page to make sure
     bot is not denied. Returns true
     if bot is allowed. Two parameters accepted,
@@ -79,6 +79,11 @@ def nobots(page,user="Theo's Litle Bot"):
     print "Checking page!"
     page = site.Pages[page]
     text = page.edit()
+
+    if task == None:
+        task = user
+    else:
+        task = user+'-'+task
 
     text = mwparserfromhell.parse(text)
     for tl in text.filter_templates():
@@ -91,12 +96,12 @@ def nobots(page,user="Theo's Litle Bot"):
         if param.name == 'allow':
             if ''.join(bots) == 'none': return False
             for bot in bots:
-                if bot in (user, 'all'):
+                if bot in (user, task, 'all'):
                     return True
         elif param.name == 'deny':
             if ''.join(bots) == 'none': return True
             for bot in bots:
-                if bot in (user, 'all'):
+                if bot in (user, task, 'all'):
                     return False
     return False
 

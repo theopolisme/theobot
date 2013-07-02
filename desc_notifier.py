@@ -94,7 +94,7 @@ def notify(user):
 	"""
 	usertalk = 'User talk:' + user
 	if already_told(user) == False:
-		if bot.nobots(page=usertalk) == True:
+		if bot.nobots(page=usertalk,task='desc') == True:
 			print "We're cleared to edit."
 			if notified_already(user) == True:
 				print "User hasn't already been notified!"
