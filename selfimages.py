@@ -39,7 +39,8 @@ def process_page(page):
 	contents = page.edit()
 
 	if contents != "":
-		description = contents.split('==')[0].replace('\n',' ')
+		description = re.sub(r"==(.*?)==","",contents,flags=re.U|re.DOTALL)
+		description = description.replace('\n',' ').strip()
 	else:
 		description = ""
 
