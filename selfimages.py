@@ -40,6 +40,7 @@ def process_page(page):
 
 	if contents != "":
 		description = re.sub(r"==(.*?)==","",contents,flags=re.U|re.DOTALL)
+		description = re.sub(r"{{(.*?)}}","",contents,flags=re.U|re.DOTALL)
 		description = description.replace('\n',' ').strip()
 	else:
 		description = ""
