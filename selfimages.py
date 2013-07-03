@@ -85,7 +85,7 @@ def process_page(page):
 | description = """+description+"""
 | source      = {{own}}
 | date        = """ + date + """
-| author      = {{subst:usernameexpand|""" + user + """}}
+| author      = {{subst:usernameexpand|""" + user.replace(" ","_") + """}}
 }}\n""" + contents
 
 	global donenow
