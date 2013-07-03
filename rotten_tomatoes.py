@@ -5,6 +5,7 @@ import datetime
 import time
 import pickle
 import re
+import hashlib
 
 import mwclient
 import requests
@@ -21,11 +22,19 @@ TODAY = datetime.datetime.now().strftime("%d %B %Y")
 global NONDECIMAL
 NONDECIMAL = re.compile(r'[^\d.]+',flags=re.U)
 
+global UPDATED_SCORES
+try:
+	UPDATED_SCORES = pickle.load(open("rotten_tomatoes_scores.p","rb"))
+except IOError:
+	print "The score pickle didn't exist, so starting 'fresh'...haha, get it? ...<crickets>"
+	UPDATED_SCORES = {}
+
+
 global UPDATED_IDS
 try:
-	UPDATED_IDS = pickle.load(open("rotten_tomatoes.p","rb"))
+	UPDATED_IDS = pickle.load(open("rotten_tomatoes_updated.p","rb"))
 except IOError:
-	print "The pickle didn't exist, so starting 'fresh'...haha, get it? ...<crickets>"
+	print "The last-updated pickle didn't exist, so starting 'fresh'...haha, get it? ...<crickets>"
 	UPDATED_IDS = {}
 
 class RotTomMovie():
@@ -50,7 +59,23 @@ class RotTomMovie():
 			self.collect_data_scraper(url=self.url)
 			self.citation_generation(title=jsonresults['title'],year=jsonresults['year'],url=self.url)
 			self.all_in_one()
-			self.wikipage_output()
+
+			ok = False
+			sc_hash = hashlib.md5(repr(self.results)).hexdigest()
+			try:
+				if sc_hash != UPDATED_SCORES[self.imdbid]:
+					UPDATED_SCORES[self.imdbid] = sc_hash
+					ok = True
+				else:
+					print "The scores haven't changed, so not updating."
+			except KeyError:
+				print "This is the first time we've processed this movie."
+				UPDATED_SCORES[self.imdbid] = sc_hash
+				ok = True
+
+			if ok == True:
+				self.wikipage_output()
+
 		except:
 			print "There were no movies matching this title...ABORT!"
 			self.page.save("{{error|There are no listings on Rotten Tomatoes for this title. Questions? [[User talk:Theopolisme|Contact Theopolisme]].}}",summary="[[WP:BOT|Bot]]: Updating Rotten Tomatoes data")
@@ -94,10 +119,9 @@ def process_page(page):
 			except ValueError:
 				continue # if it doesn't designate an IMDB id, we don't want it
 			try:
-				if UPDATED_IDS[imdbid] + 432000 < time.time(): # 7 days in seconds
+				if UPDATED_IDS[imdbid] + 432000 < time.time(): # 5 days in seconds
 					UPDATED_IDS[imdbid] = time.time()
 					RotTomMovie(imdbid=imdbid)
-					pickle.dump(UPDATED_IDS,open("rotten_tomatoes.p","wb"))
 				else:
 					print "IMDB id #{} has already been updated in the past 5 days.".format(imdbid)
 			except KeyError:
@@ -120,7 +144,8 @@ def main():
 		process_page(page)
 
 	print "And we're done -- pickling!"
-	pickle.dump(UPDATED_IDS,open("rotten_tomatoes.p","wb"))
+	pickle.dump(UPDATED_IDS,open("rotten_tomatoes_updated.p","wb"))
+	pickle.dump(UPDATED_SCORES,open("rotten_tomatoes_scores.p","wb"))
 
 print "Powered on."
 global site
