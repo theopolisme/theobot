@@ -2,6 +2,8 @@
 
 from __future__ import unicode_literals
 import datetime
+import time
+import pickle
 import re
 
 import mwclient
@@ -18,6 +20,13 @@ TODAY = datetime.datetime.now().strftime("%d %B %Y")
 
 global NONDECIMAL
 NONDECIMAL = re.compile(r'[^\d.]+',flags=re.U)
+
+global UPDATED_IDS
+try:
+	UPDATED_IDS = pickle.load(open("rotten_tomatoes.p","rb"))
+except IOError:
+	print "The pickle didn't exist, so starting 'fresh'...haha, get it? ...<crickets>"
+	UPDATED_IDS = {}
 
 class RotTomMovie():
 	def __init__(self,imdbid):
@@ -80,10 +89,23 @@ def process_page(page):
 	wikicode = mwparserfromhell.parse(contents)
 	for template in wikicode.filter_templates():
 		if "rotten tomatoes score" in template.name.lower().strip():
-			imdbid = unicode(template.get(1).value)
-			RotTomMovie(imdbid=imdbid)
+			try:
+				imdbid = unicode(template.get(1).value)
+			except ValueError:
+				continue # if it doesn't designate an IMDB id, we don't want it
+			try:
+				if UPDATED_IDS[imdbid] + 432000 < time.time(): # 7 days in seconds
+					UPDATED_IDS[imdbid] = time.time()
+					RotTomMovie(imdbid=imdbid)
+					pickle.dump(UPDATED_IDS,open("rotten_tomatoes.p","wb"))
+				else:
+					print "IMDB id #{} has already been updated in the past 5 days.".format(imdbid)
+			except KeyError:
+				print "IMDB id #{} wasn't listed in the pickle, so adding it.".format(imdbid)
+				UPDATED_IDS[imdbid] = time.time()
+				RotTomMovie(imdbid=imdbid)
 
-def get_pages():
+def main():
 	"""Uses a maintenance category on wikipedia to 
 	get a list of pages and then processes them.
 	"""
@@ -97,10 +119,13 @@ def get_pages():
 	for page in cat:
 		process_page(page)
 
+	print "And we're done -- pickling!"
+	pickle.dump(UPDATED_IDS,open("rotten_tomatoes.p","wb"))
+
 print "Powered on."
 global site
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
 if __name__ == '__main__':
-	get_pages()
+	main()
