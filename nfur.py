@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 from __future__ import unicode_literals
+import datetime
 import sys
 import re
 
@@ -81,6 +82,7 @@ class NFURPage():
 		conditions for processing.
 		"""
 		try:
+			self._month_old()
 			self._tagged()
 			self._usage()
 			self._infobox()
@@ -89,6 +91,14 @@ class NFURPage():
 		except ValueError as e:
 			print "Error: ", unicode(e).encode('ascii', 'replace')
 			return False
+
+	def _month_old(self):
+		"""Verifies that the image is at least a month old."""
+		timestamp = self.page.imagehistory().next()[u'timestamp']
+		if datetime.datetime.now() - datetime.datetime(*timestamp[:6]) > datetime.timedelta(30):
+			return True
+		else:
+			raise ValueError("{} was modified less than 30 days ago.".format(self.title))
 
 	def _infobox(self):
 		"""Verifies that the image is used in an infobox."""
