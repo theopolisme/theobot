@@ -3,8 +3,14 @@
 from __future__ import unicode_literals
 import sys
 import time
+import os
+import cStringIO
 
 import mwclient
+import requests
+
+from PIL import Image
+from PIL.ExifTags import TAGS
 
 from theobot import password
 from theobot import bot
@@ -26,6 +32,32 @@ def main():
 		else:
 			print "skipping {0}".format(page.page_title)
 
+def get_exif_date(image):
+	"""Given a filename, downloads the file, gets its
+	EXIF creation date, and returns it.
+	"""
+	try:
+		response = requests.get(image.imageinfo['url'])
+	except AttributeError:
+		return None # It wasn't even a file to begin with
+
+	imageobj = cStringIO.StringIO(response.content)
+
+	result = None
+	try:
+		i = Image.open(imageobj)
+		info = i._getexif()
+		for tag, value in info.items():
+			if result == None:
+				decoded = TAGS.get(tag, tag)
+				if decoded == "DateTime":
+					result = time.strptime(value, "%Y:%m:%d %H:%M:%S")
+					break
+	except AttributeError:
+		pass #This means that the image didn't have an EXIF data
+
+	return result
+
 def process_page(page):
 	"""Given an image object, gets its uploader and
 	its upload date, fills in {{Information}} for it,
@@ -33,8 +65,12 @@ def process_page(page):
 	"""
 	print "processing {0}".format(page.page_title)
 	revision =  page.revisions(dir='newer').next()
+
 	user = revision['user']
-	date = time.strftime("%d %B %Y",revision['timestamp'])
+
+	date = get_exif_date(page)
+	if date == None:
+		date = time.strftime("%d %B %Y",revision['timestamp'])
 
 	contents = page.edit()
 
