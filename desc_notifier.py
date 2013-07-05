@@ -69,7 +69,7 @@ def notified_already(user):
 
 def already_told(user):
 	"""This checks if the user has been
-	already notified in the past three
+	already notified in the past twenty
 	days.
 	"""
 	now = datetime.datetime.now()
@@ -80,11 +80,11 @@ def already_told(user):
 		return False
 	lop = lop + 1
 	xyz = users_notified[lop]
-	if (now - xyz) > datetime.timedelta(days=7):
-		print "Time greater than 7 days, so we can renotify."
+	if (now - xyz) > datetime.timedelta(days=20):
+		print "Time greater than 20 days, so we can renotify."
 		return False
 	else:
-		print "User already notified in 7 days."
+		print "User already notified in the last 20 days."
 		return True
 
 def notify(user):
