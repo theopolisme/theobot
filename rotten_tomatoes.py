@@ -29,7 +29,6 @@ except IOError:
 	print "The score pickle didn't exist, so starting 'fresh'...haha, get it? ...<crickets>"
 	UPDATED_SCORES = {}
 
-
 global UPDATED_IDS
 try:
 	UPDATED_IDS = pickle.load(open("rotten_tomatoes_updated.p","rb"))
@@ -110,6 +109,7 @@ class RotTomMovie():
 		self.page.save(contents,"[[WP:BOT|Bot]]: Updating Rotten Tomatoes data")
 
 def process_page(page):
+	"""Parse a page for all of its IMDB ids."""
 	contents = page.edit()
 	wikicode = mwparserfromhell.parse(contents)
 	for template in wikicode.filter_templates():
@@ -118,28 +118,33 @@ def process_page(page):
 				imdbid = unicode(template.get(1).value)
 			except ValueError:
 				continue # if it doesn't designate an IMDB id, we don't want it
-			try:
-				if UPDATED_IDS[imdbid] + 432000 < time.time(): # 5 days in seconds
-					UPDATED_IDS[imdbid] = time.time()
-					RotTomMovie(imdbid=imdbid)
-				else:
-					print "IMDB id #{} has already been updated in the past 5 days.".format(imdbid)
-			except KeyError:
-				print "IMDB id #{} wasn't listed in the pickle, so adding it.".format(imdbid)
-				UPDATED_IDS[imdbid] = time.time()
-				RotTomMovie(imdbid=imdbid)
+			update_id(imdbid)
+
+def update_id(imdbid):
+	"""If the id hasn't been updated in the past 5 days, re-calculate and update
+	its information.
+	"""
+	try:
+		if UPDATED_IDS[imdbid] + 432000 < time.time(): # 5 days in seconds
+			UPDATED_IDS[imdbid] = time.time()
+			RotTomMovie(imdbid=imdbid)
+		else:
+			print "IMDB id #{} has already been updated in the past 5 days.".format(imdbid)
+	except KeyError:
+		print "IMDB id #{} wasn't listed in the pickle, so adding it.".format(imdbid)
+		UPDATED_IDS[imdbid] = time.time()
+		RotTomMovie(imdbid=imdbid)
 
 def main():
 	"""Uses a maintenance category on wikipedia to 
 	get a list of pages and then processes them.
 	"""
+	print "Updating articles already using {{Rotten Tomatoes score}}"
+	for imdbid in UPDATED_IDS:
+		update_id(imdbid)
+
 	print "Processing new articles using {{Rotten Tomatoes score}}"
 	cat = mwclient.listing.Category(site, 'Category:Pages with incomplete Rotten Tomatoes embeds')
-	for page in cat:
-		process_page(page)
-
-	print "Updating articles using {{Rotten Tomatoes score}}"
-	cat = mwclient.listing.Category(site, 'Category:Pages with Rotten Tomatoes embeds')
 	for page in cat:
 		process_page(page)
 
