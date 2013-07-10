@@ -59,16 +59,7 @@ def what_transcludes(template):
     """
     templatename = 'Template:' + template
     results = mwclient.listing.List(site=site,list_name='embeddedin',prefix='ei',eititle=templatename)
-    result = []
-    
-    for x in results:
-        yubba = unicode(x['title'])
-        yubba = re.sub('File.*?:', '', yubba)
-        yubba = re.sub('Template.*?:', '', yubba)
-        yubba = re.sub('Talk:', '', yubba)
-        result.append(yubba)
-
-    return result
+    return results
 
 def nobots(page,user="Theo's Litle Bot",task=None):
     """Checks a page to make sure

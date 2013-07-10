@@ -145,14 +145,18 @@ def main():
 
 	global to_notify
 	to_notify = {}
-	
 
 	global picklefile_write
 	picklefile_write = open("bsr_notified.txt", 'w')
 
-	files = bot.what_transcludes('Bsr')
+	raw_files = bot.what_transcludes('Bsr')
+	files = []
+	for image in raw_files:
+		imagen = re.sub('File.*?:', '', image['title'])
+		files.append(imagen)
 	
-	
+	print files
+
 	global total_done_now
 	total_done_now = 0
 	

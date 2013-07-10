@@ -177,7 +177,11 @@ def main():
 	global picklefile_write
 	picklefile_write = open("users_notified.txt", 'w')
 
-	files = bot.what_transcludes('Description missing')
+	raw_files = bot.what_transcludes('Description missing')
+	files = []
+	for image in raw_files:
+		imagen = re.sub('File.*?:', '', image['title'])
+		files.append(imagen)
 
 	global total_done_now
 	total_done_now = 0
