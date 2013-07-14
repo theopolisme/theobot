@@ -46,9 +46,9 @@ def main():
 
 	print "And we're live."
 	connection = MySQLdb.connect(
-	    host = 'enwiki.labsdb',
-	    db = 'enwiki_p',
-	    read_default_file = '~/replica.my.cnf'
+		host = 'enwiki.labsdb',
+		db = 'enwiki_p',
+		read_default_file = '~/replica.my.cnf'
 	)
 
 	# The script runs in 500 article increments.
@@ -70,7 +70,10 @@ def main():
 
 	for title in cursor.fetchall():
 		print "Processing {}".format(title)
-		process(site.Pages[title])
+		if bot.nobots(page=title,task='tracking') == True:
+			process(site.Pages[title])
+		else:
+			print "Bot was denied, boo hoo."
 
 if __name__ == '__main__':
 	main()
