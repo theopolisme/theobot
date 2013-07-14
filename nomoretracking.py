@@ -11,6 +11,7 @@ from theobot import password
 
 from bs4 import BeautifulSoup
 import requests
+import MySQLdb
 
 import difflib
 
@@ -38,8 +39,38 @@ def process(page):
 	print "---------"
 	page.save(contents,"[[WP:BOT|Bot]]: Removing Google Analytics tracking codes")
 
-global site
-site = mwclient.Site('en.wikipedia.org')
-site.login(password.username, password.password)
+def main():
+	global site
+	site = mwclient.Site('en.wikipedia.org')
+	site.login(password.username, password.password)
 
-process(site.Pages['User:Theopolisme/Bay 1']) # debugging
+	print "And we're live."
+	connection = MySQLdb.connect(
+	    host = 'enwiki.labsdb',
+	    db = 'enwiki_p',
+	    read_default_file = '~/replica.my.cnf'
+	)
+
+	# The script runs in 500 article increments.
+	# In other words, in each run, it will process
+	# and fix 500 articles and then stop.
+	# !todo figure out how long a run takes vs replag
+	# and then optimize crontab
+	cursor = connection.cursor()
+	query = """\
+	SELECT page_title
+	FROM externallinks
+	JOIN page
+	ON page_id = el_from
+	WHERE el_to LIKE "%&utm_%=%"
+	AND page_namespace = 0
+	LIMIT 500;
+	"""
+	cursor.execute(query)
+
+	for title in cursor.fetchall():
+		print "Processing {}".format(title)
+		process(site.Pages[title])
+
+if __name__ == '__main__':
+	main()
