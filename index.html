@@ -1,36 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Theo's Little Bot : Yet another little Wikipedia-editing robot" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Theo's Little Bot by theopolisme</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <title>Theo's Little Bot</title>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/theopolisme/theobot">View on GitHub</a>
-
-          <h1 id="project_title">Theo's Little Bot</h1>
-          <h2 id="project_tagline">Yet another little Wikipedia-editing robot</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/theopolisme/theobot/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/theopolisme/theobot/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+    <div class="wrapper">
+      <header>
+        <h1>Theo's Little Bot</h1>
+        <p>Yet another little Wikipedia-editing robot</p>
+        <p class="view"><a href="https://github.com/theopolisme/theobot">View the Project on GitHub <small>theopolisme/theobot</small></a></p>
+        <ul>
+          <li><a href="https://github.com/theopolisme/theobot/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/theopolisme/theobot/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/theopolisme/theobot">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
         <h1>
 <a name="theobot" class="anchor" href="#theobot"><span class="octicon octicon-link"></span></a>theobot</h1>
 
@@ -54,8 +50,10 @@
 <a href="http://labix.org/python-dateutil">dateutil</a>**</li>
 <li>
 <a href="http://www.pythonware.com/products/pil/">PIL</a>***</li>
+<li>
+<a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a>****</li>
 </ul>
-<p><em>* only for some scripts</em><br><em>** only for time-related scripts</em><br><em>*** only for NonFreeImageResizer</em><br></p>
+<p><em>* only for some scripts</em><br><em>** only for time-related scripts</em><br><em>*** only for NonFreeImageResizer</em><br><em>*** only for HTML scraping scripts</em><br></p>
 </blockquote>
 
 <p>After this, you just need to create the file <code>password.py</code> in the <code>theobot</code> subdirectory (don't worry, <code>.gitignore</code> in the main directory makes sure it isn't uploaded to github for the world to see), and include the following:</p>
@@ -77,16 +75,11 @@ rottentomkey = "AN API KEY FOR ROTTEN TOMATOES" # see developer.rottentomatoes.c
 <p>You'll then be ready to rumble!</p>
       </section>
     </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Theo's Little Bot maintained by <a href="https://github.com/theopolisme">theopolisme</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
+    <footer>
+      <p>Project maintained by <a href="https://github.com/theopolisme">theopolisme</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
-
   </body>
 </html>
