@@ -5,6 +5,7 @@ import sys
 import time
 import os
 import cStringIO
+import re
 
 import mwclient
 import requests
@@ -52,9 +53,10 @@ def get_exif_date(image):
 				decoded = TAGS.get(tag, tag)
 				if decoded == "DateTime":
 					result = time.strptime(value, "%Y:%m:%d %H:%M:%S")
+					result = time.strftime("%d %B %Y",result)
 					break
-	except AttributeError:
-		pass #This means that the image didn't have an EXIF data
+	except:
+		pass #This means that the image didn't have any EXIF data
 
 	return result
 
@@ -75,8 +77,8 @@ def process_page(page):
 	contents = page.edit()
 
 	if contents != "":
-		description = re.sub(r"==(.*?)==","",contents,flags=re.U|re.DOTALL)
-		description = re.sub(r"{{(.*?)}}","",contents,flags=re.U|re.DOTALL)
+		description = re.sub(r"={1,5}[^=]*={1,5}","",contents,flags=re.U|re.DOTALL) # remove all headers
+		description = re.sub(r"{{.*?}}","",description,flags=re.U|re.DOTALL) # remove all templates
 		description = description.replace('\n',' ').strip()
 	else:
 		description = ""
@@ -84,7 +86,7 @@ def process_page(page):
 	contents = u"""{{Information
 | description = """+description+"""
 | source      = {{own}}
-| date        = """ + date + """
+| date        = """ + unicode(date) + """
 | author      = {{subst:usernameexpand|""" + user.replace(" ","_") + """}}
 }}\n""" + contents
 
