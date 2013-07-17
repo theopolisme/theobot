@@ -32,7 +32,7 @@ def process(page):
 				date = parser.parser().parse(pub_date_raw,None)
 				if date is None or date.year is None:
 					if pub_date_raw.find("<!-- Date published") == -1:
-						template.add('publication_date',pub_date_raw+" [[Category:Poem publication dates needing manual review]]")
+						template.add('publication_date',pub_date_raw+" [[Category:Infoboxes needing manual conversion to use start date]]")
 						#page.save(unicode(wikicode),'[[WP:BOT|Bot]]: Tagging unparsable publication_date')
 						print "Tagging unparsable publication_date"
 						continue
