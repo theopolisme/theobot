@@ -79,7 +79,7 @@ def process_page(page):
 	if contents != "":
 		description = re.sub(r"={1,5}[^=]*={1,5}","",contents,flags=re.U|re.DOTALL) # remove all headers
 		description = re.sub(r"{{.*?}}","",description,flags=re.U|re.DOTALL) # remove all templates
-		description = description.replace('\n',' ').strip()
+		description = description.replace('\n','<br />').strip()
 	else:
 		description = ""
 
