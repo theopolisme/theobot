@@ -6,6 +6,7 @@ import time
 import pickle
 import re
 import hashlib
+import HTMLParser
 
 import mwclient
 import requests
@@ -21,6 +22,9 @@ TODAY = datetime.datetime.now().strftime("%d %B %Y")
 
 global NONDECIMAL
 NONDECIMAL = re.compile(r'[^\d.]+',flags=re.U)
+
+global HPARSER
+HPARSER = HTMLParser.HTMLParser()
 
 global UPDATED_SCORES
 try:
@@ -52,13 +56,13 @@ class RotTomMovie():
 		r = requests.get('http://api.rottentomatoes.com/api/public/v1.0/movie_alias.json', params=payload)
 		jsonresults = r.json()
 		try:
+			self.title = jsonresults['title']
 			self.url = jsonresults['links']['alternate']
 			ratings = jsonresults["ratings"]
 			self.results['tomatometer'] = ratings["critics_score"]
 			self.collect_data_scraper(url=self.url)
-			self.citation_generation(title=jsonresults['title'],year=jsonresults['year'],url=self.url)
+			self.citation_generation(title=self.title,year=jsonresults['year'],url=self.url)
 			self.all_in_one()
-
 			ok = False
 			sc_hash = hashlib.md5(repr(self.results)).hexdigest()
 			try:
@@ -71,10 +75,8 @@ class RotTomMovie():
 				print "This is the first time we've processed this movie."
 				UPDATED_SCORES[self.imdbid] = sc_hash
 				ok = True
-
 			if ok == True:
 				self.wikipage_output()
-
 		except:
 			print "There were no movies matching this title...ABORT!"
 			self.page.save("{{error|There are no listings on Rotten Tomatoes for this title. Questions? [[User talk:Theopolisme|Contact Theopolisme]].}}",summary="[[WP:BOT|Bot]]: Updating Rotten Tomatoes data")
@@ -83,8 +85,25 @@ class RotTomMovie():
 		"""This uses some good old-fashioned web scraping to get the date we're after."""
 		r = requests.get(url)
 		contents = r.text
-		self.results['average_rating'] = re.findall(r"Average Rating: <span>(.*?)</span><br />",contents,flags=re.U|re.DOTALL)[0]
-		self.results['number_of_reviews'] = re.findall(r"""Reviews Counted: <span itemprop="reviewCount">(.*?)</span><br />""",contents,flags=re.U|re.DOTALL)[0]
+
+		try:
+			self.results['average_rating'] = re.findall(r"Average Rating: <span>(.*?)</span><br />",contents,flags=re.U|re.DOTALL)[0]
+		except:
+			self.results['average_rating'] = 0
+		try:
+			self.results['number_of_reviews'] = re.findall(r"""Reviews Counted: <span itemprop="reviewCount">(.*?)</span><br />""",contents,flags=re.U|re.DOTALL)[0]
+		except:
+			self.results['number_of_reviews'] = 0
+
+		try:
+			consensus = re.findall(r"""<p class="critic_consensus">(.*?)</p>""",contents,flags=re.U|re.DOTALL)[0].strip()
+			consensus = HPARSER.unescape(consensus).replace(self.title,"''"+self.title+"''")
+		except:
+			consensus = ''
+		if consensus.find('No consensus yet.') != -1 or len(consensus) == 0:
+			self.results['consensus'] = 'No consensus yet.'
+		else:
+			self.results['consensus'] = consensus
 
 	def citation_generation(self,title,year,url):
 		"""Creates a citation using the data."""
@@ -105,6 +124,7 @@ class RotTomMovie():
 -->{{#ifeq: {{{1|}}} |citation|""" + self.results['citation'] + """|}}<!--
 -->{{#ifeq: {{{1|}}} |average_rating|""" + unicode(self.results['average_rating']) + """|}}<!--
 -->{{#ifeq: {{{1|}}} |number_of_reviews|""" + unicode(self.results['number_of_reviews']) + """|}}<!--
+-->{{#ifeq: {{{1|}}} |consensus|""" + unicode(self.results['consensus']) + """|}}<!--
 -->{{#ifeq: {{{1|}}} |all_in_one|""" + self.results['all_in_one']  + """|}}"""
 		self.page.save(contents,"[[WP:BOT|Bot]]: Updating Rotten Tomatoes data")
 
