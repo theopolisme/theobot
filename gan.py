@@ -9,6 +9,7 @@ from theobot import password
 from theobot import bot
 
 from itertools import groupby
+import collections
 
 # CC-BY-SA Theopolisme
 
@@ -26,15 +27,18 @@ def main():
 	articles = re.findall(r"""#\s*{{GANentry\|1=(.*?)\|""",gan.edit(),flags=re.U)
 
 	# This prints article data for ten articles to one page, to save space in demo
-	final = ""
 	done = 0
+	alphabet = collections.defaultdict(list)
 	for article in articles:
 		if done < 10:
-			final += "\n"+process_article(site.Pages[article])
+			alphabet[article[0].upper()].append(process_article(site.Pages[article]))
 			done += 1
 		else:
 			break
-	site.Pages["User:Theo's Little Bot/GAN"].save(final,"[[WP:BOT|Bot]]: Updating [[WP:GAN|GAN]] report")
+	for letter,value in alphabet.items():
+		print "Saving {}".format(letter)
+		text = '\n'.join(value)
+		site.Pages["User:Theo's Little Bot/GAN/"+letter].save(text,"[[WP:BOT|Bot]]: Updating [[WP:GAN|GAN]] report")
 
 def listpages(category):
 	"""Recursively goes through a category."""
