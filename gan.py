@@ -8,10 +8,9 @@ import mwclient
 from theobot import password
 from theobot import bot
 
-# CC-BY-SA Theopolisme
+from itertools import groupby
 
-# It will check the source code for any maintenance tags, {{citation needed}} {{refimprove}} and so on
-# It will check all images in the article and check fair use status
+# CC-BY-SA Theopolisme
 
 def main():
 	global site
@@ -50,12 +49,57 @@ def listpages(category):
 def process_article(page):
 	print "\n\n=====\nProcessing {}".format(page.name)
 	text = page.edit()
+
+	results = """== {0} ==\n'''Generated ~~~~~ by [[User:Theo's Little Bot|]]'''""".format(page.name)
+
+	## ALERTS
+	results += alerts(text)
+	## CLEANUP TEMPLATES
+	results += cleanup(text)	
+	## IMAGES
+	results += images(text,page)
+
+	return results
+
+def alerts(text):
+	results = "\n\n=== Alerts ==="
+	alerts = []
+
+	# at least one citation per paragraph
+	def paragraph(lines):
+		for group_separator,line_iteration in groupby(lines.splitlines(True),key=unicode.isspace):
+			if not group_separator:
+				yield ''.join(line_iteration)
+	paratext = re.sub(r""".*?==""","==",text,count=1,flags=re.DOTALL) # the lead does not need citations
+	for p in paragraph(paratext):
+		if not re.search(r"""(==|Category:|\[\[File:|\[\[Image:|{{Authority control|{{.*}}|^<.*?>|^;|^\|)""",p.strip()):
+			if not re.search(r"""(sfn|\<ref)""",p) and len(p) > 100: # only look at paragraphs longer than 100 chars
+				alerts.append("\n* ''(beta)'' Lacking a citation in the paragraph beginning {{{{xt|{}...}}}}".format(p[:70]))
+
+	if len(alerts) > 0:
+		results += ''.join(alerts)
+	else:
+		results += "\n''There are no alerts for this page.''"
+
+	# !todo misspelled words?
+
+	return results
+
+def cleanup(text):
+	def process_template(templatename):
+		"""Checks if a template is a maintenance template."""
+		template = site.Pages['Template:'+templatename]
+		if template.redirect == False:
+			if template.name in CLEANUPTEMPLATES:
+				return True
+			else:
+				pass
+		else:
+			target = re.findall(r"""\[\[(.*?)\]\]""",template.edit(),flags=re.U)[0]
+			process_template(target)
+
+	results = "\n\n=== Cleanup templates on page ==="
 	templates = re.findall(r"""\{\{(.*?)(?:\|.*?\}\}|\}\})""",text,flags=re.U)
-
-	results = """= {0} =\n'''Generated ~~~~~ by [[User:Theo's Little Bot|]]'''""".format(page.name)
-
-	# CLEANUP TEMPLATES
-	results += "\n\n== Cleanup templates on page =="
 	taggedtemp = []
 	for templatename in list(set(templates)):
 		if process_template(templatename) == True:
@@ -64,10 +108,12 @@ def process_article(page):
 		for templatename in taggedtemp:
 			results += "\n*{{tlx|"+templatename+"}}"
 	else:
-		results += "\n''The bot found no cleanup templates on the page.''"
-	
-	# NON-FREE IMAGES
-	results += "\n\n== Images used on page =="
+		results += "\n''The bot found no cleanup templates on this page.''"
+
+	return results
+
+def images(text,page):
+	results = "\n\n=== Images used on page ==="
 	imageresults = []
 	for image in page.images():
 		tempstring = ""
@@ -75,7 +121,7 @@ def process_article(page):
 		if original_description != "":
 			text = site.expandtemplates(text=original_description).lower()
 			if text.find("non-free use") != -1:
-				tempstring += " The image is non-free."
+				tempstring += " {{red|'''The image is non-free.'''}}"
 			if text.find("""width: 15%; font-size: 12pt">Non-free media information and [[Wikipedia:Non-free use rationale guideline|use rationale]]""") != -1:
 				tempstring += " A recognizd non-free use rationale was found."
 			if text.find("imbox-license") != -1:
@@ -92,21 +138,10 @@ def process_article(page):
 	if len(imageresults) > 0:
 		results += '\n' + '\n'.join(imageresults)
 	else:
-		results += "\n''The bot found no images on the page.''"
+		results += "\n''The bot found no images on this page.''"
 
 	return results
 
-def process_template(templatename):
-	"""Checks if a template is a maintenace template."""
-	template = site.Pages['Template:'+templatename]
-	if template.redirect == False:
-		if template.name in CLEANUPTEMPLATES:
-			return True
-		else:
-			pass
-	else:
-		target = re.findall(r"""\[\[(.*?)\]\]""",template.edit(),flags=re.U)[0]
-		process_template(target)
-
 if __name__ == '__main__':
 	main()
+
