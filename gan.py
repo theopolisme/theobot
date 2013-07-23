@@ -7,6 +7,7 @@ import mwclient
 
 from theobot import password
 from theobot import bot
+from theobot import spellcheck
 
 from itertools import groupby
 import collections
@@ -80,12 +81,19 @@ def alerts(text):
 			if not re.search(r"""(sfn|\<ref)""",p) and len(p) > 100: # only look at paragraphs longer than 100 chars
 				alerts.append("\n* ''(beta)'' Lacking a citation in the paragraph beginning {{{{xt|{}...}}}}".format(p[:70]))
 
+	# check for common misspelled words from  [[Wikipedia:Lists of common_misspellings/For machines]]
+	print "Checking for misspelled words..."
+	sp = []
+	for spell_tuple in spellcheck.Misspellings(text).check():
+	#for spell_tuple in spellcheck.Misspellings(text).check():
+		sp.append("\"{0}\" (line {1})".format(spell_tuple[1],spell_tuple[0]))
+	if len(sp) > 0:
+		alerts.append("\n* Common typo(s) or misspelling(s) detected: " + ', '.join(sp))
+
 	if len(alerts) > 0:
 		results += ''.join(alerts)
 	else:
 		results += "\n''There are no alerts for this page.''"
-
-	# !todo misspelled words?
 
 	return results
 
