@@ -20,29 +20,39 @@ def main():
 
 	global CLEANUPTEMPLATES
 	CLEANUPTEMPLATES = listpages(site.Categories['Cleanup templates'])
-	print CLEANUPTEMPLATES
+	print "Got cleanup templates."
 
 	# process_article(site.Pages['Earth: Final Conflict']) # debugging
 	gan = site.Pages['Wikipedia:Good article nominations']
 	articles = re.findall(r"""#\s*{{GANentry\|1=(.*?)\|""",gan.edit(),flags=re.U)
+
+	# This prints article data for ten articles to one page, to save space in demo
+	final = ""
+	done = 0
 	for article in articles:
-		process_article(site.Pages[article])
+		if done < 10:
+			final += "\n"+process_article(site.Pages[article])
+			done += 1
+		else:
+			break
+	site.Pages["User:Theo's Little Bot/GAN"].save(final,"[[WP:BOT|Bot]]: Updating [[WP:GAN|GAN]] report")
 
 def listpages(category):
 	"""Recursively goes through a category."""
-    results = []
-    for page in category:
-        if page.namespace == 14:  # 14 is the category namespace
-            results += listpages(page)
-        else:
-            results.append(page.name)
-    return results
+	results = []
+	for page in category:
+		if page.namespace == 14:  # 14 is the category namespace
+			results += listpages(page)
+		else:
+			results.append(page.name)
+	return results
 
 def process_article(page):
+	print "\n\n=====\nProcessing {}".format(page.name)
 	text = page.edit()
 	templates = re.findall(r"""\{\{(.*?)(?:\|.*?\}\}|\}\})""",text,flags=re.U)
 
-	results = """;GAN automated review notes for {}\nGenerated ~~~~~ by [[User:Theo's Little Bot|]]""".format(page.name)
+	results = """= {0} =\n'''Generated ~~~~~ by [[User:Theo's Little Bot|]]'''""".format(page.name)
 
 	# CLEANUP TEMPLATES
 	results += "\n\n== Cleanup templates on page =="
@@ -57,9 +67,34 @@ def process_article(page):
 		results += "\n''The bot found no cleanup templates on the page.''"
 	
 	# NON-FREE IMAGES
-	# !todo
+	results += "\n\n== Images used on page =="
+	imageresults = []
+	for image in page.images():
+		tempstring = ""
+		original_description = image.edit()
+		if original_description != "":
+			text = site.expandtemplates(text=original_description).lower()
+			if text.find("non-free use") != -1:
+				tempstring += " The image is non-free."
+			if text.find("""width: 15%; font-size: 12pt">Non-free media information and [[Wikipedia:Non-free use rationale guideline|use rationale]]""") != -1:
+				tempstring += " A recognizd non-free use rationale was found."
+			if text.find("imbox-license") != -1:
+				tempstring += " A license was provided for the image."
+			if text.find("public domain") != -1:
+				tempstring += " The image is said to be in the public domain."
+			if tempstring == "":
+				tempstring += " No information was found for the image."
+		else:
+			tempstring += " The image is hosted on Commons, so assuming freely licensed."
+		tempstring = "*[[:{}]]:".format(image.name) + tempstring
+		imageresults.append(tempstring)
 
-	print results
+	if len(imageresults) > 0:
+		results += '\n' + '\n'.join(imageresults)
+	else:
+		results += "\n''The bot found no images on the page.''"
+
+	return results
 
 def process_template(templatename):
 	"""Checks if a template is a maintenace template."""
