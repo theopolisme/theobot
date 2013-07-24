@@ -62,16 +62,16 @@ def remove_old_week_from_schedule():
 			schedule = site.Pages["Wikipedia:Today's articles for improvement/Schedule/real"]
 			text = schedule.edit()
 			
-			old_schedule_contents = re.findall(r"""(;<big>\[\[Wikipedia:Today's articles for improvement/""" + str(now.year) + r"/" + str((now.isocalendar()[1])-1) + r"""\|.*?)\s*;<big>\[\[""", text)[0]
-			
-			new_text = re.sub(r""";<big>\[\[Wikipedia:Today's articles for improvement/""" + str(now.year) + r"/" + str((now.isocalendar()[1])-1) + r"""\|.*?;<big>\[\[""", r""";<big>\[\[""", text, re.IGNORECASE | re.DOTALL | re.UNICODE)
+			old_schedule_contents = re.findall("""(;<big>\[\[Wikipedia:Today's articles for improvement/""" + str(now.year) + r"/" + str((now.isocalendar()[1])-1) + r"""\|.*?\s*);<big>\[\[""", text, flags = re.DOTALL)[0]
+			new_text = text.replace(old_schedule_contents, "\n")
 			schedule.save(new_text,summary="[[WP:BOT|Bot]]: Removing completed week from schedule - week {0}.".format(str((now.isocalendar()[1])-1)))
 
 			schedule_archive = site.Pages["Wikipedia:Today's articles for improvement/Archives/{0} schedule".format(str(now.year))]
-			arch_text = schedule_archive.edit() + "\n\n" + old_schedule_contents
+			arch_text = schedule_archive.edit() + "\n\n" + old_schedule_contents.strip()
 			schedule_archive.save(arch_text,summary="[[WP:BOT|Bot]]: Moving completed week to archive - week {0}.".format(str((now.isocalendar()[1])-1)))
 		except IndexError:
 			print "Oh, drat, someone already archived the old week. No harm done!"
+
 # Logs in to the site.
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
@@ -130,4 +130,3 @@ for i in range(1,11):
 		except:
 			tt = "{{Former TAFI|date=" + start_date.strftime('%B %d, %Y') + "}}\n" + tt
 			talk.save(tt,summary="Tagging page with {{[[Template:Former TAFI|Former TAFI]]}} ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi|disable]])")
-		
