@@ -7,7 +7,8 @@ import mwclient
 
 from theobot import password
 from theobot import bot
-from theobot import spellcheck
+from theobot import spellcheck_awb
+# from theobot import spellcheck # _awb covers this
 
 from itertools import groupby
 import collections
@@ -79,14 +80,22 @@ def alerts(text):
 	for p in paragraph(paratext):
 		if not re.search(r"""(==|Category:|\[\[File:|\[\[Image:|{{Authority control|{{.*}}|^<.*?>|^;|^\|)""",p.strip()):
 			if not re.search(r"""(sfn|\<ref)""",p) and len(p) > 100: # only look at paragraphs longer than 100 chars
-				alerts.append("\n* ''(beta)'' Lacking a citation in the paragraph beginning {{{{xt|{}...}}}}".format(p[:70]))
+				alerts.append("\n* Lacking a citation in the paragraph beginning {{{{xt|{}...}}}}".format(p[:70]))
 
-	# check for common misspelled words from  [[Wikipedia:Lists of common_misspellings/For machines]]
+	# check for common misspelled words
 	print "Checking for misspelled words..."
 	sp = []
-	for spell_tuple in spellcheck.Misspellings(text).check():
+
+	# from [[Wikipedia:Lists of common misspellings/For machines]]
+	# * disabled because _awb covers this, below
 	#for spell_tuple in spellcheck.Misspellings(text).check():
-		sp.append("\"{0}\" (line {1})".format(spell_tuple[1],spell_tuple[0]))
+	#	sp.append("\"{0}\" (line {1})".format(spell_tuple[1],spell_tuple[0]))
+
+	# from [[Wikipedia:AutoWikiBrowser/Typos]]
+	for line,typos in spellcheck_awb.typos(text).items():
+		for typo in typos:
+			sp.append("\"{0}\" (line {1})".format(typo,line))
+
 	if len(sp) > 0:
 		alerts.append("\n* Common typo(s) or misspelling(s) detected: " + ', '.join(sp))
 
