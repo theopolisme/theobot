@@ -56,7 +56,7 @@ def process_article(page):
 	print "\n\n=====\nProcessing {}".format(page.name)
 	text = page.edit()
 
-	results = """== {0} ==\n'''Generated ~~~~~ by [[User:Theo's Little Bot|]]'''""".format(page.name)
+	results = """== [[{0}]] ==\n'''Generated ~~~~~ by [[User:Theo's Little Bot|]]'''""".format(page.name)
 
 	## ALERTS
 	results += alerts(text)
