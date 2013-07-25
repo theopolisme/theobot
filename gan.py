@@ -96,7 +96,8 @@ def alerts(text):
 	# from [[Wikipedia:AutoWikiBrowser/Typos]]
 	for line,typos in spellcheck_awb.typos(text).items():
 		for typo,correction in typos:
-			sp.append("\"{0}\" → \"{1}\" (line {2})".format(typo,correction,line))
+			typoindex = text.index(typo)
+			sp.append("\"{0}\" → \"{1}\" ({{{{xt|<nowiki>...{2}...</nowiki>}}}})".format(typo,correction,text[typoindex-20:typoindex+20].replace('\n', ' ')))
 
 	if len(sp) > 0:
 		alerts.append("\n* Possible typo(s) or misspelling(s) detected: " + ', '.join(sp))
