@@ -97,7 +97,7 @@ def alerts(text):
 			sp.append("\"{0}\" (line {1})".format(typo,line))
 
 	if len(sp) > 0:
-		alerts.append("\n* Common typo(s) or misspelling(s) detected: " + ', '.join(sp))
+		alerts.append("\n* Possible typo(s) or misspelling(s) detected: " + ', '.join(sp))
 
 	if len(alerts) > 0:
 		results += ''.join(alerts)
