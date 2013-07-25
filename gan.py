@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #! /usr/bin/env python
 
 from __future__ import unicode_literals
@@ -65,6 +66,7 @@ def process_article(page):
 	## IMAGES
 	results += images(text,page)
 
+	print results
 	return results
 
 def alerts(text):
@@ -93,8 +95,8 @@ def alerts(text):
 
 	# from [[Wikipedia:AutoWikiBrowser/Typos]]
 	for line,typos in spellcheck_awb.typos(text).items():
-		for typo in typos:
-			sp.append("\"{0}\" (line {1})".format(typo,line))
+		for typo,correction in typos:
+			sp.append("\"{0}\" → \"{1}\" (line {2})".format(typo,correction,line))
 
 	if len(sp) > 0:
 		alerts.append("\n* Possible typo(s) or misspelling(s) detected: " + ', '.join(sp))
