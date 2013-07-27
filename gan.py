@@ -184,7 +184,7 @@ def full_report():
 		templates = cleanup(article.edit(),raw=True)
 		if len(templates) > 0:
 			report[article.name] = len(templates)
-	sorted_report = sorted(report.iteritems(), key=operator.itemgetter(1))
+	sorted_report = sorted(report.iteritems(), key=operator.itemgetter(1), reverse=True)
 
 	resultspage = site.Pages["User:Theo's Little Bot/GAs with maintenance tags"]
 	results = "== Good articles tagged with maintenance templates ==\n(sorted by number of templates; last updated ~~~~~)"
