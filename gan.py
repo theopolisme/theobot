@@ -30,10 +30,6 @@ def main():
 	gan = site.Pages['Wikipedia:Good article nominations']
 	articles = re.findall(r"""#\s*{{GANentry\|1=(.*?)\|""",gan.edit(),flags=re.U)
 
-	# Report the number of maintenance templates in current GAs
-	# !todo don't run this on every run? run other stuff first? 
-	full_report()
-
 	# This prints article data for ten articles to one page, to save space in demo
 	done = 0
 	alphabet = collections.defaultdict(list)
@@ -67,7 +63,7 @@ def process_article(page):
 	## ALERTS
 	results += alerts(text)
 	## CLEANUP TEMPLATES
-	results += cleanup(text,page.name)	
+	results += cleanup(text)	
 	## IMAGES
 	results += images(text,page)
 
@@ -114,7 +110,7 @@ def alerts(text):
 
 	return results
 
-def cleanup(text,raw=False):
+def cleanup(text):
 	def process_template(templatename):
 		"""Checks if a template is a maintenance template."""
 		template = site.Pages['Template:'+templatename]
@@ -139,10 +135,7 @@ def cleanup(text,raw=False):
 	else:
 		results += "\n''The bot found no cleanup templates on this page.''"
 
-	if raw == True:
-		return taggedtemp
-	else:
-		return results
+	return results
 
 def images(text,page):
 	results = "\n\n=== Images used on page ==="
@@ -173,25 +166,6 @@ def images(text,page):
 		results += "\n''The bot found no images on this page.''"
 
 	return results
-
-def full_report():
-	"""Generates a report about the number of maintenance templates
-	in current GAs.
-	"""
-	report = {}
-	good_articles = mwclient.listing.Category(site, 'Category:Good articles')
-	for article in good_articles:
-		templates = cleanup(article.edit(),raw=True)
-		if len(templates) > 0:
-			report[article.name] = len(templates)
-	sorted_report = sorted(report.iteritems(), key=operator.itemgetter(1), reverse=True)
-
-	resultspage = site.Pages["User:Theo's Little Bot/GAs with maintenance tags"]
-	results = "== Good articles tagged with maintenance templates ==\n(sorted by number of templates; last updated ~~~~~)"
-	for tuple in sorted_report:
-		results += "\n# [[{}]] - {} maintenance templates".format(tuple[0],tuple[1])
-
-	resultspage.save(results,"[[WP:BOT|Bot]]: Updating GA report")
 
 if __name__ == '__main__':
 	main()
