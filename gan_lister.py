@@ -46,7 +46,8 @@ def cleanup(text):
 		template = site.Pages['Template:'+templatename]
 		if template.redirect == False:
 			if template.name in CLEANUPTEMPLATES:
-				return True
+				if "ambox" in template.edit().lower(): # only ambox-style templates should be counted
+					return True
 			else:
 				pass
 		else:
