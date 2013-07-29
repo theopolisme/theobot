@@ -96,6 +96,11 @@ class RotTomMovie():
 			self.results['number_of_reviews'] = 0
 
 		try:
+			self.results['fresh'],self.results['rotten'] = re.findall(r"""Fresh: (\d*) \| Rotten: (\d*)""",contents,flags=re.U|re.DOTALL)[0]
+		except:
+			self.results['fresh'],self.results['rotten'] = 0,0
+
+		try:
 			consensus = re.findall(r"""<p class="critic_consensus">(.*?)</p>""",contents,flags=re.U|re.DOTALL)[0].strip()
 			consensus = HPARSER.unescape(consensus).replace(self.title,"''"+self.title+"''")
 		except:
@@ -125,6 +130,8 @@ class RotTomMovie():
 -->{{#ifeq: {{{1|}}} |average_rating|""" + unicode(self.results['average_rating']) + """|}}<!--
 -->{{#ifeq: {{{1|}}} |number_of_reviews|""" + unicode(self.results['number_of_reviews']) + """|}}<!--
 -->{{#ifeq: {{{1|}}} |consensus|""" + unicode(self.results['consensus']) + """|}}<!--
+-->{{#ifeq: {{{1|}}} |fresh|""" + unicode(self.results['fresh']) + """|}}<!--
+-->{{#ifeq: {{{1|}}} |rotten|""" + unicode(self.results['rotten']) + """|}}<!--
 -->{{#ifeq: {{{1|}}} |all_in_one|""" + self.results['all_in_one']  + """|}}"""
 		self.page.save(contents,"[[WP:BOT|Bot]]: Updating Rotten Tomatoes data")
 
