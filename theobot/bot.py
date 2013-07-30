@@ -17,20 +17,20 @@ site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
 def checkpage(page):
-    """ Returns True if the given checkpage is still set to "ON";
-    otherwise, returns false. Accepts one required argument, "page."
-    """ 
-    print "Checking checkpage."
-    page = site.Pages[page]
-    text = page.edit()
-    
-    regexp = re.compile('<!-- CHANGE THE FOLLOWING TEXT TO "OFF"  - - - --> ON <!-- - - - CHANGE THE PREVIOUS TEXT TO "OFF" -->')
+	""" Returns True if the given checkpage is still set to "ON";
+	otherwise, returns false. Accepts one required argument, "page."
+	""" 
+	print "Checking checkpage."
+	page = site.Pages[page]
+	text = page.edit()
+	
+	regexp = re.compile('<!-- CHANGE THE FOLLOWING TEXT TO "OFF"  - - - --> ON <!-- - - - CHANGE THE PREVIOUS TEXT TO "OFF" -->')
 
-    if regexp.search(text) is not None:
-        print "We're good!"
-        return True
-    else:
-        return False
+	if regexp.search(text) is not None:
+		print "We're good!"
+		return True
+	else:
+		return False
 
 def donenow(checkpagey,donenow=0,donenow_div=5,shutdown=0):
 	"""This function wraps the above
@@ -52,49 +52,49 @@ def donenow(checkpagey,donenow=0,donenow_div=5,shutdown=0):
 		return True
 
 def what_transcludes(template):
-    """Returns a list of pages
-    that transclude a given template.
-    
-    Example: what_transcludes('Description missing')
-    """
-    templatename = 'Template:' + template
-    results = mwclient.listing.List(site=site,list_name='embeddedin',prefix='ei',eititle=templatename)
-    return results
+	"""Returns a list of pages
+	that transclude a given template.
+	
+	Example: what_transcludes('Description missing')
+	"""
+	templatename = 'Template:' + template
+	results = mwclient.listing.List(site=site,list_name='embeddedin',prefix='ei',eititle=templatename)
+	return results
 
 def nobots(page,user="Theo's Litle Bot",task=None):
-    """Checks a page to make sure
-    bot is not denied. Returns true
-    if bot is allowed. Two parameters accepted,
-    "page" and "bot."
-    """
-    print "Checking page!"
-    page = site.Pages[page]
-    text = page.edit()
+	"""Checks a page to make sure
+	bot is not denied. Returns true
+	if bot is allowed. Two parameters accepted,
+	"page" and "bot."
+	"""
+	print "Checking page!"
+	page = site.Pages[page]
+	text = page.edit()
 
-    if task == None:
-        task = user
-    else:
-        task = user+'-'+task
+	if task == None:
+		task = user
+	else:
+		task = user+'-'+task
 
-    text = mwparserfromhell.parse(text)
-    for tl in text.filter_templates():
-        if tl.name in ('bots', 'nobots'):
-            break
-    else:
-        return True
-    for param in tl.params:
-        bots = [x.lower().strip() for x in param.value.split(",")]
-        if param.name == 'allow':
-            if ''.join(bots) == 'none': return False
-            for bot in bots:
-                if bot in (user, task, 'all'):
-                    return True
-        elif param.name == 'deny':
-            if ''.join(bots) == 'none': return True
-            for bot in bots:
-                if bot in (user, task, 'all'):
-                    return False
-    return False
+	text = mwparserfromhell.parse(text)
+	for tl in text.filter_templates():
+		if tl.name in ('bots', 'nobots'):
+			break
+	else:
+		return True
+	for param in tl.params:
+		bots = [x.lower().strip() for x in param.value.split(",")]
+		if param.name == 'allow':
+			if ''.join(bots) == 'none': return False
+			for bot in bots:
+				if bot in (user, task, 'all'):
+					return True
+		elif param.name == 'deny':
+			if ''.join(bots) == 'none': return True
+			for bot in bots:
+				if bot in (user, task, 'all'):
+					return False
+	return False
 
 def cats_recursive(category,skip=[]):
 	"""Recursively goes through
@@ -121,42 +121,41 @@ def rollback(page,user,site):
 		print "Rollback success!"
 
 def listpages(category,names=True,includeredirects=True):
-    """Recursively goes through a category."""
-    results = []
-    for page in category:
-        print page.name
-        if page.namespace == 14:  # 14 is the category namespace
-            results += listpages(page,names=names,includeredirects=includeredirects)
-        else:
-            if includeredirects == False:
-                if page.redirect == True:
-                    continue
-            if names == True:
-                results.append(page.name)
-            else:
-                results.append(page)
-    return results
+	"""Recursively goes through a category."""
+	results = []
+	for page in category:
+		if page.namespace == 14:  # 14 is the category namespace
+			results += listpages(page,names=names,includeredirects=includeredirects)
+		else:
+			if includeredirects == False:
+				if page.redirect == True:
+					continue
+			if names == True:
+				results.append(page.name)
+			else:
+				results.append(page)
+	return results
 
 def redirects(name,namespace=None,pg_prefix='',output=None):
-    """This little function returns redirects to a particular page.
-    `output` can be defined as a particular detail about the pages you'd like
-    to return, rather than simply a list of mwclient.page.Page objects -- for example:
+	"""This little function returns redirects to a particular page.
+	`output` can be defined as a particular detail about the pages you'd like
+	to return, rather than simply a list of mwclient.page.Page objects -- for example:
 
-    # DEFAULT BEHAVIOR; returns page objects
-    >>> redirects('Foo')
-    [<Page object 'Tra' for <Site object 'en.wikipedia.org/w/'>>, <Page object 'La' for <Site object 'en.wikipedia.org/w/'>>, <Page object 'Lalala' for <Site object 'en.wikipedia.org/w/'>>]
+	# DEFAULT BEHAVIOR; returns page objects
+	>>> redirects('Foo')
+	[<Page object 'Tra' for <Site object 'en.wikipedia.org/w/'>>, <Page object 'La' for <Site object 'en.wikipedia.org/w/'>>, <Page object 'Lalala' for <Site object 'en.wikipedia.org/w/'>>]
 
-    # OPTIONAL OUTPUT PARAMETER can return just the page_title, for example
-    >>> redirects('Foo',output='page_title')
-    ['Tra', 'La', 'Lalala']
+	# OPTIONAL OUTPUT PARAMETER can return just the page_title, for example
+	>>> redirects('Foo',output='page_title')
+	['Tra', 'La', 'Lalala']
 
-    """
-    page = site.Pages[pg_prefix+name]
-    backlinks = page.backlinks(filterredir="redirects",namespace=namespace)
-    if output:
-        results = []
-        for page in backlinks:
-            results.append(eval("page."+output))
-        return results
-    else:
-        return backlinks
+	"""
+	page = site.Pages[pg_prefix+name]
+	backlinks = page.backlinks(filterredir="redirects",namespace=namespace)
+	if output:
+		results = []
+		for page in backlinks:
+			results.append(eval("page."+output))
+		return results
+	else:
+		return backlinks

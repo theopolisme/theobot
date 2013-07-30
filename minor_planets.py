@@ -37,7 +37,6 @@ def main():
 	results = []
 	for page in bot.listpages(category,names=False,includeredirects=False):
 		if page.namespace == 0:
-			print page.name
 			pagetext = page.edit()
 			if checktext(pagetext) == True:
 				results.append(page.name)
