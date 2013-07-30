@@ -120,6 +120,23 @@ def rollback(page,user,site):
 		site.api(action='rollback',title=page,user=user,token=rbtoken)
 		print "Rollback success!"
 
+def listpages(category,names=True,includeredirects=True):
+    """Recursively goes through a category."""
+    results = []
+    for page in category:
+        print page.name
+        if page.namespace == 14:  # 14 is the category namespace
+            results += listpages(page,names=names,includeredirects=includeredirects)
+        else:
+            if includeredirects == False:
+                if page.redirect == True:
+                    continue
+            if names == True:
+                results.append(page.name)
+            else:
+                results.append(page)
+    return results
+
 def redirects(name,namespace=None,pg_prefix='',output=None):
     """This little function returns redirects to a particular page.
     `output` can be defined as a particular detail about the pages you'd like
