@@ -67,12 +67,17 @@ def main():
 	"""
 	cursor.execute(query)
 
+	donenow = 0
 	for title in cursor.fetchall():
-		print "Processing {}".format(title)
-		if bot.nobots(page=title,task='tracking') == True:
-			process(site.Pages[title])
+		if bot.donenow("User:Theo's Little Bot/disable/tracking",donenow=donenow,donenow_div=5) == True:
+			if bot.nobots(page=title,task='tracking') == True:
+				process(site.Pages[title])
+			else:
+				print "Bot was denied, boo hoo."
+			donenow += 1
 		else:
-			print "Bot was denied, boo hoo."
+			print "Bot was disabled...shutting down..."
+			sys.exit()
 
 if __name__ == '__main__':
 	main()
