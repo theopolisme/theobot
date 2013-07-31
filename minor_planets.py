@@ -7,6 +7,7 @@ import mwparserfromhell
 
 from theobot import password
 from theobot import bot
+import time
 
 # CC-BY-SA Theopolisme
 
@@ -37,7 +38,12 @@ def main():
 	results = []
 	for page in bot.listpages(category,names=False,includeredirects=False):
 		if page.namespace == 0:
-			pagetext = page.edit()
+			try:
+				pagetext = page.edit()
+			except:
+				time.sleep(120) # wait for memory to clear up
+				pagetext = page.edit()
+
 			if checktext(pagetext) == True:
 				results.append(page.name)
 
