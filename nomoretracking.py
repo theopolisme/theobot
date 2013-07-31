@@ -17,13 +17,12 @@ import difflib
 
 # CC-BY-SA Theopolisme
 
-URL = re.compile(r"""((?:\w+:)?\/\/[^<>\[\]\s"]+)""",flags=re.UNICODE|re.DOTALL)
-UTM = re.compile(r"""[\?&]utm_.*?=.*?(?=\s|&|$)""",flags=re.UNICODE|re.DOTALL)
+UTM = re.compile(r"""[\?&]utm_.*?=.*?(?=\s|&|$|])""",flags=re.UNICODE|re.DOTALL)
 
 def process(page):
 	contents = page.edit()
 	contents_compare = contents
-	links = re.findall(URL,contents)
+	links = site.api('parse',text=contents,prop="externallinks")['parse']['externallinks']
 	for link in links:
 		if link.find("utm") != -1:
 			html_doc = requests.get(link).text
