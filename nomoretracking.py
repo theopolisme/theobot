@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import mwclient
 import mwparserfromhell
 
-import re
+from urlparse import urlparse, urlunparse
 
 from theobot import bot
 from theobot import password
@@ -16,8 +16,6 @@ import MySQLdb
 import difflib
 
 # CC-BY-SA Theopolisme
-
-UTM = re.compile(r"""[\?&]utm_.*?=.*?(?=\s|&|$|])""",flags=re.UNICODE|re.DOTALL)
 
 def process(page):
 	contents = page.edit()
@@ -31,7 +29,9 @@ def process(page):
 			if canonical is not None:
 				contents = contents.replace(link,canonical['href'])
 			else:
-				newlink = re.sub(UTM,"",link)
+				parsed_url = list(urlparse(link))
+				parsed_url[4] = '&'.join([x for x in parsed_url[4].split('&') if not x.startswith('utm_')])
+				newlink = urlunparse(parsed_url)
 				contents = contents.replace(link,newlink)
 	diff = difflib.unified_diff(contents_compare.splitlines(), contents.splitlines(), lineterm='')
 	print '\n'.join(list(diff))
