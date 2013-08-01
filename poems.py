@@ -28,12 +28,12 @@ def process(page):
 			pub_date_raw = unicode(template.get('publication_date').value).strip()#.replace('[[','').replace(']]','')
 			print "-----"
 			print "Raw publication_date: "+pub_date_raw
-			if pub_date_raw.lower().find("{{start") == -1:
+			if pub_date_raw.lower().find("{{start") == -1 and pub_date_raw.find("[[Category:Infoboxes needing manual conversion") == -1:
 				date = parser.parser().parse(pub_date_raw,None)
 				if date is None or date.year is None:
 					if pub_date_raw.find("<!-- Date published") == -1:
 						template.add('publication_date',pub_date_raw+" [[Category:Infoboxes needing manual conversion to use start date]]")
-						#page.save(unicode(wikicode),'[[WP:BOT|Bot]]: Tagging unparsable publication_date')
+						page.save(unicode(wikicode),'[[WP:BOT|Bot]]: Tagging unparsable publication_date')
 						print "Tagging unparsable publication_date"
 						continue
 					else:
@@ -54,7 +54,7 @@ def process(page):
 					startdate.add('df','y')
 				print "Final template: "+unicode(startdate)
 				template.add('publication_date',unicode(startdate)+"<!-- Bot-converted date -->")
-				#page.save(unicode(wikicode),'[[WP:BOT|Bot]]: Converting publication_date to utilize {{[[Template:start date|]]}}')
+				page.save(unicode(wikicode),'[[WP:BOT|Bot]]: Converting publication_date to utilize {{[[Template:start date|]]}}')
 			else:
 				print "Template already updated."
 				continue
