@@ -5,6 +5,7 @@ import mwclient
 import mwparserfromhell
 
 import urlparse
+import datetime
 
 from theobot import bot
 from theobot import password
@@ -17,25 +18,45 @@ import difflib
 
 # CC-BY-SA Theopolisme
 
+MONTHYEAR = datetime.date.today().strftime("%B %Y")
+
 def process(page):
 	contents = page.edit()
 	contents_compare = contents
 	links = site.api('parse',text=contents,prop="externallinks")['parse']['externallinks']
 	for link in links:
 		if link.find("utm") != -1:
-			html_doc = requests.get(link).text
-			soup = BeautifulSoup(html_doc)
-			canonical = soup.find("link",rel="canonical")
-			if canonical is not None:
-				origurl = urlparse.urlsplit(link)
-				base_url = urlparse.urlunsplit((origurl[0],origurl[1],'','',''))
-				newurl = urlparse.urljoin(base_url, canonical['href'])
-				contents = contents.replace(link,newurl)
+			req = requests.get(link)
+			if req.status_code == requests.codes.ok:
+				html_doc = req.text
+				soup = BeautifulSoup(html_doc)
+				canonical = soup.find("link",rel="canonical")
+				if canonical is not None:
+					origurl = urlparse.urlsplit(link)
+					base_url = urlparse.urlunsplit((origurl[0],origurl[1],'','',''))
+					newurl = urlparse.urljoin(base_url, canonical['href'])
+					contents = contents.replace(link,newurl)
+				else:
+					parsed_url = list(urlparse.urlparse(link))
+					parsed_url[4] = '&'.join([x for x in parsed_url[4].split('&') if not x.startswith('utm_')])
+					newlink = urlparse.urlunparse(parsed_url)
+					contents = contents.replace(link,newlink)
 			else:
-				parsed_url = list(urlparse.urlparse(link))
-				parsed_url[4] = '&'.join([x for x in parsed_url[4].split('&') if not x.startswith('utm_')])
-				newlink = urlparse.urlunparse(parsed_url)
-				contents = contents.replace(link,newlink)
+				wikicode = mwparserfromhell.parse(contents)
+				templated = False
+				# If the link is inside a template, then add {{dead link}} immediately after the template
+				for template in wikicode.filter_templates(recursive=True):
+					if link in template:
+						templated = True
+						wikicode.insert_after(template," {{Dead link|date="+MONTHYEAR+"|bot=Theo's Little Bot}}")
+				if templated == True:
+					contents = unicode(wikicode)
+				else:
+					# Otherwise, just add {{dead link}} right after the link and hope for the best
+					contents = re.sub(r"""("""+re.escape(link)+r"""(?:.*])?))""",
+						r"\1 {{Dead link|date="+MONTHYEAR+"|bot=Theo's Little Bot}}",
+						flags=re.UNICODE|re.DOTALL
+						)
 	if contents == contents_compare:
 		return False
 	diff = difflib.unified_diff(contents_compare.splitlines(), contents.splitlines(), lineterm='')
