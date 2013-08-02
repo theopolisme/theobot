@@ -59,10 +59,10 @@ def process(page):
 						)
 	if contents == contents_compare:
 		return False
-	diff = difflib.unified_diff(contents_compare.splitlines(), contents.splitlines(), lineterm='')
-	print '\n'.join(list(diff))
-	print "---------"
-	page.save(contents,"[[WP:BOT|Bot]] on trial: Removing Google Analytics tracking codes) ([[User:Theo's Little Bot/disable/tracking|disable]]")
+	#diff = difflib.unified_diff(contents_compare.splitlines(), contents.splitlines(), lineterm='')
+	#print '\n'.join(list(diff))
+	#print "---------"
+	page.save(contents,"[[WP:BOT|Bot]]: Removing Google Analytics tracking codes) ([[User:Theo's Little Bot/disable/tracking|disable]]")
 	return True
 
 def main():
@@ -77,7 +77,7 @@ def main():
 		read_default_file = '~/replica.my.cnf'
 	)
 
-	# The script runs in 500 article increments. ** 50 for the trial **
+	# The script runs in 500 article increments.
 	# In other words, in each run, it will process
 	# and fix 500 articles and then stop.
 	# !todo figure out how long a run takes vs replag
@@ -90,7 +90,7 @@ def main():
 	ON page_id = el_from
 	WHERE el_to LIKE "%&utm_%=%"
 	AND page_namespace = 0
-	LIMIT 50;
+	LIMIT 500;
 	"""
 	cursor.execute(query)
 
