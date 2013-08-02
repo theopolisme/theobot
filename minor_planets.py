@@ -42,13 +42,13 @@ def main():
 			if checktext(page) == True:
 				results.append(page.name)
 
-	output = "== Minor planet articles with one sentence and no references ==\n<sup>Updated ~~~~~ by [[User:Theo's Little Bot|]]"
+	output = "== Minor planet articles with one sentence and no references ==\n<sup>Updated ~~~~~ by [[User:Theo's Little Bot|]]</sup>"
 
 	results = sorted(set(results))
 	for result in results:
 		output += "\n# [[{}]]".format(result)
 
-	page = site.Pages["User:Theo's Litle Bot/Minor planets"]
+	page = site.Pages["User:Theo's Little Bot/Minor planets"]
 	page.save(output,summary="[[WP:BOT|Bot]]: Updating minor planets report")
 
 if __name__ == '__main__':
