@@ -121,7 +121,7 @@ def rollback(page,user,site):
 		print "Rollback success!"
 
 def listpages(category,names=True,includeredirects=True):
-	"""A generator that recursively goes through a category."""
+	"""Recursively goes through a category."""
 	results = []
 	for page in category:
 		if page.namespace == 14:  # 14 is the category namespace
@@ -131,9 +131,10 @@ def listpages(category,names=True,includeredirects=True):
 				if page.redirect == True:
 					continue
 			if names == True:
-				yield page.name
+				results.append(page.name)
 			else:
-				yield page
+				results.append(page)
+	return results
 
 def redirects(name,namespace=None,pg_prefix='',output=None):
 	"""This little function returns redirects to a particular page.
