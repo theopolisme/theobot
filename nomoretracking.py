@@ -14,6 +14,7 @@ from bs4 import BeautifulSoup
 import requests
 import MySQLdb
 
+import re
 import difflib
 
 # CC-BY-SA Theopolisme
@@ -58,8 +59,9 @@ def process(page):
 					contents = unicode(wikicode)
 				else:
 					# Otherwise, just add {{dead link}} right after the link and hope for the best
-					contents = re.sub(r"""("""+re.escape(link)+r"""(?:.*])?))""",
+					contents = re.sub('('+re.escape(link)+r"""(?:.*])?)""",
 						r"\1 {{Dead link|date="+MONTHYEAR+"|bot=Theo's Little Bot}}",
+						contents,
 						flags=re.UNICODE|re.DOTALL
 						)
 	if contents == contents_compare:
