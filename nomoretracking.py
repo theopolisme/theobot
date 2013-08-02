@@ -26,7 +26,12 @@ def process(page):
 	links = site.api('parse',text=contents,prop="externallinks")['parse']['externallinks']
 	for link in links:
 		if link.find("utm") != -1:
-			req = requests.get(link)
+			try:
+				req = requests.get(link)
+			except:
+				# Connection error; it is probably a dead link, but we can't verify that for sure.
+				# By that point it's out of scope to add advanced dead link handling/tagging.
+				continue 
 			if req.status_code == requests.codes.ok:
 				html_doc = req.text
 				soup = BeautifulSoup(html_doc)
