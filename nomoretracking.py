@@ -33,10 +33,13 @@ def process(page):
 				parsed_url[4] = '&'.join([x for x in parsed_url[4].split('&') if not x.startswith('utm_')])
 				newlink = urlunparse(parsed_url)
 				contents = contents.replace(link,newlink)
+	if contents == contents_compare:
+		return False
 	diff = difflib.unified_diff(contents_compare.splitlines(), contents.splitlines(), lineterm='')
 	print '\n'.join(list(diff))
 	print "---------"
-	page.save(contents,"[[WP:BOT|Bot]]: Removing Google Analytics tracking codes")
+	page.save(contents,"[[WP:BOT|Bot]] on trial: Removing Google Analytics tracking codes) ([[User:Theo's Little Bot/disable/tracking|disable]]")
+	return True
 
 def main():
 	global site
@@ -50,7 +53,7 @@ def main():
 		read_default_file = '~/replica.my.cnf'
 	)
 
-	# The script runs in 500 article increments.
+	# The script runs in 500 article increments. ** 50 for the trial **
 	# In other words, in each run, it will process
 	# and fix 500 articles and then stop.
 	# !todo figure out how long a run takes vs replag
@@ -63,18 +66,22 @@ def main():
 	ON page_id = el_from
 	WHERE el_to LIKE "%&utm_%=%"
 	AND page_namespace = 0
-	LIMIT 500;
+	LIMIT 50;
 	"""
 	cursor.execute(query)
 
 	donenow = 0
 	for title in cursor.fetchall():
+		title = title[0].decode("utf-8") # since tuples are returned
 		if bot.donenow("User:Theo's Little Bot/disable/tracking",donenow=donenow,donenow_div=5) == True:
 			if bot.nobots(page=title,task='tracking') == True:
-				process(site.Pages[title])
+				if process(site.Pages[title]) == True:
+					donenow += 1
+				else:
+					print "No changes to make."
 			else:
 				print "Bot was denied, boo hoo."
-			donenow += 1
+			
 		else:
 			print "Bot was disabled...shutting down..."
 			sys.exit()
