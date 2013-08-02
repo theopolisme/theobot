@@ -20,11 +20,11 @@ def checktext(text):
 		return False
 	wikicode = mwparserfromhell.parse(text)
 	stripped = unicode(wikicode.strip_code())
-	lines = 0
+	sentences = 0
 	for line in stripped.splitlines():
 		if len(line) > 25 and line.find("Category:") == -1 and line[0] != " ":
-			lines += 1
-	if lines <= 1:
+			sentences += line.count('.') + line.count('!') + line.count('?')
+	if sentences <= 1:
 		return True
 	else:
 		return False
@@ -48,6 +48,8 @@ def main():
 				results.append(page.name)
 
 	output = "== Minor planet articles with one sentence and no references ==\n<sup>Updated ~~~~~ by [[User:Theo's Little Bot|]]"
+
+	results = sorted(set(results))
 	for result in results:
 		output += "\n# [[{}]]".format(result)
 
