@@ -11,11 +11,12 @@ import time
 
 # CC-BY-SA Theopolisme
 
-def checktext(text):
+def checktext(page):
 	"""Given a string of wikicode, checks if it
 	- has only one body sentence
 	- has no references
 	"""
+	text = page.edit()
 	if text.find("<ref") != -1:
 		return False
 	wikicode = mwparserfromhell.parse(text)
@@ -30,7 +31,6 @@ def checktext(text):
 		return False
 
 def main():
-	global site
 	site = mwclient.Site('en.wikipedia.org')
 	site.login(password.username, password.password)
 
@@ -38,13 +38,7 @@ def main():
 	results = []
 	for page in bot.listpages(category,names=False,includeredirects=False):
 		if page.namespace == 0:
-			try:
-				pagetext = page.edit()
-			except:
-				time.sleep(120) # wait for memory to clear up
-				pagetext = page.edit()
-
-			if checktext(pagetext) == True:
+			if checktext(page) == True:
 				results.append(page.name)
 
 	output = "== Minor planet articles with one sentence and no references ==\n<sup>Updated ~~~~~ by [[User:Theo's Little Bot|]]"
