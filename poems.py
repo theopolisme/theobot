@@ -25,11 +25,12 @@ def process(page):
 	wikicode = mwparserfromhell.parse(contents)
 	for template in wikicode.filter_templates():
 		if "infobox poem" in template.name.lower() and template.has_param('publication_date'):
-			pub_date_raw = unicode(template.get('publication_date').value).strip()#.replace('[[','').replace(']]','')
+			pub_date_stripped = template.get('publication_date').value.strip_code().strip() # This helps with parsing wikicode-ified dates
+			pub_date_raw = template.get('publication_date').value.strip()
 			print "-----"
 			print "Raw publication_date: "+pub_date_raw
 			if pub_date_raw.lower().find("{{start") == -1 and pub_date_raw.find("[[Category:Infoboxes needing manual conversion") == -1:
-				date = parser.parser().parse(pub_date_raw,None)
+				date = parser.parser().parse(pub_date_stripped,None)
 				if date is None or date.year is None:
 					if pub_date_raw.find("<!-- Date published") == -1:
 						template.add('publication_date',pub_date_raw+" [[Category:Infoboxes needing manual conversion to use start date]]")
