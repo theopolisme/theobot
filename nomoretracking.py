@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import mwclient
 import mwparserfromhell
 
-from urlparse import urlparse, urlunparse
+import urlparse
 
 from theobot import bot
 from theobot import password
@@ -27,11 +27,14 @@ def process(page):
 			soup = BeautifulSoup(html_doc)
 			canonical = soup.find("link",rel="canonical")
 			if canonical is not None:
-				contents = contents.replace(link,canonical['href'])
+				origurl = urlparse.urlsplit(link)
+				base_url = urlparse.urlunsplit((origurl[0],origurl[1],'','',''))
+				newurl = urlparse.urljoin(base_url, canonical['href'])
+				contents = contents.replace(link,newurl)
 			else:
-				parsed_url = list(urlparse(link))
+				parsed_url = list(urlparse.urlparse(link))
 				parsed_url[4] = '&'.join([x for x in parsed_url[4].split('&') if not x.startswith('utm_')])
-				newlink = urlunparse(parsed_url)
+				newlink = urlparse.urlunparse(parsed_url)
 				contents = contents.replace(link,newlink)
 	if contents == contents_compare:
 		return False
