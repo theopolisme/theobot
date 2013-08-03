@@ -48,22 +48,25 @@ def process(page):
 					newlink = urlparse.urlunparse(parsed_url)
 					contents = contents.replace(link,newlink)
 			else:
-				wikicode = mwparserfromhell.parse(contents)
-				templated = False
-				# If the link is inside a template, then add {{dead link}} immediately after the template
-				for template in wikicode.filter_templates(recursive=True):
-					if link in template:
-						templated = True
-						wikicode.insert_after(template," {{Dead link|date="+MONTHYEAR+"|bot=Theo's Little Bot}}")
-				if templated == True:
-					contents = unicode(wikicode)
+				if contents.find("<!-- Remove this comment when fixing the dead link: "+link+" -->") == -1 and contents.find("<!-- Theo's Little Bot skip this link: "+link+" -->") == -1: # skip any articles that have been fixed
+					wikicode = mwparserfromhell.parse(contents)
+					templated = False
+					# If the link is inside a template, then add {{dead link}} immediately after the template
+					for template in wikicode.filter_templates(recursive=True):
+						if link in template:
+							templated = True
+							wikicode.insert_after(template," <!-- Remove this comment when fixing the dead link: "+link+" -->{{Dead link|date="+MONTHYEAR+"|bot=Theo's Little Bot}}")
+					if templated == True:
+						contents = unicode(wikicode)
+					else:
+						# Otherwise, just add {{dead link}} right after the link and hope for the best
+						contents = re.sub('('+re.escape(link)+r"""(?:.*])?)""",
+							r"\1 <!-- Remove this comment when fixing the dead link: "+link+" -->{{Dead link|date="+MONTHYEAR+"|bot=Theo's Little Bot}}",
+							contents,
+							flags=re.UNICODE|re.DOTALL
+							)
 				else:
-					# Otherwise, just add {{dead link}} right after the link and hope for the best
-					contents = re.sub('('+re.escape(link)+r"""(?:.*])?)""",
-						r"\1 {{Dead link|date="+MONTHYEAR+"|bot=Theo's Little Bot}}",
-						contents,
-						flags=re.UNICODE|re.DOTALL
-						)
+					print "The dead link was already tagged."
 	if contents == contents_compare:
 		return False
 	#diff = difflib.unified_diff(contents_compare.splitlines(), contents.splitlines(), lineterm='')
