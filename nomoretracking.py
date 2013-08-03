@@ -46,7 +46,6 @@ def process(page):
 					parsed_url = list(urlparse.urlparse(link))
 					parsed_url[4] = '&'.join([x for x in parsed_url[4].split('&') if not x.startswith('utm_')])
 					newurl = urlparse.urlunparse(parsed_url)
-				print urllib.quote(link,'?/&:')
 				if contents.find(link) != -1:
 					matched_link = link
 				else:
