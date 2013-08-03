@@ -16,6 +16,7 @@ import MySQLdb
 
 import re
 import difflib
+import urllib
 
 # CC-BY-SA Theopolisme
 
@@ -41,12 +42,18 @@ def process(page):
 					origurl = urlparse.urlsplit(link)
 					base_url = urlparse.urlunsplit((origurl[0],origurl[1],'','',''))
 					newurl = urlparse.urljoin(base_url, canonical['href'])
-					contents = contents.replace(link,newurl)
 				else:
 					parsed_url = list(urlparse.urlparse(link))
 					parsed_url[4] = '&'.join([x for x in parsed_url[4].split('&') if not x.startswith('utm_')])
-					newlink = urlparse.urlunparse(parsed_url)
-					contents = contents.replace(link,newlink)
+					newurl = urlparse.urlunparse(parsed_url)
+				print urllib.quote(link,'?/&:')
+				if contents.find(link) != -1:
+					matched_link = link
+				else:
+					# This is for when the API messes with the link text
+					parsed = urlparse.urlsplit(link)
+					matched_link = urlparse.urlunsplit([parsed[0],parsed[1],parsed[2],urllib.urlencode(urlparse.parse_qsl(parsed[3])),parsed[4]])
+				contents = contents.replace(matched_link,newurl)
 			else:
 				if contents.find("<!-- Remove this comment when fixing the dead link: "+link+" -->") == -1 and contents.find("<!-- Theo's Little Bot skip this link: "+link+" -->") == -1: # skip any articles that have been fixed
 					wikicode = mwparserfromhell.parse(contents)
