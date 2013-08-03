@@ -18,6 +18,8 @@ import re
 import difflib
 import urllib
 
+import time
+
 # CC-BY-SA Theopolisme
 
 MONTHYEAR = datetime.date.today().strftime("%B %Y")
@@ -78,7 +80,11 @@ def process(page):
 	#diff = difflib.unified_diff(contents_compare.splitlines(), contents.splitlines(), lineterm='')
 	#print '\n'.join(list(diff))
 	#print "---------"
-	page.save(contents,"[[WP:BOT|Bot]]: Removing Google Analytics tracking codes) ([[User:Theo's Little Bot/disable/tracking|disable]]")
+	try:
+		page.save(contents,"[[WP:BOT|Bot]]: Removing Google Analytics tracking codes) ([[User:Theo's Little Bot/disable/tracking|disable]]")
+	except mwclient.errors.MaximumRetriesExceeded:
+		time.sleep(600) # Patiently wait and hope for the best once again; if it doesn't work this time, just give up.
+		page.save(contents,"[[WP:BOT|Bot]]: Removing Google Analytics tracking codes) ([[User:Theo's Little Bot/disable/tracking|disable]]")
 	return True
 
 def main():
