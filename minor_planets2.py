@@ -30,6 +30,8 @@ def checktext(page):
 			contents = mwparserfromhell.parse(contents).strip_code()
 			if len(contents.strip()) == 0:
 				return True
+	if text.find("Citation from the [[Minor Planet Circular|MPCs]]") != -1 and text.find("''No citation yet''") != -1:
+		return True
 	return False
 
 def main():
@@ -46,7 +48,7 @@ def main():
 		if checktext(page) == True:
 			results.append(page.name)
 
-	output = "== Articles with only [[Template:JPL small body|]] in their external links ==\n<sup>Updated ~~~~~ by [[User:Theo's Little Bot|]]</sup>"
+	output = "== Articles with only [[Template:JPL small body|]] in their external links or only an empty citation list ==\n<sup>Updated ~~~~~ by [[User:Theo's Little Bot|]]</sup>"
 
 	results = sorted(set(results))
 	for result in results:
