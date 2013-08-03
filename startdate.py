@@ -20,9 +20,14 @@ import dateutil.parser as parser
 
 # CC-BY-SA Theopolisme
 
-# Rather hackety, but it works
+# Monkey-patch the `parse` method
+# This sets None as the default value for missing parameters and raises a ValueError for ambiguous dates
 def parse(self,timestr,default=None,ignoretz=False,tzinfos=None,**kwargs):
-	return self._parse(timestr, **kwargs)
+	# _result() objects are unique, so we convert to unicode to compare them 
+	if unicode(self._parse(timestr, **kwargs)) == unicode(self._parse(timestr, yearfirst=True, **kwargs)) == unicode(self._parse(timestr, dayfirst=True, **kwargs)):
+		return self._parse(timestr, **kwargs)
+	else:
+		raise ValueError("The date was ambiguous: %s" % timestr)
 parser.parser.parse = parse
 
 def process(page):
@@ -35,7 +40,11 @@ def process(page):
 			#print "-----"
 			#print "Raw {}: ".format(PARAM)+pub_date_raw
 			if pub_date_raw.lower().find("{{start") == -1 and pub_date_raw.find("[[Category:Infoboxes needing manual conversion") == -1:
-				date = parser.parser().parse(pub_date_stripped,None)
+				try:
+					date = parser.parser().parse(pub_date_stripped,None)
+				except ValueError:
+					# If the date is ambiguous, e.g., "2-2-2012," tag it for manual conversion
+					date = None
 				if date is None or date.year is None:
 					if pub_date_raw.find("<!-- Date published") == -1:
 						template.add(PARAM,pub_date_raw+" [[Category:Infoboxes needing manual conversion to use start date]]")
