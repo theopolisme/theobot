@@ -37,23 +37,26 @@ def process(page):
 		if template.name.lower().strip() in INFOBOX_TITLES and template.has_param(PARAM):
 			pub_date_stripped = template.get(PARAM).value.strip_code().strip() # This helps with parsing wikicode-ified dates
 			pub_date_raw = template.get(PARAM).value.strip()
-			#print "-----"
-			#print "Raw {}: ".format(PARAM)+pub_date_raw
 			if pub_date_raw.lower().find("{{start") == -1 and pub_date_raw.find("[[Category:Infoboxes needing manual conversion") == -1:
 				try:
 					date = parser.parser().parse(pub_date_stripped,None)
 				except ValueError:
 					# If the date is ambiguous, e.g., "2-2-2012," tag it for manual conversion
 					date = None
+
 				if date is None or date.year is None:
 					if pub_date_raw.find("<!-- Date published") == -1:
 						template.add(PARAM,pub_date_raw+" [[Category:Infoboxes needing manual conversion to use start date]]")
-						page.save(unicode(wikicode),u'[[WP:BOT|Bot]]: Tagging unparsable [[Template:{}]]'.format(PARAM))
-						#print "Tagging unparsable {}".format(PARAM)
+						page.save(unicode(wikicode),u'[[WP:BOT|Bot]]: Tagging unparsable {}'.format(PARAM))
 						continue
 					else:
-						#print "No {} specificed; skipping.".format(PARAM)
 						continue					
+
+				if not (1583 <= date.year <= 9999): # {{start date}} is only for dates in the ISO 8601 date range
+					template.add(PARAM,pub_date_raw+" <!-- Date should NOT be converted to use {{start date}}, since it is outside of the ISO 8601 date range -->")
+					page.save(unicode(wikicode),u'[[WP:BOT|Bot]]: Tagging out-of-range {}'.format(PARAM))
+					continue
+
 				if re.search(r"""\d{1,2} [a-zA-Z]* \d{4}""",pub_date_raw,flags=re.U) is not None:
 					df = True
 				else:
@@ -67,11 +70,9 @@ def process(page):
 					startdate.add(3,date.day)
 				if df:
 					startdate.add('df','y')
-				#print "Final template: "+unicode(startdate)
 				template.add(PARAM,unicode(startdate)+"<!-- Bot-converted date -->")
 				page.save(unicode(wikicode),u'[[WP:BOT|Bot]]: Converting '+PARAM+' to utilize {{[[Template:start date|]]}}')
 			else:
-				#print "Template already updated."
 				continue
 
 def main():
