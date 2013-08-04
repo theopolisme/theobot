@@ -40,7 +40,7 @@ def process(page):
 				html_doc = req.text
 				soup = BeautifulSoup(html_doc)
 				canonical = soup.find("link",rel="canonical")
-				if canonical is not None:
+				if canonical is not None and 'href' in canonical:
 					origurl = urlparse.urlsplit(link)
 					base_url = urlparse.urlunsplit((origurl[0],origurl[1],'','',''))
 					newurl = urlparse.urljoin(base_url, canonical['href'])
