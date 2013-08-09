@@ -52,6 +52,12 @@ def process(page):
 					else:
 						continue					
 
+				if date.utcoffset() and date.utcoffset().total_seconds() != 0:
+					# If the date has timezone info and the timezone isn't UTC, skip it 
+					template.add(PARAM,pub_date_raw+" [[Category:Infoboxes needing manual timezone conversion to use start date]]")
+					page.save(unicode(wikicode),u'[[WP:BOT|Bot]]: Tagging {} in need of manual conversion to use [[Template:Start date]]'.format(PARAM))
+					continue
+
 				if not (1583 <= date.year <= 9999): # {{start date}} is only for dates in the ISO 8601 date range
 					template.add(PARAM,pub_date_raw+" <!-- Date should NOT be converted to use {{start date}}, since it is outside of the ISO 8601 date range -->")
 					page.save(unicode(wikicode),u'[[WP:BOT|Bot]]: Tagging out-of-range {}'.format(PARAM))
@@ -67,7 +73,13 @@ def process(page):
 				if date.month:
 					startdate.add(2,date.month)
 				if date.day:
-					startdate.add(3,date.day)
+					startdate.add(3,date.day)				
+				if date.hour:
+					startdate.add(4,date.hour)
+				if date.minute:
+					startdate.add(5,date.minute)
+				if date.second:
+					startdate.add(6,date.second)
 				if df:
 					startdate.add('df','y')
 				template.add(PARAM,unicode(startdate)+"<!-- Bot-converted date -->")
