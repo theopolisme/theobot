@@ -131,10 +131,9 @@ def listpages(category,names=True,includeredirects=True):
 				if page.redirect == True:
 					continue
 			if names == True:
-				results.append(page.name)
+				yield page.name
 			else:
-				results.append(page)
-	return results
+				yield page
 
 def redirects(name,namespace=None,pg_prefix='',output=None):
 	"""This little function returns redirects to a particular page.
