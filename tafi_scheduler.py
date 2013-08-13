@@ -51,17 +51,18 @@ class TAFIScheduler():
 		"""
 		
 		sections = mwparserfromhell.parse(holding_contents).get_sections(levels=[2], include_headings=True)
-		del sections[0:2] # removes lede section and instructions section, which we don't want
+		for section in sections:
+			print unicode(section)+"\n\n"
+		del sections[0] # removes instructions section, which we don't want
 		
 		useful_dict = {}
 		for section in sections:
-			nominations = re.findall(r'(\s*?\{\{TAFI nom.*?\}\}.*?)\s*?(?=([^=]\{\{TAFI|\z|\=\=))',unicode(section),re.IGNORECASE | re.DOTALL | re.UNICODE | re.M)
-			real_noms = []
-			for nom in nominations:
-				if nom[0] != u'':
-					real_noms.append(nom[0])
+			nominations = re.findall(r'\{\{TAFI nom.*?(?=\=\=|\{\{TAFI nom|\z)',unicode(section),re.IGNORECASE | re.DOTALL | re.UNICODE | re.M)
 			section_header = re.findall(r'==(.*?)==',unicode(section),re.IGNORECASE | re.DOTALL | re.UNICODE)[0].strip()
-			useful_dict[section_header] = real_noms
+			if len(nominations) > 0:
+				useful_dict[section_header] = nominations
+			else:
+				print "No contents in section...skippin' it."
 		
 		self.holding_contents_dict = useful_dict
 
@@ -174,7 +175,7 @@ class TAFIScheduler():
 		for page in self.pagesforthisweek:
 			i += 1
 			stringy = "Wikipedia:Today's articles for improvement/" + str(self.now.year) + "/" + str(self.week) + "/" + str(i) # note the plus one, this is so we do the week AFTER
-			text = "[[" + page + "]]"	
+			text = "[[" + page + "]]"
 			site.Pages[stringy].save(text,"[[WP:BOT|Bot]]: Updating TAFI schedule.")
 
 	def update_weekly_subpage(self):
@@ -195,10 +196,7 @@ class TAFIScheduler():
 </noinclude>"""
 
 		self.subpage_str = "Wikipedia:Today's articles for improvement/" + str(self.now.year) + "/" + str(self.week) 
-		if site.Pages[self.subpage_str].edit() == u'':
-			site.Pages[self.subpage_str].save(page_contents,summary="[[WP:BOT|Bot]]: Updating TAFI weekly subpage.")
-		else:
-			print "Someone already updated this week's subpage!"
+		site.Pages[self.subpage_str].save(page_contents,summary="[[WP:BOT|Bot]]: Updating TAFI weekly subpage.")
 
 	def week_start_date(self, year, week):
 		"""Given a year and a week, calculates
@@ -233,5 +231,5 @@ class TAFIScheduler():
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
-for i in range(1,7): #The scheduler will run for 6 weeks in advance
-	scheduler = TAFIScheduler(week=datetime.datetime.now().isocalendar()[1]+i)
+# Schedule 1 week in advance... this can vary if necessary
+scheduler = TAFIScheduler(week=datetime.datetime.now().isocalendar()[1]+1)
