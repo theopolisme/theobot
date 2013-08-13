@@ -61,8 +61,6 @@ class RotTomMovie():
 			ratings = jsonresults["ratings"]
 			self.results['tomatometer'] = ratings["critics_score"]
 			self.collect_data_scraper(url=self.url)
-			self.citation_generation(title=self.title,year=jsonresults['year'],url=self.url)
-			self.all_in_one()
 			ok = False
 			sc_hash = hashlib.md5(repr(self.results)).hexdigest()
 			try:
@@ -76,6 +74,9 @@ class RotTomMovie():
 				UPDATED_SCORES[self.imdbid] = sc_hash
 				ok = True
 			if ok == True:
+				# Only generate citations after checking the hash
+				self.citation_generation(title=self.title,year=jsonresults['year'],url=self.url)
+				self.all_in_one()
 				self.wikipage_output()
 		except:
 			print "There were no movies matching this title...ABORT!"
