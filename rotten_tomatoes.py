@@ -146,7 +146,7 @@ def process_page(page):
 	contents = page.edit()
 	wikicode = mwparserfromhell.parse(contents)
 	for template in wikicode.filter_templates():
-		if "rotten tomatoes score" in template.name.lower().strip():
+		if template.name.lower().strip() in ["rots","rotten tomatoes score"]:
 			try:
 				imdbid = unicode(template.get(1).value)
 			except ValueError:
