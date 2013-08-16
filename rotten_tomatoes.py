@@ -33,13 +33,6 @@ except IOError:
 	print "The score pickle didn't exist, so starting 'fresh'...haha, get it? ...<crickets>"
 	UPDATED_SCORES = {}
 
-global UPDATED_IDS
-try:
-	UPDATED_IDS = pickle.load(open("rotten_tomatoes_updated.p","rb"))
-except IOError:
-	print "The last-updated pickle didn't exist, so starting 'fresh'...haha, get it? ...<crickets>"
-	UPDATED_IDS = {}
-
 class RotTomMovie():
 	def __init__(self,imdbid):
 		self.imdbid = imdbid
@@ -80,7 +73,7 @@ class RotTomMovie():
 				self.wikipage_output()
 		except:
 			print "There were no movies matching this title...ABORT!"
-			self.page.save("{{error|There are no listings on Rotten Tomatoes for this title. Questions? [[User talk:Theopolisme|Contact Theopolisme]].}}",summary="[[WP:BOT|Bot]]: Updating Rotten Tomatoes data")
+			self.page.save("{{error|Unable to locate a listing on Rotten Tomatoes for this title. ([[Template talk:Rotten Tomatoes score|Is this an error?]])}}",summary="[[WP:BOT|Bot]]: Updating Rotten Tomatoes data")
 
 	def collect_data_scraper(self,url):
 		"""This uses some good old-fashioned web scraping to get the date we're after."""
@@ -126,7 +119,7 @@ class RotTomMovie():
 		if self.results['consensus'] != 'No consensus yet.':
 			self.results['all_in_one_plus_consensus'] = 'The [[review aggregator]] website [[Rotten Tomatoes]] reported a {0}% approval rating with an average rating of {1} based on {2} reviews. The website\'s consensus reads, "{3}"<includeonly><ref>{4}</ref></includeonly>'.format(self.results['tomatometer'],self.results['average_rating'],self.results['number_of_reviews'],self.results['consensus'],self.results['citation'])
 		else:
-			self.results['all_in_one_plus_consensus'] = "{{error|There was no consensus data on Rotten Tomatoes for this title. Questions? [[User talk:Theopolisme|Contact Theopolisme]].}}"
+			self.results['all_in_one_plus_consensus'] = "{{error|There was no consensus data on Rotten Tomatoes for this title. ([[Template talk:Rotten Tomatoes score|Is this an error?]])}}"
 
 	def wikipage_output(self):
 		"""Updates the on-wiki template for this particular film."""
@@ -154,26 +147,17 @@ def process_page(page):
 			update_id(imdbid)
 
 def update_id(imdbid):
-	"""If the id hasn't been updated in the past 5 days, re-calculate and update
-	its information.
+	"""Sets up a new instance of RotTomMovie for the id (this is a separate function
+	because originally it only updated once every five days).
 	"""
-	try:
-		if UPDATED_IDS[imdbid] + 432000 < time.time(): # 5 days in seconds
-			UPDATED_IDS[imdbid] = time.time()
-			RotTomMovie(imdbid=imdbid)
-		else:
-			print "IMDB id #{} has already been updated in the past 5 days.".format(imdbid)
-	except KeyError:
-		print "IMDB id #{} wasn't listed in the pickle, so adding it.".format(imdbid)
-		UPDATED_IDS[imdbid] = time.time()
-		RotTomMovie(imdbid=imdbid)
+	RotTomMovie(imdbid=imdbid)
 
 def main():
-	"""Uses a maintenance category on wikipedia to 
+	"""Uses an internal dictionary as well as a maintenance category on wikipedia to 
 	get a list of pages and then processes them.
 	"""
 	print "Updating articles already using {{Rotten Tomatoes score}}"
-	for imdbid in UPDATED_IDS:
+	for imdbid in UPDATED_SCORES:
 		update_id(imdbid)
 
 	print "Processing new articles using {{Rotten Tomatoes score}}"
@@ -181,8 +165,12 @@ def main():
 	for page in cat:
 		process_page(page)
 
+	print "Making sure we didn't skip any articles using {{Rotten Tomatoes score}}"
+	cat = mwclient.listing.Category(site, 'Category:Pages with Rotten Tomatoes embeds')
+	for page in cat:
+		process_page(page)
+
 	print "And we're done -- pickling!"
-	pickle.dump(UPDATED_IDS,open("rotten_tomatoes_updated.p","wb"))
 	pickle.dump(UPDATED_SCORES,open("rotten_tomatoes_scores.p","wb"))
 
 print "Powered on."
