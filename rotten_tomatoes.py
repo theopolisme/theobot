@@ -72,8 +72,10 @@ class RotTomMovie():
 				self.all_in_one()
 				self.wikipage_output()
 		except:
-			print "There were no movies matching this title...ABORT!"
-			self.page.save("{{error|Unable to locate a listing on Rotten Tomatoes for this title. ([[Template talk:Rotten Tomatoes score|Is this an error?]])}}",summary="[[WP:BOT|Bot]]: Updating Rotten Tomatoes data")
+			if len(self.page.edit()) == 0:
+				# If the api was just acting funky this run and we were able to get data before, don't remove it
+				print "There were no movies matching this title...ABORT!"
+				self.page.save("{{error|Unable to locate a listing on Rotten Tomatoes for this title. ([[Template talk:Rotten Tomatoes score|Is this an error?]])}}",summary="[[WP:BOT|Bot]]: Updating Rotten Tomatoes data")
 
 	def collect_data_scraper(self,url):
 		"""This uses some good old-fashioned web scraping to get the date we're after."""
