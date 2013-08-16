@@ -215,7 +215,7 @@ class TAFIScheduler():
 		"""Adds this week to the schedule."""
 		schedule = site.Pages["Wikipedia:Today's articles for improvement/Schedule/real"]
 		text = schedule.edit()
-		text += """\n\n;<big>[[Wikipedia:Today's articles for improvement/{0}/{1}|Week {1}]]:</big> (beginning {2})""".format(self.now.year,self.week,self.week_start_date(self.now.year,self.week))
+		text += """\n\n<br>{{{{clear}}}}{{{{TAFI/Picture box|week={0}/{1}}}}}\n;<big>[[Wikipedia:Today's articles for improvement/{0}/{1}|Week {1}]]:</big> (beginning {2})""".format(self.now.year,self.week,self.week_start_date(self.now.year,self.week))
 		
 		nommies = []
 
