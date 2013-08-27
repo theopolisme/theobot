@@ -28,9 +28,9 @@ def main():
 	site.login(password.username, password.password)
 
 	templates = {}
-	cat = mwclient.listing.Category(site,'Category:WikiProject banners')
+	cat = mwclient.listing.Category(site,'Category:WikiProject banners with quality assessment')
 	for template in bot.listpages(cat,names=False,includeredirects=False):
-		if template.page_title.find('/testcases') == -1:
+		if template.page_title.find('/testcases') == -1 and template.page_title.find('/sandbox') == -1:
 			print "working on {}".format(template.page_title)
 			templates[get_project(template) or template.page_title] = template.page_title
 		else:
