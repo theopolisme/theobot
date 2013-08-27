@@ -125,12 +125,16 @@ def listpages(category,names=True,includeredirects=True):
 	results = []
 	for page in category:
 		if page.namespace == 14:  # 14 is the category namespace
-			results += listpages(page,names=names,includeredirects=includeredirects)
+			for result in listpages(page,names=names,includeredirects=includeredirects):
+				if names:
+					yield result.name
+				else:
+					yield result
 		else:
 			if includeredirects == False:
 				if page.redirect == True:
 					continue
-			if names == True:
+			if names:
 				yield page.name
 			else:
 				yield page
