@@ -17,8 +17,9 @@ from theobot import bot
 
 # CC-BY-SA Theopolisme
 
-global TODAY
-TODAY = datetime.datetime.now().strftime("%d %B %Y")
+global TODAY_DMY,TODAY_MDY
+TODAY_DMY = datetime.datetime.now().strftime("%d %B %Y")
+TODAY_MDY = datetime.datetime.now().strftime("%B %d, %Y")
 
 global NONDECIMAL
 NONDECIMAL = re.compile(r'[^\d.]+',flags=re.U)
@@ -112,14 +113,27 @@ class RotTomMovie():
 |title={title} ({year})
 |url={url}
 |publisher=Rotten Tomatoes
-|accessdate={date}
-}}}}""".format(title=title,year=year,url=url,date=TODAY)
+|accessdate={{{{#ifeq: {{{{{{mdy|}}}}}} | | {dmy} | {mdy} }}}}
+}}}}
+""".format(title=title,year=year,url=url,dmy=TODAY_DMY,mdy=TODAY_MDY)
+
+		self.results['reference'] = """{{{{#ifeq: {{{{{{mdy|}}}}}} | | <ref>{{{{cite web
+|title={title} ({year})
+|url={url}
+|publisher=Rotten Tomatoes
+|accessdate={dmy} }}}}
+</ref> | <ref>{{{{cite web
+|title={title} ({year})
+|url={url}
+|publisher=Rotten Tomatoes
+|accessdate={mdy} }}}}
+</ref> }}}}""".format(title=title,year=year,url=url,dmy=TODAY_DMY,mdy=TODAY_MDY)
 
 	def all_in_one(self):
 		"""Wraps up all of the items in self.results in pretty packaging."""
-		self.results['all_in_one'] = 'The [[review aggregator]] website [[Rotten Tomatoes]] reported a {0}% approval rating with an average rating of {1} based on {2} reviews.<includeonly><ref>{3}</ref></includeonly>'.format(self.results['tomatometer'],self.results['average_rating'],self.results['number_of_reviews'],self.results['citation'])
+		self.results['all_in_one'] = 'The [[review aggregator]] website [[Rotten Tomatoes]] reported a {0}% approval rating with an average rating of {1} based on {2} reviews.{3}'.format(self.results['tomatometer'],self.results['average_rating'],self.results['number_of_reviews'],self.results['reference'])
 		if self.results['consensus'] != 'No consensus yet.':
-			self.results['all_in_one_plus_consensus'] = 'The [[review aggregator]] website [[Rotten Tomatoes]] reported a {0}% approval rating with an average rating of {1} based on {2} reviews. The website\'s consensus reads, "{3}"<includeonly><ref>{4}</ref></includeonly>'.format(self.results['tomatometer'],self.results['average_rating'],self.results['number_of_reviews'],self.results['consensus'],self.results['citation'])
+			self.results['all_in_one_plus_consensus'] = 'The [[review aggregator]] website [[Rotten Tomatoes]] reported a {0}% approval rating with an average rating of {1} based on {2} reviews. The website\'s consensus reads, "{3}"{4}'.format(self.results['tomatometer'],self.results['average_rating'],self.results['number_of_reviews'],self.results['consensus'],self.results['reference'])
 		else:
 			self.results['all_in_one_plus_consensus'] = "{{error|There was no consensus data on Rotten Tomatoes for this title. ([[Template talk:Rotten Tomatoes score|Is this an error?]])}}"
 
