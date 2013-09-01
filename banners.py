@@ -19,6 +19,8 @@ def get_project(template):
 	projectmatch = re.search(r'\|\s*PROJECT\s*=\s*(.*)[\n\r]',text,flags=re.U | re.I)
 	if projectmatch is not None:
 		project = projectmatch.groups(1)[0].replace("WikiProject","").strip()
+		if len(project) > 60: # Exclude projects using nonstandard formats (looking at you, Department of Fun)
+			project = None 
 	else:
 		project = None
 	return project
@@ -36,11 +38,7 @@ def main():
 		else:
 			pass
 
-	output = """// WikiProject banner templates and their associated WikiProjects
-// afcHelper_wikiprojectindex['associated wikiproject name'] = 'template name without namespace'
-afcHelper_wikiprojectindex = """
-
-	output += json.dumps(templates,sort_keys=True,indent=4,separators=(',', ': '))
+	output = json.dumps(templates,sort_keys=True,indent=4,separators=(',', ': '))
 
 	outputpage = site.Pages["User:Theo's Little Bot/afchwikiproject.js"]
 	outputpage.save(output,summary="[[WP:BOT|Bot]]: Updating WikiProject index for [[WP:AFCH|]]")
