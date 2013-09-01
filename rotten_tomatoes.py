@@ -19,7 +19,7 @@ from theobot import bot
 
 global TODAY_DMY,TODAY_MDY
 TODAY_DMY = datetime.datetime.now().strftime("%d %B %Y")
-TODAY_MDY = datetime.datetime.now().strftime("%B %d, %Y")
+TODAY_MDY = datetime.datetime.now().strftime("%B %d, %Y").replace(' 0', ' ')
 
 global NONDECIMAL
 NONDECIMAL = re.compile(r'[^\d.]+',flags=re.U)
