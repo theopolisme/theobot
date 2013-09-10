@@ -54,7 +54,9 @@ class RotTomMovie():
 			self.url = jsonresults['links']['alternate']
 			ratings = jsonresults["ratings"]
 			self.results['tomatometer'] = ratings["critics_score"]
-			self.collect_data_scraper(url=self.url)
+			if self.collect_data_scraper(url=self.url) == False:
+				print "Looks like the website is down for {}...skipping.".format(self.imdbid)
+				return False # if we had problems collecting data, just give up
 			ok = False
 			sc_hash = hashlib.md5(repr(self.results)).hexdigest()
 			try:
@@ -82,6 +84,10 @@ class RotTomMovie():
 		"""This uses some good old-fashioned web scraping to get the date we're after."""
 		r = requests.get(url)
 		contents = r.text
+
+		if contents.find("itemprop=\"aggregateRating\"") == -1:
+			# If there is no aggregate rating, the website is having trouble...we give up
+			return False
 
 		try:
 			self.results['average_rating'] = re.findall(r"Average Rating: <span>(.*?)</span><br />",contents,flags=re.U|re.DOTALL)[0]
