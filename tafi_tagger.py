@@ -43,7 +43,7 @@ def complete_static_list():
 	final_contents = "== List of TAFIs ==\n<sup>Last updated ~~~~~</sup>__TOC__"
 	
 	contents  = site.Pages["Wikipedia:Today's articles for improvement/Schedule/real"].edit()
-	sections = re.findall(r"""(\[\[.*?)(?:;<big>|$)""",contents,flags=re.U | re.DOTALL)
+	sections = re.findall(r"""(\[\[[^\n]*?)(?:;<big>|$)""",contents,flags=re.U | re.DOTALL)
 
 	for section in sections:
 		week = re.findall(r"""\|Week (.*?)\]\]""",section,flags=re.U)[0]
@@ -119,7 +119,7 @@ for i in range(1,11):
 		text = re.sub(r"\{\{TAFI\}\}\n", "", page.edit())
 		print "Saving page " + pagen + " - removed TAFI template."
 		page.save(text,summary="Removing [[WP:TAFI|Today's articles for improvement]] tag ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/tafi|disable]])")
-		
+
 		# This next set of instructions is for tagging the article's talk page.
 		start_date = now + datetime.timedelta(-7)
 		talk = site.Pages["Talk:" + pagen]
