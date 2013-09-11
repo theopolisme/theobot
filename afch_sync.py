@@ -88,6 +88,7 @@ for script in files:
         text = f.read()
     if prefix != 'MediaWiki:Gadget-afchelper.js':
         text = text.replace('MediaWiki:Gadget-afchelper', prefix.replace('\'',r'%27'))  # I hope this is ok.
+        text = text.replace("""var afcHelper_advert = ' ([[WP:AFCH|AFCH]] beta)';""","""var afcHelper_advert = ' ([[WP:AFCH|AFCH]] develop)';""") # denote the develop script
     text = header + text  # Add our custom header
     pg = site.Pages[mapping[script]]
     old = pg.edit()
