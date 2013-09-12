@@ -13,9 +13,6 @@ from theobot import bot
 # Pywikipedia dependencies converted to mwclient+theobot by [[User:Theopolisme]]
 # Licensed under CC-BY-SA 
 
-global SAVED
-SAVED = 0
-
 template_skip_list = [
 						'extant organization',
 						'COI editnotice',
