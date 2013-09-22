@@ -112,7 +112,7 @@ def main():
 	ON page_id = el_from
 	WHERE el_to LIKE "%&utm_%=%"
 	AND page_namespace = 0
-	LIMIT 500;
+	LIMIT 5000;
 	"""
 	cursor.execute(query)
 
