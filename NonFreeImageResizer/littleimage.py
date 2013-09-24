@@ -75,7 +75,6 @@ def gimme_image(filename,compound_site,pxl,theimage):
 	if pct_chg > 5:
 		png_info = img.info
 		img = img.resize((int(basewidth),int(hsize)), Image.ANTIALIAS)
-		img.save(filename + extension)
 		img.save(filename + extension, **png_info)
 	else:
 		print "Looks like we'd have a less than 5% change in pixel counts. Skipping."
