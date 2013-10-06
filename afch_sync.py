@@ -73,6 +73,7 @@ mapping = {
     'MediaWiki:Gadget-afchelper.css': prefix + '.css',
     'core.js': prefix + '.js/core.js',
     'ffu.js': prefix + '.js/ffu.js',
+    'prefs.js': prefix + '.js/prefs.js',
     'redirects.js': prefix + '.js/redirects.js',
     'submissions.js': prefix + '.js/submissions.js',
 }
