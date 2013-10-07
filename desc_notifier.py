@@ -103,7 +103,7 @@ def notify(user):
 				text = text + generate_subst(user)
 				#text = generate_subst(user)
 				try:
-					page.save(text,summary="Notifying user about missing file description(s) ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/desc_notifier|disable]])")
+					page.save(text,summary="Notifying user about missing file description(s) ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/desc_notifier|disable]])",redirect=True)
 					global total_done_now
 					total_done_now = total_done_now + 1
 					global users_notfied
