@@ -51,8 +51,6 @@ class TAFIScheduler():
 		"""
 		
 		sections = mwparserfromhell.parse(holding_contents).get_sections(levels=[2], include_headings=True)
-		for section in sections:
-			print unicode(section)+"\n\n"
 		del sections[0] # removes instructions section, which we don't want
 		
 		useful_dict = {}
@@ -215,7 +213,7 @@ class TAFIScheduler():
 		"""Adds this week to the schedule."""
 		schedule = site.Pages["Wikipedia:Today's articles for improvement/Schedule/real"]
 		text = schedule.edit()
-		text += """\n\n<br>{{{{clear}}}}{{{{TAFI/Picture box|week={0}/{1}}}}}\n;<big>[[Wikipedia:Today's articles for improvement/{0}/{1}|Week {1}]]:</big> (beginning {2})""".format(self.now.year,self.week,self.week_start_date(self.now.year,self.week))
+		text += """\n\n;<big>[[Wikipedia:Today's articles for improvement/{0}/{1}|Week {1}]]:</big> (beginning {2})\n{{{{TAFI/Picture box|week={0}/{1}}}}}\n""".format(self.now.year,self.week,self.week_start_date(self.now.year,self.week))
 		
 		nommies = []
 
@@ -225,7 +223,9 @@ class TAFIScheduler():
 		
 		for nom in nommies:
 			text += """\n* """ + nom
-			
+		
+		text += "\n{{clear}}"
+
 		schedule.save(text,summary="[[WP:BOT|Bot]]: Updating TAFI schedule - adding week {0}.".format(self.week))
 	
 site = mwclient.Site('en.wikipedia.org')
