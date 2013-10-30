@@ -142,6 +142,7 @@ class RotTomMovie():
 			self.results['all_in_one_plus_consensus'] = 'The [[review aggregator]] website [[Rotten Tomatoes]] reported a {0}% approval rating with an average rating of {1} based on {2} reviews. The website\'s consensus reads, "{3}"{4}'.format(self.results['tomatometer'],self.results['average_rating'],self.results['number_of_reviews'],self.results['consensus'],self.results['reference'])
 		else:
 			self.results['all_in_one_plus_consensus'] = "{{error|There was no consensus data on Rotten Tomatoes for this title. ([[Template talk:Rotten Tomatoes score|Is this an error?]])}}"
+		self.results['all_in_one_short'] = '{tomatometer}% ({numreviews} reviews){citation}'.format(tomatometer=self.results['tomatometer'],numreviews=self.results['number_of_reviews'],citation=self.results['reference'])
 
 	def wikipage_output(self):
 		"""Updates the on-wiki template for this particular film."""
@@ -153,6 +154,7 @@ class RotTomMovie():
 -->{{#ifeq: {{{1|}}} |fresh|""" + unicode(self.results['fresh']) + """|}}<!--
 -->{{#ifeq: {{{1|}}} |rotten|""" + unicode(self.results['rotten']) + """|}}<!--
 -->{{#ifeq: {{{1|}}} |all_in_one_plus_consensus|""" + unicode(self.results['all_in_one_plus_consensus']) + """|}}<!--
+-->{{#ifeq: {{{1|}}} |all_in_one_short|""" + unicode(self.results['all_in_one_short']) + """|}}<!--
 -->{{#ifeq: {{{1|}}} |all_in_one|""" + self.results['all_in_one']  + """|}}"""
 		self.page.save(contents,"[[WP:BOT|Bot]]: Updating Rotten Tomatoes data")
 
