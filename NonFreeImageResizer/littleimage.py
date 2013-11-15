@@ -60,25 +60,24 @@ def gimme_image(filename,compound_site,pxl,theimage):
 	
 	try:
 		img = Image.open(item10)
+		basewidth = int(math.sqrt((pxl * float(img.size[0]))/(img.size[1])))
+		wpercent = (basewidth/float(img.size[0]))
+		hsize = int((float(img.size[1])*float(wpercent)))
+		
+		original_pixel = img.size[0] * img.size[1]
+		modified_pixel = basewidth * hsize
+		pct_chg = 100.0 *  (original_pixel - modified_pixel) / float(original_pixel)
+		if pct_chg > 5:
+			png_info = img.info
+			img = img.resize((int(basewidth),int(hsize)), Image.ANTIALIAS)
+			img.save(filename + extension, **png_info)
+		else:
+			print "Looks like we'd have a less than 5% change in pixel counts. Skipping."
+			results = "PIXEL"
+			return results
 	except (IOError):
 		print "Unable to open image " + theimage + " (aborting)"
 		results = "ERROR"
-		return results
-	
-	basewidth = int(math.sqrt((pxl * float(img.size[0]))/(img.size[1])))
-	wpercent = (basewidth/float(img.size[0]))
-	hsize = int((float(img.size[1])*float(wpercent)))
-	
-	original_pixel = img.size[0] * img.size[1]
-	modified_pixel = basewidth * hsize
-	pct_chg = 100.0 *  (original_pixel - modified_pixel) / float(original_pixel)
-	if pct_chg > 5:
-		png_info = img.info
-		img = img.resize((int(basewidth),int(hsize)), Image.ANTIALIAS)
-		img.save(filename + extension, **png_info)
-	else:
-		print "Looks like we'd have a less than 5% change in pixel counts. Skipping."
-		results = "PIXEL"
 		return results
 
 	print "Image saved to disk at " + filename + extension
