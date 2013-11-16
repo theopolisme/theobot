@@ -57,7 +57,7 @@ def get_exif_date(image):
 					result = time.strftime("%d %B %Y",result)
 					break
 	except:
-		pass #This means that the image didn't have any EXIF data
+		pass # This means that the image didn't have any EXIF data
 
 	return result
 
@@ -77,10 +77,18 @@ def process_page(page):
 	contents = page.edit()
 
 	if contents != "":
-		description = re.sub(r"={1,5}[^=]*={1,5}","",contents,flags=re.U|re.DOTALL) # remove all headers
-		description = unicode(mwparserfromhell.parse(description).strip_code())
-		description = re.sub(r"""[ ]{2,}"""," ",description,flags=re.U)
-		description = description.replace('\n','<br />').strip()
+		description = contents.strip()
+		desc_code = mwparserfromhell.parse(description)
+		for bad_code in desc_code.ifilter_templates(): # Remove templates
+			description = description.replace(unicode(bad_code),'')
+		for bad_code in desc_code.ifilter_headings(): # Remove headers
+			description = description.replace(unicode(bad_code),'')
+		if description.find('<nowiki') != -1:
+			return # Skip complex descriptions
+		description = re.sub(r"""[ ]{2,}"""," ",description,flags=re.U) # Remove excessive spaces
+		description = re.sub(r"""\[\[(?:File|Image):(.*?)(?:\|.*?)\]\]""",r"[[:File:\1]]",description,flags=re.U) # Turn images into links
+		description = re.sub(r"""\[\[User:.*?\]\] \(\[\[User talk:J.*?\]\]\).*?\(UTC\)""",'',description,flags=re.U) # Remove signatures when possible
+		description = re.sub(r"""\n+""",'<br />',description.strip(),flags=re.U) # Convert newlines into explicit line breaks
 	else:
 		description = ""
 
