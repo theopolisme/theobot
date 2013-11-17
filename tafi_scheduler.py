@@ -55,7 +55,7 @@ class TAFIScheduler():
 		
 		useful_dict = {}
 		for section in sections:
-			nominations = re.findall(r'\{\{TAFI nom.*?(?=\=\=|\{\{TAFI nom|\z)',unicode(section),re.IGNORECASE | re.DOTALL | re.UNICODE | re.M)
+			nominations = re.findall(r'\{\{TAFI nom.*?(?=\=\=|\{\{TAFI nom|$)',unicode(section),re.IGNORECASE | re.DOTALL | re.UNICODE)
 			section_header = re.findall(r'==(.*?)==',unicode(section),re.IGNORECASE | re.DOTALL | re.UNICODE)[0].strip()
 			if len(nominations) > 0:
 				useful_dict[section_header] = nominations
@@ -96,21 +96,24 @@ class TAFIScheduler():
 		
 		high_ones = {}
 		low_ones = {}
+		percent = float(self.total_number_of_noms)/11 # If every section had an equal number of noms, this is the number it should have
 		
 		for key,value in items:
-			if value >= 10:
+			if value >= percent:
 				high_ones[key] = value
-			if value < 10:
+			else:
 				low_ones[key] = value
 		
 		low_ones = low_ones.items()
 		shuffle(low_ones)
 		
 		items = high_ones.items() + low_ones
-		
+
 		for key, value in items:
 			percentage = int(100 * (float(value)/self.total_number_of_noms))
 			number_of_slots = int((.01 * percentage) * 10)
+			while number_of_slots > value: # More slots than we have to pick from
+				number_of_slots -= 1
 			total_slots += number_of_slots
 			if total_slots < 10 and number_of_slots < 1 and value > 0:
 				number_of_slots = 1
