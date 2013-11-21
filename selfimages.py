@@ -88,7 +88,6 @@ def process_page(page):
 		description = re.sub(r"""[ ]{2,}"""," ",description,flags=re.U) # Remove excessive spaces
 		description = re.sub(r"""\[\[(?:File|Image):(.*?)(?:\|.*?)\]\]""",r"[[:File:\1]]",description,flags=re.U) # Turn images into links
 		description = re.sub(r"""\[\[User:.*?\]\] \(\[\[User talk:J.*?\]\]\).*?\(UTC\)""",'',description,flags=re.U) # Remove signatures when possible
-		description = re.sub(r"""\n+""",'<br />',description.strip(),flags=re.U) # Convert newlines into explicit line breaks
 	else:
 		description = ""
 
