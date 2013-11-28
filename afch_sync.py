@@ -28,7 +28,7 @@ import mwclient
 from theobot import password
 
 #config
-path = '~/afc_pusher/tmp'
+path = '~/afc_pusher/afch'
 path = os.path.expanduser(path)
 
 if '--beta' in sys.argv:
@@ -38,12 +38,12 @@ elif '--master' in sys.argv:
 elif '--ffu' in sys.argv:
     branch = 'ffu'
 else:
-    branch = 'develop'
+    branch = 'origin/feature-prefs'
 
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
-if os.path.exists(path):
+"""if os.path.exists(path):
     #Update it
     repo = git.Repo(path)
     origin = repo.remotes.origin
@@ -59,14 +59,18 @@ else:
 
 sha1 = repo.heads[branch].commit.hexsha
 repo.heads[branch].checkout()
+"""
 
+repo = git.Repo(path)
+print repo.heads
+sha1 = repo.heads[branch].commit.hexsha
 
 summary = '[[WP:BOT|Bot]]: Auto-updating to {0} ({1})'.format(sha1, branch)
 print summary
 
 header = '/* Uploaded from https://github.com/WPAFC/afch, commit: {0} ({1}) */\n'.format(sha1, branch)
 
-prefix = "User:Theo's Little Bot/afch/afchelper"
+prefix = "User:Theo's Little Bot/afchprefs/afchelper"
 
 mapping = {
     'MediaWiki:Gadget-afchelper.js': prefix + '.js',
