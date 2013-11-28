@@ -85,6 +85,7 @@ def process_page(page):
 			description = description.replace(unicode(bad_code),'')
 		if description.find('<nowiki') != -1:
 			return # Skip complex descriptions
+		description = description.replace('|','{{!}}') # Escape pipe symbols
 		description = re.sub(r"""[ ]{2,}"""," ",description,flags=re.U) # Remove excessive spaces
 		description = re.sub(r"""\[\[(?:File|Image):(.*?)(?:\|.*?)\]\]""",r"[[:File:\1]]",description,flags=re.U) # Turn images into links
 		description = re.sub(r"""\[\[User:.*?\]\] \(\[\[User talk:J.*?\]\]\).*?\(UTC\)""",'',description,flags=re.U) # Remove signatures when possible
