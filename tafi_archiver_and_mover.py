@@ -32,9 +32,9 @@ def net_support(section):
 	
 	return net_support
 
-def older_than_fifteen_days(section):
+def agecheck(section):
 	lines = section.split('\n')
-	thread = timey.DiscussionThread(howold='old(15d)')
+	thread = timey.DiscussionThread(howold='old(30d)')
 	for line in lines:
 		thread.feedLine(line)
 	if thread.shouldBeArchived() == True:
@@ -50,12 +50,12 @@ def process_nomination(nom,section_header):
 		to_holding.append(nom_details)
 	else:
 		print "net support not greater than 3."
-		if older_than_fifteen_days(nom) == True:
+		if agecheck(nom) == True:
 			print "archiving as unsuccessful."
 			global to_archive
 			to_archive.append(nom)
 		else:
-			print "10 days hasn't elapsed yet; skipping thread."
+			print "30 days haven't elapsed yet; skipping thread."
 
 def process_section(section):
 	nominations = re.findall(r'(\s*?\{\{TAFI nom[.\|].*?)\s*?(?=[^=]\{\{TAFI|\=\=|$)',section,re.IGNORECASE | re.DOTALL | re.UNICODE)
