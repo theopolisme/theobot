@@ -70,7 +70,7 @@ print summary
 
 header = '/* Uploaded from https://github.com/WPAFC/afch, commit: {0} ({1}) */\n'.format(sha1, branch)
 
-prefix = "User:Theo's Little Bot/afchprefs/afchelper"
+prefix = "User:Theo's Little Bot/afch/afchelper"
 
 mapping = {
     'MediaWiki:Gadget-afchelper.js': prefix + '.js',
