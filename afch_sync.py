@@ -28,7 +28,7 @@ import mwclient
 from theobot import password
 
 #config
-path = '~/afc_pusher/afch'
+path = '~/afc_pusher/tmp'
 path = os.path.expanduser(path)
 
 if '--beta' in sys.argv:
@@ -43,7 +43,7 @@ else:
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
 
-"""if os.path.exists(path):
+if os.path.exists(path):
     #Update it
     repo = git.Repo(path)
     origin = repo.remotes.origin
@@ -59,9 +59,9 @@ else:
 
 sha1 = repo.heads[branch].commit.hexsha
 repo.heads[branch].checkout()
-"""
 
-repo = git.Repo(path)
+#repo = git.Repo(path)
+
 print repo.heads
 sha1 = repo.heads[branch].commit.hexsha
 
