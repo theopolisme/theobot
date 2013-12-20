@@ -38,7 +38,7 @@ elif '--master' in sys.argv:
 elif '--ffu' in sys.argv:
     branch = 'ffu'
 else:
-    branch = 'origin/feature-prefs'
+    branch = 'develop'
 
 site = mwclient.Site('en.wikipedia.org')
 site.login(password.username, password.password)
