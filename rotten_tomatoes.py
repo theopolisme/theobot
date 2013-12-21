@@ -18,7 +18,7 @@ from theobot import bot
 # CC-BY-SA Theopolisme
 
 global TODAY_DMY,TODAY_MDY
-TODAY_DMY = datetime.datetime.now().strftime("%d %B %Y")
+TODAY_DMY = datetime.datetime.now().strftime("%d %B %Y").lstrip('0')
 TODAY_MDY = datetime.datetime.now().strftime("%B %d, %Y").replace(' 0', ' ')
 
 global NONDECIMAL
