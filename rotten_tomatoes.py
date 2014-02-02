@@ -180,14 +180,15 @@ def main():
 	"""Uses an internal dictionary as well as a maintenance category on wikipedia to 
 	get a list of pages and then processes them.
 	"""
-	print "Updating articles already using {{Rotten Tomatoes score}}"
-	for imdbid in UPDATED_SCORES:
-		update_id(imdbid)
 
 	print "Processing new articles using {{Rotten Tomatoes score}}"
 	cat = mwclient.listing.Category(site, 'Category:Pages with incomplete Rotten Tomatoes embeds')
 	for page in cat:
 		process_page(page)
+
+	print "Updating articles already using {{Rotten Tomatoes score}}"
+	for imdbid in UPDATED_SCORES:
+		update_id(imdbid)
 
 	print "Making sure we didn't skip any articles using {{Rotten Tomatoes score}}"
 	cat = mwclient.listing.Category(site, 'Category:Pages with Rotten Tomatoes embeds')
