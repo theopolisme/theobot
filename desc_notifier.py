@@ -99,11 +99,9 @@ def notify(user):
 			if notified_already(user) == True:
 				print "User hasn't already been notified!"
 				page = site.Pages[usertalk]
-				text = page.edit()
-				text = text + generate_subst(user)
-				#text = generate_subst(user)
+				text = generate_subst(user)
 				try:
-					page.save(text,summary="Notifying user about missing file description(s) ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/desc_notifier|disable]])",redirect=True)
+					page.save(appendtext=text,summary="Notifying user about missing file description(s) ([[WP:BOT|bot]] - [[User:Theo's Little Bot/disable/desc_notifier|disable]])",redirect=True)
 					global total_done_now
 					total_done_now = total_done_now + 1
 					global users_notfied
